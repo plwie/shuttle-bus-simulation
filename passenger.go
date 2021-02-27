@@ -1,18 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 )
-
-allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural","Train Station"}
 
 type passenger struct {
 	source      string
 	destination string
 }
 
-func newPassenger(BusStation, allStation) {
+func newPassenger(BusStation) {
+	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
 	for i := 1; i < 100; i++ {
 		var p *passenger
@@ -25,8 +23,7 @@ func newPassenger(BusStation, allStation) {
 			passengerGroup = append(passengerGroup, passenger)
 		}
 	}
-	randomStation := rand.Intn(len(allStation))
-	p := passenger(BusStation, randomStation)
+	return &passengerGroup
 }
 
 func main() {
