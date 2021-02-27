@@ -32,8 +32,8 @@ func newPassenger() {
 	for i := 1; i < rand.Intn(20); i++ {
 		var p *passenger
 		p = new(passenger)
-		p.source = rand.Intn(len(allStation))
-		p.destination = rand.Intn(len(allStation))
+		p.source = allStation[rand.Intn(len(allStation))]
+		p.destination = allStation[rand.Intn(len(allStation))]
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
