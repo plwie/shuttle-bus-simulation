@@ -25,7 +25,3 @@ func newPassenger(BusStation) {
 	}
 	return &passengerGroup
 }
-
-func main() {
-
-}
