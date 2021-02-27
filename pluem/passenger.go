@@ -14,9 +14,9 @@ type busStation struct {
 }
 
 func newPassengerAt(busStation) {
-	allStation := []*busStation{busStation{"Engineering"}, busStation{"Science"}, busStation{"Administration"}, busStation{"IT"}, busStation{"Liberal Arts"},busStation{"Aggricultural"},busStation{"Train Station"}}
+	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
-	for i := 1; i < rand.Intn(20); i++ {
+	for i := 1; i < rand.Intn(100); i++ {
 		var p *passenger
 		p = new(passenger)
 		p.source = busStation.name
@@ -27,7 +27,7 @@ func newPassengerAt(busStation) {
 			passengerGroup = append(passengerGroup, passenger)
 		}
 	}
-	return &passengerGroup
+	return passengerGroup
 }
 
 func newPassenger() {
@@ -44,6 +44,5 @@ func newPassenger() {
 			passengerGroup = append(passengerGroup, passenger)
 		}
 	}
-	return &passengerGroup
+	return passengerGroup
 }
-
