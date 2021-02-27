@@ -7,7 +7,6 @@ import (
 )
 
 type bus struct {
-	pass_off    int8
 	availSeats int8
 	passOn     int8
 	passOff    int8
