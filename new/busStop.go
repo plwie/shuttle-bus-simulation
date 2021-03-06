@@ -115,8 +115,8 @@ func main() {
 	}
 
 	// Bus stop
-	stop1 := BusStop{name: "MIT Stop"}
-	stop2 := BusStop{name: "CMKL Stop"}
+	stop1 := stopList[0]
+	stop2 := stopList[1]
 	stop1.printD()
 	stop2.printD()
 
