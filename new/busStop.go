@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 // Node object contain a string type data
@@ -53,24 +55,26 @@ func (q *Queue) Pop() *Node {
 }
 
 // Printer print the value inside the struct
-type Printer interface{ printS() }
+type Printer interface{ printD() }
 
 // printQ does not return anything
-func (q Queue) printS() {
+func (q Queue) printD() {
+	fmt.Printf("Current Queue: ")
 	for i := q.head; i != nil; i = i.next {
 		fmt.Printf("%v ", i.data)
 	}
-	fmt.Printf("\nCurrent Queue: %v\nHead: %v\nTail: %v\nSize: %v\n", q, q.head, q.tail, q.size)
+	fmt.Printf("\nCurrent Queue Info: %v\nHead: %v\nTail: %v\nSize: %v\n", q, q.head, q.tail, q.size)
 }
 
-func (bStop BusStop) printS() {
+func (bStop BusStop) printD() {
 	fmt.Println("------------------------------------")
-	fmt.Printf("Bus Stop Data: %v\n", bStop)
-	bStop.q.printS()
+	fmt.Printf("Bus Stop Name: %v\n", bStop.name)
+	fmt.Printf("Waiting People: %v\n", bStop.waitingPassenger)
+	bStop.q.printD()
 	fmt.Println("------------------------------------")
 }
 
-func (p Passenger) printS() {
+func (p Passenger) printD() {
 	fmt.Println("------------------------------------")
 	fmt.Printf("Passenger Data: %v\n", p)
 	fmt.Println("------------------------------------")
@@ -96,22 +100,34 @@ func addPSG(psg *Passenger, bStop *BusStop) {
 }
 
 func main() {
-	fmt.Println("Hello")
+	// Init
+	reader := bufio.NewReader(os.Stdin)
+	var stopNum int
+	var stopList []BusStop
+
+	// Creating bus stops
+	fmt.Println("Enter the number of bus stops: ")
+	fmt.Scanln(&stopNum)
+	for i := 1; i <= stopNum; i++ {
+		fmt.Printf("Enter the name of bus (%v/%v): \n", i, stopNum)
+		stopName, _ := reader.ReadString('\n')
+		stopList = append(stopList, BusStop{name: stopName})
+	}
 
 	// Bus stop
 	stop1 := BusStop{name: "MIT Stop"}
 	stop2 := BusStop{name: "CMKL Stop"}
-	stop1.printS()
-	stop2.printS()
+	stop1.printD()
+	stop2.printD()
 
 	// Passenger
 	psg1 := Passenger{src: stop1}
 	psg2 := Passenger{src: stop2}
-	psg1.printS()
-	psg2.printS()
+	psg1.printD()
+	psg2.printD()
 
 	// Enqueing
 	addPSG(&psg1, &stop1)
-	stop1.printS()
-	stop2.printS()
+	stop1.printD()
+	stop2.printD()
 }
