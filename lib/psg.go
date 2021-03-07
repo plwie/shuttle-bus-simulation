@@ -1,26 +1,24 @@
-package rs
+package passenger
 
 import (
 	"math/rand"
 	"fmt"
 )
 
+//Object passenger
 type Passenger struct {
 	source      string
 	destination string
 }
 
-type BusStation struct {
-	name string
-}
-
-func NewPassengerAt(busStation) {
+//Add passenger to specific bus stop
+func NewPassengerAt(BusStop) {
 	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
 		var p *passenger
 		p = new(passenger)
-		p.source = busStation.name
+		p.source = BusStop.name
 		p.destination = rand.Intn(len(allStation))
 		if p.destination == p.source {
 			continue
@@ -31,6 +29,7 @@ func NewPassengerAt(busStation) {
 	return passengerGroup
 }
 
+//Add passenget to random bus stop
 func NewPassenger() {
 	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
