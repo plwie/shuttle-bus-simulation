@@ -7,7 +7,17 @@ import (
 
 var (
 	count    int = 0
-	stopList []rs.BusStop
+	aBuilding = BusStop{name: "aBuilding"}
+	bBuilding = BusStop{name: "bBuilding"}
+	cBuilding = BusStop{name: "cBuilding"}
+	dBuilding = BusStop{name: "dBuilding"}
+	eBuilding = BusStop{name: "eBuilding"}
+	fBuilding = BusStop{name: "fBuilding"}
+	gBuilding = BusStop{name: "gBuilding"}
+	hBuilding = BusStop{name: "hBuilding"}
+	iBuilding = BusStop{name: "iBuilding"}
+	jBuilding = BusStop{name: "jBuilding"}
+	stopList []rs.BusStop{aBuilding, bBuilding, cBuilding, dBuilding, eBuilding, fBuilding, gBuilding, hBuilding, iBuilding, jBuilding}
 )
 
 func main() {

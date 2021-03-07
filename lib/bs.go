@@ -15,9 +15,9 @@ type bus struct {
 }
 
 //Threading Function
-func busc(name string, path []BusStop) {
+func busc(name string, path []BusStop, cnt int) {
 	//need to declare global count = 0
-	pos := count
+	pos := cnt
 	count++
 	var len int = len(path)
 	var count int = 0
