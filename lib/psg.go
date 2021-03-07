@@ -2,6 +2,7 @@ package rs
 
 import (
 	"math/rand"
+	"ftm"
 )
 
 // Passenger create a passenger object
@@ -10,15 +11,15 @@ type Passenger struct {
 	destination string
 }
 
-// NewPassengerAt add passenger to specific bus stop
+//NewPassengerAt add passenger to specific bus stop
 func NewPassengerAt(BusStop) {
-	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
 		var p *passenger
 		p = new(passenger)
 		p.source = BusStop.name
-		p.destination = rand.Intn(len(allStation))
+		rando := rand.Intn(len(allStation))
+		p.destination = BusStop[rando]
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
@@ -28,15 +29,17 @@ func NewPassengerAt(BusStop) {
 	return passengerGroup
 }
 
-// NewPassenger add passenger to random bus stop
+//NewPassenger add passenger to random bus stop
 func NewPassenger() {
 	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
 	for i := 1; i < rand.Intn(20); i++ {
 		var p *passenger
 		p = new(passenger)
-		p.source = allStation[rand.Intn(len(allStation))]
-		p.destination = allStation[rand.Intn(len(allStation))]
+		rando1 := rand.Intn(len(allStation))
+		p.source = BusStop[rando1]
+		rando2 := rand.Intn(len(allStation))
+		p.destination = BusStop[rando2]
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
