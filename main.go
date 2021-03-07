@@ -33,38 +33,21 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
-	// ------------------------------------------ของปลื้ม-----------------------------------------------
-	// rand.Seed(time.Now().Unix())
-	// rando2 := rand.Intn(len(stopList))
-	// fmt.Println(stopList[rando2].Name)
-	// fmt.Println(len(stopList))
 
-	// psgr := rs.NewPassenger(stopList)
+	psgr := rs.NewPassenger(stopList)
 
-	// // fmt.Println(psgr)
-	// // fmt.Println(*psgr[0])
-	// // fmt.Println(psgr[0])
-	// fmt.Println(*&psgr[1].Source)
-	// // fmt.Println(*&stopList[2].Name)
-	// // fmt.Println(*&stopList[2].Q.Size)
-	// fmt.Println(*&stopList[3].Q.Size)
-	// fmt.Println(random(1, 10))
+	for x := range psgr {
+		for y := range stopList {
+			if *&psgr[x].Source == *&stopList[y].Name {
+				stopList[y].Q.Add(*psgr[x])
+				fmt.Println(stopList[y].Q.Size)
+				fmt.Println(stopList[y].Name)
+			} else if *&psgr[x].Source != *&stopList[y].Name {
+				continue
+			}
+		}
+	}
 
-	// fmt.Println(stopList)
-	// for x := range psgr {
-	// 	for y := range stopList {
-	// 		if *&psgr[x].Source == *&stopList[y].Name {
-	// 			stopList[y].Q.Add(*psgr[x])
-	// 			fmt.Println(stopList[y].Q.Size)
-	// 			fmt.Println(stopList[y].Name)
-	// 		} else if *&psgr[x].Source != *&stopList[y].Name {
-	// 			continue
-	// 		}
-	// 	}
-	// }
-
-	// ------------------------------------------ของปลื้ม-----------------------------------------------
-
-	rs.Busc("test", stopList)
-	// fmt.Println("Ending main package...")
+	rs.Busc("test", stopList, count)
+	fmt.Println("Ending main package...")
 }
