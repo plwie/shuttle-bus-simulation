@@ -2,6 +2,7 @@ package rs
 
 import (
 	"math/rand"
+	"fmt"
 )
 
 type Passenger struct {
