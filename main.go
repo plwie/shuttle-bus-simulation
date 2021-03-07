@@ -32,7 +32,7 @@ func main() {
 	for _, ele := range psgr {
 		for _, ele := range stopList {
 			if psgr.ele.src == stopList.ele.name {
-				stopList.q.Add(psgr.ele)
+				stopList.q.Add(psgr(ele))
 			} else if psgr.ele.src != stopList.ele.name {
 				continue
 			}
