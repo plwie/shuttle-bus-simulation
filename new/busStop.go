@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-package bst
-=======
-package busStop
->>>>>>> Stashed changes
+package main
 
 import (
 	"fmt"
@@ -63,13 +59,8 @@ func (q *Queue) Pop() *Node {
 // Printer print the value inside the struct
 type Printer interface{ PrintD() }
 
-<<<<<<< Updated upstream
-// PrintD for q struct
-func (q Queue) PrintD() {
-=======
 // printD does not return anything
 func (q Queue) printD() {
->>>>>>> Stashed changes
 	fmt.Printf("Current Queue: ")
 	for i := q.head; i != nil; i = i.next {
 		fmt.Printf("%v ", i.data)
@@ -82,11 +73,7 @@ func (bStop BusStop) PrintD() {
 	fmt.Println("------------------------------------")
 	fmt.Printf("Bus Stop Name: %v\n", bStop.name)
 	fmt.Printf("Waiting People: %v\n", bStop.waitingPassenger)
-<<<<<<< Updated upstream
-	bStop.q.PrintD()
-=======
 	bStop.q.printD()
->>>>>>> Stashed changes
 	fmt.Println("------------------------------------")
 }
 
@@ -97,11 +84,6 @@ type BusStop struct {
 	q                Queue
 }
 
-<<<<<<< Updated upstream
-// Test get feedback from busstop.go
-func Test() {
-	fmt.Println("busstop package succesfully initialize...")
-=======
 /**
 func main() {
 	// Init
@@ -118,6 +100,5 @@ func main() {
 		stopList = append(stopList, BusStop{name: stopName})
 	}
 	fmt.Printf("Bus stop list: %v", stopList)
->>>>>>> Stashed changes
 }
 **/
