@@ -12,7 +12,7 @@ type Passenger struct {
 }
 
 //NewPassengerAt add passenger to specific bus stop
-func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
+func NewPassengerAt(stopList []BusStop, start BusStop) {
 	// passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
 		var p *Passenger
@@ -28,11 +28,10 @@ func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
 			}
 		}
 	}
-	// return passengerGroup
 }
 
 //NewPassenger add passenger to random bus stop
-func NewPassenger(stopList []BusStop) []*Passenger {
+func NewPassenger(stopList []BusStop) {
 	// passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(20); i++ {
 		var p *Passenger
@@ -43,11 +42,10 @@ func NewPassenger(stopList []BusStop) []*Passenger {
 		p.destination = stopList[rando2].Name
 		if p.destination == p.source {
 			continue
-		} else if p.destination != p.source {
+		} else {
 			if p.source == BusStop.Name {
 				BusStop.q.Add(psgr[i])
 			}
 		}
 	}
-	// return passengerGroup
 }
