@@ -4,7 +4,7 @@ import "fmt"
 
 // Node object contain a pointer type data
 type Node struct {
-	data string // *Passenger
+	data *Passenger
 	next *Node
 }
 
