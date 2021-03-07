@@ -5,8 +5,13 @@ import (
 	rs "rs/lib"
 )
 
+var (
+	count    int = 0
+	stopList []rs.BusStop
+)
+
 func main() {
 	fmt.Println("This is the main package: ")
-	rs.TestDrive()
+
 	fmt.Println("Ending main package...")
 }

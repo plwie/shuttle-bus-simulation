@@ -76,8 +76,3 @@ type BusStop struct {
 	waitingPassenger int
 	q                Queue
 }
-
-// TestDrive give feedback to main
-func TestDrive() {
-	fmt.Println("bst package succesfully initialized...!")
-}
