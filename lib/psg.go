@@ -39,14 +39,16 @@ func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
 func NewPassenger(stopList []*BusStop) []*Passenger {
 	passengerGroup := []*Passenger{}
 	rand.Seed(time.Now().UnixNano())
-	random1 := random(50, 200)
-	random2 := random(1, 10)
-	random3 := random(1, 10)
+	random1 := random(3000, 10000)
 	for i := 1; i < random1; i++ {
 		var p *Passenger
 		p = new(Passenger)
-		p.Source = stopList[random2].Name
-		p.Destination = stopList[random3].Name
+		rand.Seed(time.Now().UnixNano())
+		rando1 := random(1, 5)
+		p.Source = stopList[rando1].Name
+		rand.Seed(time.Now().UnixNano())
+		rando2 := random(1, 5)
+		p.Destination = stopList[rando2].Name
 		if p.Destination == p.Source {
 			continue
 		} else if p.Destination != p.Source {
@@ -54,6 +56,15 @@ func NewPassenger(stopList []*BusStop) []*Passenger {
 		}
 	}
 	return passengerGroup
+}
+
+//NewPassenger1 Create a new passenger
+func NewPassenger1(stopList []*BusStop) *Passenger {
+	var p *Passenger
+	p = new(Passenger)
+	p.Source = "a"
+	p.Destination = "b"
+	return p
 }
 
 // Random code from https://gist.github.com/201Factory/5ef7c2d46cf848db16041cafa17ab054
