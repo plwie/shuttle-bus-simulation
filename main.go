@@ -4,13 +4,16 @@ import (
 	"fmt"
 	"math/rand"
 	rs "rs/lib"
-	"time"
 )
 
 var (
 	stopList   []*rs.BusStop
 	inputNoBus int
 )
+
+func random(min int, max int) int {
+	return rand.Intn(max-min) + min
+}
 
 func main() {
 	stopList = append(stopList, &rs.BusStop{Name: "aBuilding", TimeTaken: 5})
@@ -29,7 +32,6 @@ func main() {
 	// fmt.Scanln(&inputNoBus)
 	// for i := 0; i < inputNoBus; i++ {
 	// 	go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
-	}
 
 	// ------------------------------------------ของปลื้ม-----------------------------------------------
 	// rand.Seed(time.Now().Unix())
@@ -39,29 +41,23 @@ func main() {
 
 	psgr := rs.NewPassenger(stopList)
 
-	fmt.Println(psgr)
-	fmt.Println(*psgr[0])
-	fmt.Println(psgr[0])
-	fmt.Println(*&psgr[3].Source)
-	// fmt.Println(*&psgr[3].Destination)
-	// for i := 1; i < len(psgr)-1; i++ {
-	// 	fmt.Println(*&psgr[i].Source)
-	// 	fmt.Println(*&psgr[3].Destination)
-	// }
-	stopList[3].Q.Add(*psgr[2])
-	stopList[3].Q.Add(*psgr[0])
-	stopList[3].Q.Add(*psgr[3])
-	fmt.Println(stopList[3].Q.Size)
-	// for i := 1; i < len(psgr)-1; i++{
-	// 	for i := 1; i < len(psgr)-1; i++
-	// }
+	// fmt.Println(psgr)
+	// fmt.Println(*psgr[0])
+	// fmt.Println(psgr[0])
+	fmt.Println(*&psgr[1].Source)
+	// fmt.Println(*&stopList[2].Name)
+	// fmt.Println(*&stopList[2].Q.Size)
+	fmt.Println(*&stopList[3].Q.Size)
+	fmt.Println(random(1, 10))
 
 	// fmt.Println(stopList)
-	// for _, u := range psgr {
-	// 	for _, ele := range stopList {
-	// 		if psgr.u.src == stopList.ele.name {
-	// 			stopList.q.Add(psgr[i])
-	// 		} else if psgr.ele.src != stopList.ele.name {
+	// for x := range psgr {
+	// 	for y := range stopList {
+	// 		if *&psgr[x].Source == *&stopList[y].Name {
+	// 			stopList[y].Q.Add(*psgr[x])
+	// 			fmt.Println(stopList[y].Q.Size)
+	// 			fmt.Println(stopList[y].Name)
+	// 		} else if *&psgr[x].Source != *&stopList[y].Name {
 	// 			continue
 	// 		}
 	// 	}
