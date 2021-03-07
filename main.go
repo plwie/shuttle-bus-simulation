@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	rs "rs/lib"
 )
 
 func main() {
+<<<<<<< Updated upstream
 	fmt.Printf("Hello World!\n")
 	// Bus stop
 
@@ -19,4 +21,8 @@ func main() {
 	// Execution
 	bst.test()
 	// Exit
+=======
+	fmt.Println("Hello")
+	rs.TestDrive()
+>>>>>>> Stashed changes
 }
