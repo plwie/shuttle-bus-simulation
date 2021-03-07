@@ -26,19 +26,19 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList, count)
 	}
-	/**
+
 	psgr := rs.NewPassenger(stopList)
 
-	for _, ele := range psgr {
-		for _, ele := range stopList {
-			if psgr.ele.src == stopList.ele.name {
-				stopList.q.Add(psgr.ele)
-			} else if psgr.ele.src != stopList.ele.name {
-				continue
-			}
-		}
-	}
-	**/
+	fmt.Printf("PSGR: %T\n", psgr)
+	// for _, u := range psgr {
+	// 	for _, ele := range stopList {
+	// 		if psgr.ele.src == stopList.ele.name {
+	// 			stopList.q.Add(psgr(i))
+	// 		} else if psgr.ele.src != stopList.ele.name {
+	// 			continue
+	// 		}
+	// 	}
+	// }
 
 	rs.Busc("test", stopList, count)
 	fmt.Println("Ending main package...")
