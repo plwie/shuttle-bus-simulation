@@ -1,17 +1,16 @@
-package passenger
+package rs
 
 import (
 	"math/rand"
-	"fmt"
 )
 
-//Object passenger
+// Passenger create a passenger object
 type Passenger struct {
 	source      string
 	destination string
 }
 
-//Add passenger to specific bus stop
+// NewPassengerAt add passenger to specific bus stop
 func NewPassengerAt(BusStop) {
 	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
@@ -29,7 +28,7 @@ func NewPassengerAt(BusStop) {
 	return passengerGroup
 }
 
-//Add passenget to random bus stop
+// NewPassenger add passenger to random bus stop
 func NewPassenger() {
 	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
