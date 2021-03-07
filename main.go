@@ -51,6 +51,6 @@ func main() {
 			}
 		}
 	}
-	rs.Busc("test", stopList, count)
+	rs.Busc("test", stopList)
 	fmt.Println("Ending main package...")
 }
