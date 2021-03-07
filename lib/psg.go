@@ -12,8 +12,12 @@ type Passenger struct {
 	next        *Passenger
 }
 
+func random(min int, max int) int {
+	return rand.Intn(max-min) + min
+}
+
 //NewPassengerAt add passenger to specific bus stop
-func NewPassengerAt(stopList []*BusStop, start BusStop) []*Passenger {
+func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
 	passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
 		var p *Passenger
@@ -34,15 +38,16 @@ func NewPassengerAt(stopList []*BusStop, start BusStop) []*Passenger {
 //NewPassenger add passenger to random bus stop
 func NewPassenger(stopList []*BusStop) []*Passenger {
 	passengerGroup := []*Passenger{}
-	// rand.Seed(time.Now().Unix())
-	for i := 1; i < rand.Intn(20); i++ {
+	rand.Seed(time.Now().Unix())
+	random1 := random(5, 10)
+	for i := 1; i < random1; i++ {
 		var p *Passenger
 		p = new(Passenger)
 		rand.Seed(time.Now().Unix())
-		rando1 := rand.Intn(len(stopList) - 1)
+		rando1 := random(1, 5)
 		p.Source = stopList[rando1].Name
-		// rand.Seed(time.Now().Unix())
-		rando2 := rand.Intn(len(stopList) - 1)
+		rand.Seed(time.Now().Unix())
+		rando2 := random(1, 5)
 		p.Destination = stopList[rando2].Name
 		if p.Destination == p.Source {
 			continue
