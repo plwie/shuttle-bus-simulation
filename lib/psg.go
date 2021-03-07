@@ -2,13 +2,14 @@ package rs
 
 import (
 	"math/rand"
-	"ftm"
+	"fmt"
 )
 
 // Passenger create a passenger object
 type Passenger struct {
 	source      string
 	destination string
+	next *Passenger
 }
 
 //NewPassengerAt add passenger to specific bus stop
