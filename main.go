@@ -6,23 +6,7 @@ import (
 )
 
 func main() {
-<<<<<<< Updated upstream
-	fmt.Printf("Hello World!\n")
-	// Bus stop
-
-	// Road
-
-	// Bus
-
-	// Passenger
-
-	// Main Shell -> Put cmd
-
-	// Execution
-	bst.test()
-	// Exit
-=======
-	fmt.Println("Hello")
+	fmt.Println("This is the main package: ")
 	rs.TestDrive()
->>>>>>> Stashed changes
+	fmt.Println("Ending main package...")
 }

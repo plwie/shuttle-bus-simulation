@@ -1,17 +1,10 @@
-<<<<<<< Updated upstream:New/busStop.txt
-=======
 package rs
 
->>>>>>> Stashed changes:lib/bst.go
-import (
-	"bufio"
-	"fmt"
-	"os"
-)
+import "fmt"
 
 // Node object contain a pointer type data
 type Node struct {
-	data *Passenger
+	data string // *Passenger
 	next *Node
 }
 
@@ -77,12 +70,6 @@ func (bStop BusStop) printD() {
 	fmt.Println("------------------------------------")
 }
 
-func (p Passenger) printD() {
-	fmt.Println("------------------------------------")
-	fmt.Printf("Passenger Data: %v\n", p)
-	fmt.Println("------------------------------------")
-}
-
 // BusStop create a bus stop object
 type BusStop struct {
 	name             string
@@ -90,48 +77,7 @@ type BusStop struct {
 	q                Queue
 }
 
-// Passenger create a passenger object
-type Passenger struct {
-	src BusStop
-	dst BusStop
-}
-
-func addPSG(psg *Passenger, bStop *BusStop) {
-	tg := Node{data: psg}
-	bStop.q.Add(tg)
-	bStop.waitingPassenger++
-}
-
-func main() {
-	// Init
-	reader := bufio.NewReader(os.Stdin)
-	var stopNum int
-	var stopList []BusStop
-
-	// Creating bus stops
-	fmt.Println("Enter the number of bus stops: ")
-	fmt.Scanln(&stopNum)
-	for i := 1; i <= stopNum; i++ {
-		fmt.Printf("Enter the name of bus stop (%v/%v): \n", i, stopNum)
-		stopName, _ := reader.ReadString('\n')
-		stopList = append(stopList, BusStop{name: stopName})
-	}
-	fmt.Printf("Bus stop list: %v", stopList)
-
-	// Bus stop
-	stop1 := stopList[0]
-	stop2 := stopList[1]
-	stop1.printD()
-	stop2.printD()
-
-	// Passenger
-	psg1 := Passenger{src: stop1}
-	psg2 := Passenger{src: stop2}
-	psg1.printD()
-	psg2.printD()
-
-	// Enqueing
-	addPSG(&psg1, &stop1)
-	stop1.printD()
-	stop2.printD()
+// TestDrive give feedback to main
+func TestDrive() {
+	fmt.Println("Hello!")
 }
