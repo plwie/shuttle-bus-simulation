@@ -19,7 +19,7 @@ func NewPassengerAt(BusStop) {
 		p = new(passenger)
 		p.source = BusStop.name
 		rando := rand.Intn(len(allStation))
-		p.destination = BusStop[rando]
+		p.destination = BusStop[rando].name
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
@@ -30,16 +30,15 @@ func NewPassengerAt(BusStop) {
 }
 
 //NewPassenger add passenger to random bus stop
-func NewPassenger() {
-	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
+func NewPassenger(BusStop) {
 	passengerGroup := []*passenger{}
 	for i := 1; i < rand.Intn(20); i++ {
 		var p *passenger
 		p = new(passenger)
 		rando1 := rand.Intn(len(allStation))
-		p.source = BusStop[rando1]
+		p.source = BusStop[rando1].name
 		rando2 := rand.Intn(len(allStation))
-		p.destination = BusStop[rando2]
+		p.destination = BusStop[rando2].name
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
