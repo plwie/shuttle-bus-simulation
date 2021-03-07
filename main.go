@@ -6,29 +6,28 @@ import (
 )
 
 var (
-	count    int = 0
-	aBuilding = rs.BusStop{name: "aBuilding"}
-	bBuilding = rs.BusStop{name: "bBuilding"}
-	cBuilding = rs.BusStop{name: "cBuilding"}
-	dBuilding = rs.BusStop{name: "dBuilding"}
-	eBuilding = rs.BusStop{name: "eBuilding"}
-	fBuilding = rs.BusStop{name: "fBuilding"}
-	gBuilding = rs.BusStop{name: "gBuilding"}
-	hBuilding = rs.BusStop{name: "hBuilding"}
-	iBuilding = rs.BusStop{name: "iBuilding"}
-	jBuilding = rs.BusStop{name: "jBuilding"}
-	stopList []rs.BusStop{aBuilding, bBuilding, cBuilding, dBuilding, eBuilding, fBuilding, gBuilding, hBuilding, iBuilding, jBuilding}
+	count      int = 0
+	stopList   []rs.BusStop
 	inputNoBus int
 )
 
 func main() {
+	stopList = append(stopList, rs.BusStop{Name: "Stop 1"})
+	stopList = append(stopList, rs.BusStop{Name: "Stop 2"})
+	stopList = append(stopList, rs.BusStop{Name: "Stop 3"})
+	stopList = append(stopList, rs.BusStop{Name: "Stop 4"})
+	stopList = append(stopList, rs.BusStop{Name: "Stop 5"})
+	stopList = append(stopList, rs.BusStop{Name: "Stop 6"})
+	fmt.Printf("Initiated bus stop list: %v\n", stopList)
+
 	fmt.Println("This is the main package: ")
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	for i := 0; i < inputNoBus; i++ {
-		go rs.busc("bus"+fmt.Sprint((i+1)), path,count)
+		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList, count)
 	}
-	psgr := NewPassenger(stopList)
+	/**
+	psgr := rs.NewPassenger(stopList)
 
 	for _, ele := range psgr {
 		for _, ele := range stopList {
@@ -39,7 +38,8 @@ func main() {
 			}
 		}
 	}
+	**/
 
-	rs.busc("test", path,count)
+	rs.Busc("test", stopList, count)
 	fmt.Println("Ending main package...")
 }
