@@ -39,7 +39,7 @@ func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
 func NewPassenger(stopList []*BusStop) []*Passenger {
 	passengerGroup := []*Passenger{}
 	rand.Seed(time.Now().Unix())
-	random1 := random(3000, 10000)
+	random1 := random(50, 200)
 	for i := 1; i < random1; i++ {
 		var p *Passenger
 		p = new(Passenger)
