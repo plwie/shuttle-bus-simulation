@@ -1,47 +1,48 @@
-package passenger
+package rs
 
 import (
 	"math/rand"
 )
 
+// Passenger create a passenger object
 type Passenger struct {
 	source      string
 	destination string
+	next        *Passenger
 }
 
-type BusStation struct {
-	name string
-}
-
-func NewPassengerAt(busStation) {
-	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
-	passengerGroup := []*passenger{}
+//NewPassengerAt add passenger to specific bus stop
+func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
+	passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
-		var p *passenger
-		p = new(passenger)
-		p.source = busStation.name
-		p.destination = rand.Intn(len(allStation))
+		var p *Passenger
+		p = new(Passenger)
+		p.source = start.Name
+		rando := rand.Intn(len(stopList))
+		p.destination = stopList[rando].Name
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
-			passengerGroup = append(passengerGroup, passenger)
+			passengerGroup = append(passengerGroup, p)
 		}
 	}
 	return passengerGroup
 }
 
-func NewPassenger() {
-	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
-	passengerGroup := []*passenger{}
+//NewPassenger add passenger to random bus stop
+func NewPassenger(stopList []BusStop) []*Passenger {
+	passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(20); i++ {
-		var p *passenger
-		p = new(passenger)
-		p.source = allStation[rand.Intn(len(allStation))]
-		p.destination = allStation[rand.Intn(len(allStation))]
+		var p *Passenger
+		p = new(Passenger)
+		rando1 := rand.Intn(len(stopList))
+		p.source = stopList[rando1].Name
+		rando2 := rand.Intn(len(stopList))
+		p.destination = stopList[rando2].Name
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
-			passengerGroup = append(passengerGroup, passenger)
+			passengerGroup = append(passengerGroup, p)
 		}
 	}
 	return passengerGroup
