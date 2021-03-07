@@ -17,6 +17,6 @@ func main() {
 	// Main Shell -> Put cmd
 
 	// Execution
-
+	bst.test()
 	// Exit
 }
