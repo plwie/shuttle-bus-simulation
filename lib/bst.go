@@ -69,4 +69,5 @@ type BusStop struct {
 	Name             string
 	WaitingPassenger int
 	q                Queue
+	TimeTaken        int
 }
