@@ -109,10 +109,11 @@ func main() {
 	fmt.Println("Enter the number of bus stops: ")
 	fmt.Scanln(&stopNum)
 	for i := 1; i <= stopNum; i++ {
-		fmt.Printf("Enter the name of bus (%v/%v): \n", i, stopNum)
+		fmt.Printf("Enter the name of bus stop (%v/%v): \n", i, stopNum)
 		stopName, _ := reader.ReadString('\n')
 		stopList = append(stopList, BusStop{name: stopName})
 	}
+	fmt.Printf("Bus stop list: %v", stopList)
 
 	// Bus stop
 	stop1 := stopList[0]
