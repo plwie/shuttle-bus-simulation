@@ -28,6 +28,18 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go rs.busc("bus"+fmt.Sprint((i+1)), path,count)
 	}
+	psgr := NewPassenger(stopList)
+
+	for _, ele := range psgr {
+		for _, ele := range stopList {
+			if psgr.ele.src == stopList.ele.name {
+				stopList.q.Add(psgr.ele)
+			} else if psgr.ele.src != stopList.ele.name {
+				continue
+			}
+		}
+	}
+
 	rs.busc("test", path,count)
 	fmt.Println("Ending main package...")
 }
