@@ -23,16 +23,16 @@ func main() {
 	stopList = append(stopList, &rs.BusStop{Name: "hBuilding", TimeTaken: 5})
 	stopList = append(stopList, &rs.BusStop{Name: "iBuilding", TimeTaken: 7})
 	stopList = append(stopList, &rs.BusStop{Name: "jBuilding", TimeTaken: 4})
-	fmt.Printf("Initiated bus stop list: %v\n", stopList)
-	fmt.Println("This is the main package: ")
-	fmt.Println("How many bus?")
-	fmt.Scanln(&inputNoBus)
-	for i := 0; i < inputNoBus; i++ {
-		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
+	// fmt.Printf("Initiated bus stop list: %v\n", stopList)
+	// fmt.Println("This is the main package: ")
+	// fmt.Println("How many bus?")
+	// fmt.Scanln(&inputNoBus)
+	// for i := 0; i < inputNoBus; i++ {
+	// 	go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 
 	// ------------------------------------------ของปลื้ม-----------------------------------------------
-	rand.Seed(time.Now().Unix())
+	// rand.Seed(time.Now().Unix())
 	// rando2 := rand.Intn(len(stopList))
 	// fmt.Println(stopList[rando2].Name)
 	// fmt.Println(len(stopList))
