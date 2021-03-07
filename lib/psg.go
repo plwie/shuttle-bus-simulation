@@ -13,7 +13,7 @@ type Passenger struct {
 }
 
 //NewPassengerAt add passenger to specific bus stop
-func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
+func NewPassengerAt(stopList []*BusStop, start BusStop) []*Passenger {
 	passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
 		var p *Passenger
@@ -32,7 +32,7 @@ func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
 }
 
 //NewPassenger add passenger to random bus stop
-func NewPassenger(stopList []BusStop) []*Passenger {
+func NewPassenger(stopList []*BusStop) []*Passenger {
 	passengerGroup := []*Passenger{}
 	// rand.Seed(time.Now().Unix())
 	for i := 1; i < rand.Intn(20); i++ {
