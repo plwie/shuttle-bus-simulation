@@ -1,4 +1,4 @@
-package rs
+package passenger
 
 import (
 	"math/rand"
@@ -8,12 +8,12 @@ import (
 type Passenger struct {
 	source      string
 	destination string
-	next        *Passenger
+	// next        *Passenger
 }
 
 //NewPassengerAt add passenger to specific bus stop
 func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
-	passengerGroup := []
+	passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
 		var p *Passenger
 		p = new(Passenger)
@@ -31,7 +31,7 @@ func NewPassengerAt(stopList []BusStop, start BusStop) []*Passenger {
 
 //NewPassenger add passenger to random bus stop
 func NewPassenger(stopList []BusStop) []*Passenger {
-	passengerGroup := []
+	passengerGroup := []*Passenger{}
 	for i := 1; i < rand.Intn(20); i++ {
 		var p *Passenger
 		p = new(Passenger)
