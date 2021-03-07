@@ -23,7 +23,7 @@ func NewPassengerAt(BusStop) {
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
-			passengerGroup = append(passengerGroup, p.name)
+			passengerGroup = append(passengerGroup, p)
 		}
 	}
 	return passengerGroup
@@ -42,7 +42,7 @@ func NewPassenger(BusStop) {
 		if p.destination == p.source {
 			continue
 		} else if p.destination != p.source {
-			passengerGroup = append(passengerGroup, p.name)
+			passengerGroup = append(passengerGroup, p)
 		}
 	}
 	return passengerGroup
