@@ -18,7 +18,7 @@ type bus struct {
 func busc(name string, path []BusStop, cnt int) {
 	//need to declare global count = 0
 	pos := cnt
-	count++
+	cnt++
 	var len int = len(path)
 	var count int = 0
 	//create bus struct instance
