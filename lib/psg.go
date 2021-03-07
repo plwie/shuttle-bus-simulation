@@ -2,7 +2,7 @@ package rs
 
 import (
 	"math/rand"
-	"ftm"
+	"fmt"
 )
 
 // Passenger create a passenger object
