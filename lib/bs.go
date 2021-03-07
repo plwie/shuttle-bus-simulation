@@ -17,7 +17,7 @@ type Bus struct {
 }
 
 // Busc is the Threading Function
-func Busc(name string, path []BusStop) {
+func Busc(name string, path []*BusStop) {
 	//need to declare global count = 0
 	pos := count
 	count++
