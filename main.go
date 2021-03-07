@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	rs "rs/lib"
+	"time"
 )
 
 var (
@@ -16,6 +17,7 @@ func random(min int, max int) int {
 }
 
 func main() {
+
 	stopList = append(stopList, &rs.BusStop{Name: "aBuilding", TimeTaken: 5})
 	stopList = append(stopList, &rs.BusStop{Name: "bBuilding", TimeTaken: 6})
 	stopList = append(stopList, &rs.BusStop{Name: "cBuilding", TimeTaken: 3})
@@ -26,6 +28,7 @@ func main() {
 	stopList = append(stopList, &rs.BusStop{Name: "hBuilding", TimeTaken: 5})
 	stopList = append(stopList, &rs.BusStop{Name: "iBuilding", TimeTaken: 7})
 	stopList = append(stopList, &rs.BusStop{Name: "jBuilding", TimeTaken: 4})
+
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("This is the main package: ")
 	fmt.Println("How many bus?")
@@ -34,20 +37,20 @@ func main() {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 
-	psgr := rs.NewPassenger(stopList)
-
-	for x := range psgr {
-		for y := range stopList {
-			if *&psgr[x].Source == *&stopList[y].Name {
-				stopList[y].Q.Add(*psgr[x])
-				fmt.Println(stopList[y].Q.Size)
-				fmt.Println(stopList[y].Name)
-			} else if *&psgr[x].Source != *&stopList[y].Name {
-				continue
+	psgr := rs.NewPassenger1(stopList)
+	rand.Seed(time.Now().UnixNano())
+	random1 := random(50, 200)
+	for i := 1; i < random1; i++ {
+		psgr.Source = *&stopList[random(0, 5)].Name
+		psgr.Destination = *&stopList[rand.Intn((5-0-1)+1)].Name
+		for i := 0; i < len(stopList)-1; i++ {
+			if psgr.Source == *&stopList[i].Name {
+				stopList[i].Q.Add(*psgr)
+				fmt.Println(stopList[i].Name)
+				fmt.Println(stopList[i].Q.Size)
 			}
 		}
 	}
-
-	rs.Busc("test", stopList)
+	rs.Busc("test", stopList, count)
 	fmt.Println("Ending main package...")
 }
