@@ -79,5 +79,5 @@ type BusStop struct {
 
 // TestDrive give feedback to main
 func TestDrive() {
-	fmt.Println("Hello!")
+	fmt.Println("bst package succesfully initialized...!")
 }
