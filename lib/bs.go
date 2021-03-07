@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
-var count int = 0
+var (
+	countPos int = 0
+	count    int = 0
+)
 
 // Bus Struct
 type Bus struct {
@@ -19,8 +22,8 @@ type Bus struct {
 // Busc is the Threading Function
 func Busc(name string, path []*BusStop) {
 	//need to declare global count = 0
-	pos := count
-	count++
+	pos := countPos
+	countPos++
 	var len int = len(path)
 	var count int = 0
 	//create bus struct instance
