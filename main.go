@@ -8,7 +8,6 @@ import (
 )
 
 var (
-	count      int = 0
 	stopList   []rs.BusStop
 	inputNoBus int
 )
@@ -25,7 +24,7 @@ func main() {
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	for i := 0; i < inputNoBus; i++ {
-		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList, count)
+		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 
 	// ------------------------------------------ของปลื้ม-----------------------------------------------

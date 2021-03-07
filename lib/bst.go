@@ -60,7 +60,7 @@ func (bStop BusStop) printD() {
 	fmt.Println("------------------------------------")
 	fmt.Printf("Bus Stop Name: %v\n", bStop.Name)
 	fmt.Printf("Waiting People: %v\n", bStop.WaitingPassenger)
-	bStop.q.printD()
+	bStop.Q.printD()
 	fmt.Println("------------------------------------")
 }
 
@@ -68,6 +68,6 @@ func (bStop BusStop) printD() {
 type BusStop struct {
 	Name             string
 	WaitingPassenger int
-	q                Queue
+	Q                Queue
 	TimeTaken        int
 }
