@@ -26,7 +26,7 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList, count)
 	}
-	/**
+
 	psgr := rs.NewPassenger(stopList)
 
 	for _, ele := range psgr {
@@ -38,7 +38,6 @@ func main() {
 			}
 		}
 	}
-	**/
 
 	rs.Busc("test", stopList, count)
 	fmt.Println("Ending main package...")
