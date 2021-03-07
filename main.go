@@ -6,25 +6,28 @@ import (
 )
 
 var (
-	count      int = 0
 	stopList   []rs.BusStop
 	inputNoBus int
 )
 
 func main() {
-	stopList = append(stopList, rs.BusStop{Name: "Stop 1"})
-	stopList = append(stopList, rs.BusStop{Name: "Stop 2"})
-	stopList = append(stopList, rs.BusStop{Name: "Stop 3"})
-	stopList = append(stopList, rs.BusStop{Name: "Stop 4"})
-	stopList = append(stopList, rs.BusStop{Name: "Stop 5"})
-	stopList = append(stopList, rs.BusStop{Name: "Stop 6"})
+	stopList = append(stopList, rs.BusStop{Name: "aBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "bBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "cBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "dBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "eBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "fBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "gBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "hBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "iBuilding"})
+	stopList = append(stopList, rs.BusStop{Name: "jBuilding"})
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 
 	fmt.Println("This is the main package: ")
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	for i := 0; i < inputNoBus; i++ {
-		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList, count)
+		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 
 	psgr := rs.NewPassenger(stopList)
@@ -40,6 +43,6 @@ func main() {
 	// 	}
 	// }
 
-	rs.Busc("test", stopList, count)
+	rs.Busc("test", stopList)
 	fmt.Println("Ending main package...")
 }
