@@ -28,15 +28,15 @@ func Busc(name string, path []*BusStop) {
 		availSeats: 0,
 		passOn:     0,
 		passOff:    0,
-		currStop:   path[pos].Name,
-		nextStop:   path[pos+1].Name,
+		currStop:   *&path[pos].Name,
+		nextStop:   *&path[pos+1].Name,
 	}
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
 			time.Sleep(time.Second * 1)
-			busStruct.currStop = path[pos].Name
-			busStruct.nextStop = path[(pos+1)%len].Name
+			busStruct.currStop = *&path[pos].Name
+			busStruct.nextStop = *&path[(pos+1)%len].Name
 			fmt.Println(count, name, busStruct.currStop, busStruct.nextStop)
 			pos++
 			count++
