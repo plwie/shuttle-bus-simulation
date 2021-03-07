@@ -1,19 +1,19 @@
-package main
+package passenger
 
 import (
 	"math/rand"
 )
 
-type passenger struct {
+type Passenger struct {
 	source      string
 	destination string
 }
 
-type busStation struct {
+type BusStation struct {
 	name string
 }
 
-func newPassengerAt(busStation) {
+func NewPassengerAt(busStation) {
 	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
 	for i := 1; i < rand.Intn(100); i++ {
@@ -30,7 +30,7 @@ func newPassengerAt(busStation) {
 	return passengerGroup
 }
 
-func newPassenger() {
+func NewPassenger() {
 	allStation := [7]string{"Engineering", "Science", "Administration", "IT", "Liberal Arts", "Aggricultural", "Train Station"}
 	passengerGroup := []*passenger{}
 	for i := 1; i < rand.Intn(20); i++ {
