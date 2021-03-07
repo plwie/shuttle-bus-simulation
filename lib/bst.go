@@ -2,24 +2,18 @@ package rs
 
 import "fmt"
 
-// Node object contain a pointer type data
-type Node struct {
-	data *Passenger
-	next *Node
-}
-
-// Queue implementation using Node
+// Queue implementation using Passenger node
 type Queue struct {
-	head *Node
-	tail *Node
+	head *Passenger
+	tail *Passenger
 	size int
 }
 
 // Adder add node to queue
-type Adder interface{ Add(node Node) }
+type Adder interface{ Add(node Passenger) }
 
 // Add does not return anything
-func (q *Queue) Add(node Node) {
+func (q *Queue) Add(node Passenger) {
 	if q.head == nil {
 		q.head = &node
 		q.tail = &node
@@ -31,10 +25,10 @@ func (q *Queue) Add(node Node) {
 }
 
 // Popper remove node from queue
-type Popper interface{ Pop() *Node }
+type Popper interface{ Pop() *Passenger }
 
 // Pop return pointer of the removed node
-func (q *Queue) Pop() *Node {
+func (q *Queue) Pop() *Passenger {
 	if q.head == nil {
 		fmt.Println("Error: queue is empty")
 		return nil
@@ -57,7 +51,7 @@ type Printer interface{ printD() }
 func (q Queue) printD() {
 	fmt.Printf("Current Queue: ")
 	for i := q.head; i != nil; i = i.next {
-		fmt.Printf("%v ", i.data)
+		fmt.Printf("%v ", i)
 	}
 	fmt.Printf("\nCurrent Queue Info: %v\nHead: %v\nTail: %v\nSize: %v\n", q, q.head, q.tail, q.size)
 }
