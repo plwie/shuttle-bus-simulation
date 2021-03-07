@@ -6,7 +6,7 @@ import "fmt"
 type Queue struct {
 	head *Passenger
 	tail *Passenger
-	size int
+	Size int
 }
 
 // Adder add node to queue
@@ -21,7 +21,7 @@ func (q *Queue) Add(node Passenger) {
 		q.tail.next = &node
 		q.tail = &node
 	}
-	q.size++
+	q.Size++
 }
 
 // Popper remove node from queue
@@ -34,13 +34,13 @@ func (q *Queue) Pop() *Passenger {
 		return nil
 	}
 	temp := q.head
-	if q.size == 1 {
+	if q.Size == 1 {
 		q.head = nil
 		q.tail = nil
 	} else {
 		q.head = q.head.next
 	}
-	q.size--
+	q.Size--
 	return temp
 }
 
@@ -53,21 +53,20 @@ func (q Queue) printD() {
 	for i := q.head; i != nil; i = i.next {
 		fmt.Printf("%v ", i)
 	}
-	fmt.Printf("\nCurrent Queue Info: %v\nHead: %v\nTail: %v\nSize: %v\n", q, q.head, q.tail, q.size)
+	fmt.Printf("\nCurrent Queue Info: %v\nHead: %v\nTail: %v\nSize: %v\n", q, q.head, q.tail, q.Size)
 }
 
 func (bStop BusStop) printD() {
 	fmt.Println("------------------------------------")
 	fmt.Printf("Bus Stop Name: %v\n", bStop.Name)
-	fmt.Printf("Waiting People: %v\n", bStop.WaitingPassenger)
+	fmt.Printf("Waiting People: %v\n", bStop.Q.Size)
 	bStop.Q.printD()
 	fmt.Println("------------------------------------")
 }
 
 // BusStop create a bus stop object
 type BusStop struct {
-	Name             string
-	WaitingPassenger int
-	Q                Queue
-	TimeTaken        int
+	Name      string
+	Q         Queue
+	TimeTaken int
 }

@@ -51,7 +51,7 @@ func main() {
 	stopList[3].Q.Add(*psgr[2])
 	stopList[3].Q.Add(*psgr[0])
 	stopList[3].Q.Add(*psgr[3])
-	fmt.Println(stopList[2].WaitingPassenger)
+	fmt.Println(stopList[3].Q.Size)
 	// for i := 1; i < len(psgr)-1; i++{
 	// 	for i := 1; i < len(psgr)-1; i++
 	// }
