@@ -18,16 +18,16 @@ func main() {
 	stopList = append(stopList, rs.BusStop{Name: "Stop 4"})
 	stopList = append(stopList, rs.BusStop{Name: "Stop 5"})
 	stopList = append(stopList, rs.BusStop{Name: "Stop 6"})
-	fmt.Printf("Initiated bus stop list: %v\n", stopList)
+	// fmt.Printf("Initiated bus stop list: %v\n", stopList)
 
-	fmt.Println("This is the main package: ")
-	fmt.Println("How many bus?")
-	fmt.Scanln(&inputNoBus)
+	// fmt.Println("This is the main package: ")
+	// fmt.Println("How many bus?")
+	// fmt.Scanln(&inputNoBus)
 	for i := 0; i < inputNoBus; i++ {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList, count)
 	}
 
-	psgr := rs.NewPassenger(stopList.Name)
+	psgr := rs.NewPassenger(stopList)
 
 	fmt.Println(psgr)
 	// for _, u := range psgr {
