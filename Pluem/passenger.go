@@ -12,6 +12,20 @@ type Passenger struct {
 	next        *Passenger
 }
 
+//Queue is responsible for queing passenger in the busstop
+type Queue struct {
+	head *Passenger
+	tail *Passenger
+	Size int
+}
+
+//BusStop represent as a node of source and destination in a simulation
+type BusStop struct {
+	Name      string
+	Q         Queue
+	TimeTaken int
+}
+
 func random(min int, max int) int {
 	return rand.Intn(max-min) + min
 }
