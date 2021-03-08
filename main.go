@@ -10,7 +10,6 @@ import (
 var (
 	stopList   []*rs.BusStop
 	inputNoBus int
-	ready      int
 )
 
 func random(min int, max int) int {
@@ -29,7 +28,6 @@ func main() {
 	stopList = append(stopList, &rs.BusStop{Name: "hBuilding", TimeTaken: 5})
 	stopList = append(stopList, &rs.BusStop{Name: "iBuilding", TimeTaken: 7})
 	stopList = append(stopList, &rs.BusStop{Name: "jBuilding", TimeTaken: 4})
-	ready = 0
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("This is the main package: ")
 	fmt.Println("How many bus?")
@@ -48,7 +46,7 @@ func main() {
 			}
 		}
 	}
-
+	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
