@@ -36,8 +36,8 @@ func main() {
 	random1 := random(50, 200)
 	fmt.Println("Total Passenger :", random1)
 	for i := 1; i < random1; i++ {
-		psgr.Source = *&stopList[random(0, 5)].Name
-		psgr.Destination = *&stopList[rand.Intn((5-0-1)+1)].Name
+		psgr.Source = *&stopList[rand.Intn(10)].Name
+		psgr.Destination = *&stopList[rand.Intn((len(stopList)-0-1)+1)].Name
 		for i := 0; i < len(stopList)-1; i++ {
 			if psgr.Source == *&stopList[i].Name {
 				stopList[i].Q.Add(*psgr)
