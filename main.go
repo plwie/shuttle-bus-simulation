@@ -33,7 +33,7 @@ func main() {
 	fmt.Scanln(&inputNoBus)
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
-	random1 := random(50, 200)
+	random1 := random(500, 2000)
 	fmt.Println("Total Passenger :", random1)
 	for i := 1; i < random1; i++ {
 		psgr.Source = *&stopList[rand.Intn(10)].Name
