@@ -34,6 +34,7 @@ func main() {
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
 	random1 := random(50, 200)
+	fmt.Println("Total Passenger :", random1)
 	for i := 1; i < random1; i++ {
 		psgr.Source = *&stopList[random(0, 5)].Name
 		psgr.Destination = *&stopList[rand.Intn((5-0-1)+1)].Name
