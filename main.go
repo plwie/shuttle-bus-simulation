@@ -29,7 +29,6 @@ func main() {
 	stopList = append(stopList, &rs.BusStop{Name: "iBuilding", TimeTaken: 7})
 	stopList = append(stopList, &rs.BusStop{Name: "jBuilding", TimeTaken: 4})
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
-	fmt.Println("This is the main package: ")
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	psgr := rs.NewPassenger1(stopList)
