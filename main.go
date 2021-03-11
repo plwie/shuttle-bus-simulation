@@ -31,21 +31,13 @@ func main() {
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
+
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
 	random1 := random(500, 2000)
 	fmt.Println("Total Passenger :", random1)
-	for i := 1; i < random1; i++ {
-		psgr.Source = *&stopList[rand.Intn(10)].Name
-		psgr.Destination = *&stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-		for i := 0; i < len(stopList)-1; i++ {
-			if psgr.Source == *&stopList[i].Name {
-				stopList[i].Q.Add(*psgr)
-				// fmt.Println(stopList[i].Name)
-				// fmt.Println(stopList[i].Q.Size)
-			}
-		}
-	}
+	rs.GnrPsg(stopList, random1, psgr)
+
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
