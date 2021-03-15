@@ -95,6 +95,7 @@ func GnrPsgAt(stopList []*BusStop, stop string, random1 int, psgr *Passenger) {
 	}
 }
 
+//Random number of int
 func Random(min int, max int) int {
 	return rand.Intn(max-min) + min
 }
