@@ -5,12 +5,12 @@ import (
 	"time"
 )
 
-// Car create a passenger object
+// Car create a car object
 type Car struct {
 	id string
 }
 
-//CarGroup add passenger to random bus stop
+//CarGroup create group of cars
 func CarGroup(cars int) []*Car {
 	CarGroup := []*Car{}
 	rand.Seed(time.Now().UnixNano())
