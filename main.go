@@ -12,7 +12,66 @@ var (
 	inputNoBus int
 	globalHour int
 	globalMin  int
+	//for putting busc in main
+	countPos int = 0
+	count    int = 0
 )
+
+// Bus Struct
+type Bus struct {
+	availSeats int
+	passOn     int
+	currStop   string
+	nextStop   string
+}
+
+//busc threading function---------------------------------------------------------------
+func Busc(name string, path []*rs.BusStop) {
+	//need to declare global count = 0
+	m := make(map[string]int)
+	pos := countPos
+	countPos++
+	var len int = len(path)
+	var count int = 0
+	//create bus struct instance
+	busStruct := Bus{
+		availSeats: 30,
+		passOn:     0,
+		currStop:   *&path[pos].Name,
+		nextStop:   *&path[pos+1].Name,
+	}
+	for i := 0; i < 10; i++ {
+		m[path[i].Name] = 0
+	}
+	//code for bus traveling (busstop to another busstop)
+	for {
+		if pos < len && name != "test" {
+			// time.Sleep(time.Second * 1)
+			busStruct.currStop = *&path[pos].Name
+			busStruct.nextStop = *&path[(pos+1)%len].Name
+
+			for i := 0; i < busStruct.availSeats; i++ {
+				if path[i%10].Q.Size != 0 {
+					m[path[i%10].Q.Pop().Destination]++
+					busStruct.passOn++
+					busStruct.availSeats--
+				}
+			}
+			busStruct.passOn -= m[busStruct.currStop]
+			busStruct.availSeats += m[busStruct.currStop]
+			m[busStruct.currStop] = 0
+
+			fmt.Println(count, name, busStruct.currStop, busStruct.nextStop, busStruct.availSeats, busStruct.passOn)
+			fmt.Println(globalHour, globalMin)
+			pos++
+			count++
+		} else {
+			pos = 0
+		}
+	}
+}
+
+//End busc--------------------------------------------------------------------------------------------------------
 
 func main() {
 
@@ -30,16 +89,11 @@ func main() {
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	var inputPsg int
-	totalPsg := 0
 	fmt.Println("How many passenger?")
 	fmt.Scanln(&inputPsg)
 
-	rs.TimeTick(globalHour, globalMin)
 	psgr := rs.NewPassenger1(stopList)
-	carsTr := rs.CarGroupTr()
-	cars := rs.CarGroup()
 	rand.Seed(time.Now().UnixNano())
-
 	//Passenger Generated -------------------------
 	random1 := rs.Random(150, 200)
 	rand.Seed(time.Now().UnixNano())
@@ -49,46 +103,46 @@ func main() {
 
 	//Cars Generated ------------------------------
 	// cars1 := rs.CarGroup()
-	// fmt.Println("Total cars")
-	// fmt.Println(len(carsTr))
+
+	// rs.TimeTick(globalHour, globalMin)
 
 	// Init -------------------------------------------------
 	if inputPsg != 0 {
 		fmt.Println("Total Passenger :", inputPsg)
 		rs.GnrPsg(stopList, inputPsg, psgr)
-		totalPsg += inputPsg
 	} else {
 		fmt.Println("Total Passenger :", random1)
 		rs.GnrPsg(stopList, random1, psgr)
-		totalPsg += random1
 	}
 
 	// // Event Class End --------------------------------------------
-	if (globalHour%1) == 0 && globalMin == 0 {
+	if (globalMin % 60) == 0 {
 		rs.GnrPsg(stopList, random1, psgr)
-		totalPsg += random1
-		fmt.Println(len(cars))
 	}
 
 	// Event train ----------------------------------------
-	if (globalHour%2) == 0 && globalMin == 0 {
+	if (globalMin % 120) == 0 {
 		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
-		totalPsg += random2
+		cars := rs.CarGroup()
 		fmt.Println("Total cars")
-		fmt.Println(len(carsTr))
+		fmt.Println(len(cars))
 	}
 
 	// // Event After 4pm ---------------------------------------------
-	if globalHour == 16 && globalMin == 0 {
+	if globalHour == 16 {
 		rs.GnrPsg(stopList, random3, psgr)
-		totalPsg += random3
 	}
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
-		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
+		go Busc("bus"+fmt.Sprint((i+1)), stopList)
+	}
+	//Added for timetick
+	for {
+		time.Sleep(time.Nanosecond * 100)
+		rs.TimeTick(&globalHour, &globalMin)
+		// fmt.Println(globalHour, globalMin)
 	}
 	rs.Busc("test", stopList)
-
 	fmt.Println("Ending main package...")
 }

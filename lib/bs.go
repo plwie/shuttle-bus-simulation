@@ -2,7 +2,6 @@ package rs
 
 import (
 	"fmt"
-	"time"
 )
 
 var (
@@ -39,7 +38,7 @@ func Busc(name string, path []*BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			time.Sleep(time.Second * 1)
+			// time.Sleep(time.Second * 1)
 			busStruct.currStop = *&path[pos].Name
 			busStruct.nextStop = *&path[(pos+1)%len].Name
 
