@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
 var (
@@ -16,22 +15,15 @@ func main() {
 	fmt.Scanln(&globalHour)
 	fmt.Printf("%v Days -> %v:%v\n", globalDay, globalHour, globalMinute)
 	for {
-		timeTick()
+		timeTick(&globalHour, &globalMinute)
 		fmt.Printf("%v Days -> %v:%v\n", globalDay, globalHour, globalMinute)
 	}
 }
 
-func timeTick() {
-	globalMinute++
-	if globalMinute == 60 {
-		globalHour++
-		globalMinute = 0
-	}
-	if globalHour == 24 {
-		globalDay++
-		globalHour = 0
-	}
-	if globalDay == 8 {
-		os.Exit(0)
+func timeTick(hour *int, min *int) {
+	*min++
+	if *min >= 60 {
+		*hour += *min / 60
+		*min -= 60 * (*min / 60)
 	}
 }
