@@ -22,3 +22,16 @@ func CarGroupTr() []*Car {
 	}
 	return CarGroup
 }
+
+//CarGroup represent typical car generation
+func CarGroup() []*Car {
+	CarGroup := []*Car{}
+	rand.Seed(time.Now().UnixNano())
+	random1 := random(5, 15)
+	for i := 1; i < random1; i++ {
+		var p *Car
+		p = new(Car)
+		CarGroup = append(CarGroup, p)
+	}
+	return CarGroup
+}
