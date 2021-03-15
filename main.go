@@ -10,11 +10,9 @@ import (
 var (
 	stopList   []*rs.BusStop
 	inputNoBus int
+	globalHour int
+	globalMin  int
 )
-
-func random(min int, max int) int {
-	return rand.Intn(max-min) + min
-}
 
 func main() {
 
@@ -37,7 +35,19 @@ func main() {
 
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
-	random1 := random(1500, 2000)
+	//Passenger Generated -------------------------
+	random1 := rs.Random(150, 200)
+	rand.Seed(time.Now().UnixNano())
+	// random2 := rs.Random(50, 100)
+	// rand.Seed(time.Now().UnixNano())
+	// random3 := rs.Random(150, 200)
+
+	//Cars Generated ------------------------------
+	// cars1 := rs.CarGroup()
+
+	rs.TimeTick(globalHour, globalMin)
+
+	// Init Passenger ------------------------------
 	if inputPsg != 0 {
 		fmt.Println("Total Passenger :", inputPsg)
 		rs.GnrPsg(stopList, inputPsg, psgr)
@@ -45,6 +55,21 @@ func main() {
 		fmt.Println("Total Passenger :", random1)
 		rs.GnrPsg(stopList, random1, psgr)
 	}
+	cars := rs.CarGroup()
+	fmt.Println("Total cars")
+	fmt.Println(len(cars))
+
+	// // Event 1 ----------------------------------------
+	// if globalHour == 9 {
+	// 	rs.GnrPsgAt(stopList, "hBuilding", inputPsg, psgr)
+	// }
+
+	// // Event train ----------------------------------------
+	// if (globalHour % 2) == 0 {
+	// 	rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
+	// }
+
+	// // Event 3 ----------------------------------------
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
