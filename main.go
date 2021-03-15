@@ -51,5 +51,6 @@ func main() {
 		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 	rs.Busc("test", stopList)
+
 	fmt.Println("Ending main package...")
 }
