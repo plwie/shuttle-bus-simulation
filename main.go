@@ -64,7 +64,7 @@ func main() {
 	// Event train ----------------------------------------
 	if (globalMin % 120) == 0 {
 		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
-		cars := rs.CarGroup()
+		cars := rs.CarGroupTr()
 		fmt.Println("Total cars")
 		fmt.Println(len(cars))
 	}
