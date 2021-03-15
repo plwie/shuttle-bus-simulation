@@ -30,6 +30,7 @@ func main() {
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	var inputPsg int
+	totalPsg := 0
 	fmt.Println("How many passenger?")
 	fmt.Scanln(&inputPsg)
 
@@ -51,19 +52,24 @@ func main() {
 	if inputPsg != 0 {
 		fmt.Println("Total Passenger :", inputPsg)
 		rs.GnrPsg(stopList, inputPsg, psgr)
+		totalPsg += inputPsg
 	} else {
 		fmt.Println("Total Passenger :", random1)
 		rs.GnrPsg(stopList, random1, psgr)
+		totalPsg += random1
 	}
 
 	// // Event Class End --------------------------------------------
 	if (globalMin % 60) == 0 {
 		rs.GnrPsg(stopList, random1, psgr)
+		rs.CarGroup()
+		totalPsg += random1
 	}
 
 	// Event train ----------------------------------------
 	if (globalMin % 120) == 0 {
 		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
+		totalPsg += random2
 		cars := rs.CarGroupTr()
 		fmt.Println("Total cars")
 		fmt.Println(len(cars))
@@ -72,6 +78,7 @@ func main() {
 	// // Event After 4pm ---------------------------------------------
 	if globalHour == 16 {
 		rs.GnrPsg(stopList, random3, psgr)
+		totalPsg += random3
 	}
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
