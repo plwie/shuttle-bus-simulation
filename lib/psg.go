@@ -10,6 +10,7 @@ type Passenger struct {
 	Source      string
 	Destination string
 	next        *Passenger
+	waitingTime int
 }
 
 func random(min int, max int) int {
