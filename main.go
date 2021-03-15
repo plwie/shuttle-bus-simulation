@@ -47,7 +47,7 @@ func main() {
 
 	rs.TimeTick(globalHour, globalMin)
 
-	// Init Passenger ------------------------------
+	// Init -------------------------------------------------
 	if inputPsg != 0 {
 		fmt.Println("Total Passenger :", inputPsg)
 		rs.GnrPsg(stopList, inputPsg, psgr)
@@ -59,7 +59,7 @@ func main() {
 	fmt.Println("Total cars")
 	fmt.Println(len(cars))
 
-	// // Event 1 ----------------------------------------
+	// // Event 1 --------------------------------------------
 	// if globalHour == 9 {
 	// 	rs.GnrPsgAt(stopList, "hBuilding", inputPsg, psgr)
 	// }
@@ -67,9 +67,10 @@ func main() {
 	// // Event train ----------------------------------------
 	// if (globalHour % 2) == 0 {
 	// 	rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
+	// 	cars := rs.CarGroup()
 	// }
 
-	// // Event 3 ----------------------------------------
+	// // Event 3 ---------------------------------------------
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
