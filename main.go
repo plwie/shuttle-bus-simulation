@@ -38,9 +38,9 @@ func main() {
 	//Passenger Generated -------------------------
 	random1 := rs.Random(150, 200)
 	rand.Seed(time.Now().UnixNano())
-	// random2 := rs.Random(50, 100)
-	// rand.Seed(time.Now().UnixNano())
-	// random3 := rs.Random(150, 200)
+	random2 := rs.Random(50, 100)
+	rand.Seed(time.Now().UnixNano())
+	random3 := rs.Random(150, 200)
 
 	//Cars Generated ------------------------------
 	// cars1 := rs.CarGroup()
@@ -55,22 +55,24 @@ func main() {
 		fmt.Println("Total Passenger :", random1)
 		rs.GnrPsg(stopList, random1, psgr)
 	}
-	cars := rs.CarGroup()
-	fmt.Println("Total cars")
-	fmt.Println(len(cars))
 
-	// // Event 1 --------------------------------------------
-	// if globalHour == 9 {
-	// 	rs.GnrPsgAt(stopList, "hBuilding", inputPsg, psgr)
-	// }
+	// // Event Class End --------------------------------------------
+	if (globalMin % 60) == 0 {
+		rs.GnrPsg(stopList, random1, psgr)
+	}
 
-	// // Event train ----------------------------------------
-	// if (globalHour % 2) == 0 {
-	// 	rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
-	// 	cars := rs.CarGroup()
-	// }
+	// Event train ----------------------------------------
+	if (globalMin % 120) == 0 {
+		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
+		cars := rs.CarGroup()
+		fmt.Println("Total cars")
+		fmt.Println(len(cars))
+	}
 
-	// // Event 3 ---------------------------------------------
+	// // Event After 4pm ---------------------------------------------
+	if globalHour == 16 {
+		rs.GnrPsg(stopList, random3, psgr)
+	}
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
