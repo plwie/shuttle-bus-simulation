@@ -31,12 +31,20 @@ func main() {
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
+	var inputPsg int
+	fmt.Println("How many passenger?")
+	fmt.Scanln(&inputPsg)
 
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
-	random1 := random(500, 2000)
-	fmt.Println("Total Passenger :", random1)
-	rs.GnrPsg(stopList, random1, psgr)
+	random1 := random(1500, 2000)
+	if inputPsg != 0 {
+		fmt.Println("Total Passenger :", inputPsg)
+		rs.GnrPsg(stopList, inputPsg, psgr)
+	} else {
+		fmt.Println("Total Passenger :", random1)
+		rs.GnrPsg(stopList, random1, psgr)
+	}
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
