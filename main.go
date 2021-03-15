@@ -34,7 +34,10 @@ func main() {
 	fmt.Println("How many passenger?")
 	fmt.Scanln(&inputPsg)
 
+	rs.TimeTick(globalHour, globalMin)
 	psgr := rs.NewPassenger1(stopList)
+	carsTr := rs.CarGroupTr()
+	cars := rs.CarGroup()
 	rand.Seed(time.Now().UnixNano())
 
 	//Passenger Generated -------------------------
@@ -46,8 +49,8 @@ func main() {
 
 	//Cars Generated ------------------------------
 	// cars1 := rs.CarGroup()
-
-	rs.TimeTick(globalHour, globalMin)
+	// fmt.Println("Total cars")
+	// fmt.Println(len(carsTr))
 
 	// Init -------------------------------------------------
 	if inputPsg != 0 {
@@ -64,7 +67,6 @@ func main() {
 	if (globalHour%1) == 0 && globalMin == 0 {
 		rs.GnrPsg(stopList, random1, psgr)
 		totalPsg += random1
-		cars := rs.CarGroup()
 		fmt.Println(len(cars))
 	}
 
@@ -72,7 +74,6 @@ func main() {
 	if (globalHour%2) == 0 && globalMin == 0 {
 		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
 		totalPsg += random2
-		carsTr := rs.CarGroupTr()
 		fmt.Println("Total cars")
 		fmt.Println(len(carsTr))
 	}
