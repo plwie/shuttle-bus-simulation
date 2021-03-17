@@ -47,8 +47,6 @@ func main() {
 	//Cars Generated ------------------------------
 	// cars1 := rs.CarGroup()
 
-	rs.TimeTick(globalHour, globalMin)
-
 	// Init -------------------------------------------------
 	if inputPsg != 0 {
 		fmt.Println("Total Passenger :", inputPsg)
@@ -60,7 +58,7 @@ func main() {
 		totalPsg += random1
 	}
 
-	// // Event Class End --------------------------------------------
+	// Event Class End --------------------------------------------
 	if (globalHour%1) == 0 && globalMin == 0 {
 		rs.GnrPsg(stopList, random1, psgr)
 		totalPsg += random1
