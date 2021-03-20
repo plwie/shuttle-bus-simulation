@@ -1,5 +1,7 @@
 List of files that have to be tested
 1. bst.go
+    1.1. Add
+    1.2. Remove
 2. car.go
 3. psg.go
 4. rd.go
