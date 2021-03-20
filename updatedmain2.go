@@ -76,7 +76,6 @@ func Busc(name string, path []*rs.BusStop) {
 				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
 				dist = float64(graph.Edges[pos].Cost)
 				calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
-				totalTime += (calcTime * float64(countPass))
 				for i := 0; i < busStruct.availSeats; i++ {
 					if path[i%10].Q.Size != 0 {
 						m[path[i%10].Q.Pop().Destination]++
@@ -93,6 +92,7 @@ func Busc(name string, path []*rs.BusStop) {
 					localTimeMin = localTimeMin - 60*(localTimeMin/60)
 					localTimeHour++
 				}
+				totalTime += (calcTime * float64(countPass))
 				pos++
 				count++
 			}
