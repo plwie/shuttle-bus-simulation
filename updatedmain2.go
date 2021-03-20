@@ -166,41 +166,6 @@ func main() {
 	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &iBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &aBuilding)
 
-	//  graph.GenerateTraffic(, &aBuilding, &bBuilding)
-	//  graph.GenerateTraffic(&bBuilding, &aBuilding)
-	//  graph.GenerateTraffic(&bBuilding, &cBuilding)
-	//  graph.GenerateTraffic(&cBuilding, &bBuilding)
-	//  graph.GenerateTraffic(&cBuilding, &dBuilding)
-	//  graph.GenerateTraffic(&dBuilding, &cBuilding)
-	//  graph.GenerateTraffic(&dBuilding, &eBuilding)
-	//  graph.GenerateTraffic(&eBuilding, &dBuilding)
-	//  graph.GenerateTraffic(&eBuilding, &fBuilding)
-	//  graph.GenerateTraffic(&fBuilding, &eBuilding)
-	//  graph.GenerateTraffic(&fBuilding, &gBuilding)
-	//  graph.GenerateTraffic(&gBuilding, &fBuilding)
-	//  graph.GenerateTraffic(&gBuilding, &hBuilding)
-	//  graph.GenerateTraffic(&hBuilding, &gBuilding)
-	//  graph.GenerateTraffic(&hBuilding, &aBuilding)
-	//  graph.GenerateTraffic(&aBuilding, &hBuilding)
-
-	//  graph.AddEdge(&fBuidling, &gBuilding, 1)
-	//  graph.AddEdge(&d, &e, 2)
-	//  graph.AddEdge(&d, &g, 30)
-	//  graph.AddEdge(&d, &f, 10)
-	//  graph.AddEdge(&f, &g, 1)
-
-	//  fmt.Println(graph.String())
-
-	// for _, nodeStart := range stopList {
-	// 	costTable := graph.Dijkstra(nodeStart)
-	// 	// Make the costTable nice to read :)
-	// 	fmt.Printf("Start node is %s\n", nodeStart.Name)
-	// 	for node, cost := range costTable {
-	// 		fmt.Printf("Distance from %s to %s = %d km\n", nodeStart.Name, node.Name, cost)
-	// 	}
-	// 	fmt.Println("----------------------")
-	// }
-
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
