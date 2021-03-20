@@ -41,6 +41,9 @@ func Busc(name string, path []*rs.BusStop) {
 	var countPass int = 0
 	var localTimeHour int = 0
 	var localTimeMin int = 0
+	var spd float64
+	var dist float64
+	var calcTime float64
 
 	//create bus struct instance
 	busStruct := Bus{
@@ -59,42 +62,43 @@ func Busc(name string, path []*rs.BusStop) {
 			busStruct.currStop = *&path[pos].Name
 			busStruct.nextStop = *&path[(pos+1)%len].Name
 
-			for i := 0; i < busStruct.availSeats; i++ {
-				if path[i%10].Q.Size != 0 {
-					m[path[i%10].Q.Pop().Destination]++
-					busStruct.passOn++
-					countPass++
-					busStruct.availSeats--
-
-				}
-			}
 			busStruct.passOn -= m[busStruct.currStop]
 			busStruct.availSeats += m[busStruct.currStop]
 			m[busStruct.currStop] = 0
 
 			fmt.Println(count, name, busStruct.currStop, busStruct.nextStop, busStruct.availSeats, busStruct.passOn)
 			// fmt.Println(globalHour, globalMin)
-			spd := float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
-			dist := float64(graph.Edges[pos].Cost)
-			calcTime := float64(math.Round(((dist/spd)*3600)*100) / 100)
-			totalTime += (calcTime * float64(countPass))
-			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
-			passTotal += countPass
-			fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
-			if localTimeMin <= 60 {
-				localTimeMin = globalMin + (int(calcTime) / 60)
-			}
-			if localTimeMin >= 60 {
-				localTimeMin = localTimeMin % 60
-				localTimeHour += 1
-			}
+
 			fmt.Println("G:H", globalHour, "G:M", globalMin)
 			fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
 
-			if localTimeHour == globalHour && localTimeMin == globalMin {
+			if localTimeHour <= globalHour && localTimeMin <= globalMin {
+				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
+				dist = float64(graph.Edges[pos].Cost)
+				calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
+				for i := 0; i < busStruct.availSeats; i++ {
+					if path[i%10].Q.Size != 0 {
+						m[path[i%10].Q.Pop().Destination]++
+						busStruct.passOn++
+						countPass++
+						busStruct.availSeats--
+
+					}
+				}
+				if localTimeMin <= 60 {
+					localTimeMin = globalMin + (int(calcTime) / 60)
+				}
+				if localTimeMin >= 60 {
+					localTimeMin = localTimeMin - 60*(localTimeMin/60)
+					localTimeHour++
+				}
+				totalTime += (calcTime * float64(countPass))
 				pos++
 				count++
 			}
+			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
+			passTotal += countPass
+			fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
 			// pos++
 			// count++
 			countPass = 0
@@ -139,14 +143,14 @@ func main() {
 
 	graph.AddEdge(&aBuilding, &bBuilding, 1)
 	graph.AddEdge(&bBuilding, &cBuilding, 2)
-	graph.AddEdge(&cBuilding, &dBuilding, 3)
-	graph.AddEdge(&dBuilding, &eBuilding, 4)
-	graph.AddEdge(&eBuilding, &fBuilding, 5)
-	graph.AddEdge(&fBuilding, &gBuilding, 6)
-	graph.AddEdge(&gBuilding, &hBuilding, 7)
-	graph.AddEdge(&hBuilding, &iBuilding, 8)
-	graph.AddEdge(&iBuilding, &jBuilding, 9)
-	graph.AddEdge(&jBuilding, &aBuilding, 10)
+	graph.AddEdge(&cBuilding, &dBuilding, 1)
+	graph.AddEdge(&dBuilding, &eBuilding, 2)
+	graph.AddEdge(&eBuilding, &fBuilding, 3)
+	graph.AddEdge(&fBuilding, &gBuilding, 1)
+	graph.AddEdge(&gBuilding, &hBuilding, 2)
+	graph.AddEdge(&hBuilding, &iBuilding, 1)
+	graph.AddEdge(&iBuilding, &jBuilding, 3)
+	graph.AddEdge(&jBuilding, &aBuilding, 2)
 	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
@@ -214,12 +218,6 @@ func main() {
 		go Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin)
-	//Added for timetick
-	// for {
-	// 	time.Sleep(time.Nanosecond * 100)
-	// 	rs.TimeTick(&globalHour, &globalMin)
-	// 	// fmt.Println(globalHour, globalMin)
-	// }
 	Busc("test", stopList)
 	fmt.Println("Ending main package...")
 }
