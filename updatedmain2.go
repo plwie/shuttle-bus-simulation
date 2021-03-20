@@ -41,7 +41,6 @@ func Busc(name string, path []*rs.BusStop) {
 	var countPass int = 0
 	var localTimeHour int = 0
 	var localTimeMin int = 0
-	var a int
 
 	//create bus struct instance
 	busStruct := Bus{
@@ -82,11 +81,12 @@ func Busc(name string, path []*rs.BusStop) {
 			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
 			passTotal += countPass
 			fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
-			localTimeMin = globalMin + (int(calcTime) / 60)
-			if localTimeMin > 60 {
-				a = localTimeMin % 60
+			if localTimeMin <= 60 {
+				localTimeMin = globalMin + (int(calcTime) / 60)
+			}
+			if localTimeMin >= 60 {
 				localTimeMin = localTimeMin % 60
-				localTimeHour += a
+				localTimeHour += 1
 			}
 			fmt.Println("G:H", globalHour, "G:M", globalMin)
 			fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
@@ -95,7 +95,8 @@ func Busc(name string, path []*rs.BusStop) {
 				pos++
 				count++
 			}
-
+			// pos++
+			// count++
 			countPass = 0
 		} else {
 			pos = 0
@@ -212,7 +213,7 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
-	go rs.TimeTick(&globalHour, &globalMin)
+	go rs.ConTimeTick(&globalHour, &globalMin)
 	//Added for timetick
 	// for {
 	// 	time.Sleep(time.Nanosecond * 100)
