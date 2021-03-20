@@ -227,7 +227,6 @@ func help() bool {
 	fmt.Println("bstRmv")
 	fmt.Println("timeTick")
 	fmt.Println("carAdd")
-
 	return true
 }
 
