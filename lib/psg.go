@@ -40,9 +40,9 @@ func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 
 //GnrPsgAt Generate psg and add to specific bus stop
 func GnrPsgAt(stopList []*BusStop, stop string, inputPsg int, psgr *Passenger) {
-	for i := 1; i < inputPsg; i++ {
-		for i := 0; i < len(stopList)-1; i++ {
-			if stop == *&stopList[i].Name {
+	for i := 0; i < len(stopList)-1; i++ {
+		if stop == *&stopList[i].Name {
+			for j := 0; j < inputPsg; j++ {
 				stopList[i].Q.Add(*psgr)
 				// fmt.Println(stopList[i].Name)
 				// fmt.Println(stopList[i].Q.Size)
