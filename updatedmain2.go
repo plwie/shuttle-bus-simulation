@@ -39,6 +39,9 @@ func Busc(name string, path []*rs.BusStop) {
 	var len int = len(path)
 	var count int = 0
 	var countPass int = 0
+	var localTimeHour int = 0
+	var localTimeMin int = 0
+	var a int
 
 	//create bus struct instance
 	busStruct := Bus{
@@ -53,7 +56,7 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			time.Sleep(time.Millisecond * 50)
+			time.Sleep(time.Millisecond * 100)
 			busStruct.currStop = *&path[pos].Name
 			busStruct.nextStop = *&path[(pos+1)%len].Name
 
@@ -79,8 +82,19 @@ func Busc(name string, path []*rs.BusStop) {
 			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
 			passTotal += countPass
 			fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
-			pos++
-			count++
+			localTimeMin = globalMin + (int(calcTime) / 60)
+			if localTimeMin > 60 {
+				a = localTimeMin % 60
+				localTimeMin = localTimeMin % 60
+				localTimeHour += a
+			}
+			fmt.Println("G:H", globalHour, "G:M", globalMin)
+			fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
+
+			if localTimeHour == globalHour && localTimeMin == globalMin {
+				pos++
+				count++
+			}
 
 			countPass = 0
 		} else {
@@ -169,25 +183,6 @@ func main() {
 	//  graph.GenerateTraffic(&hBuilding, &aBuilding)
 	//  graph.GenerateTraffic(&aBuilding, &hBuilding)
 
-	graph.GetSpeed(&aBuilding, &bBuilding) // 0
-	graph.GetSpeed(&bBuilding, &aBuilding)
-	graph.GetSpeed(&bBuilding, &cBuilding)
-	graph.GetSpeed(&cBuilding, &bBuilding)
-	graph.GetSpeed(&cBuilding, &dBuilding)
-	graph.GetSpeed(&dBuilding, &cBuilding)
-	graph.GetSpeed(&dBuilding, &eBuilding)
-	graph.GetSpeed(&eBuilding, &dBuilding)
-	graph.GetSpeed(&eBuilding, &fBuilding)
-	graph.GetSpeed(&fBuilding, &eBuilding)
-	graph.GetSpeed(&fBuilding, &gBuilding)
-	graph.GetSpeed(&gBuilding, &fBuilding)
-	graph.GetSpeed(&gBuilding, &hBuilding)
-	graph.GetSpeed(&hBuilding, &gBuilding)
-	graph.GetSpeed(&hBuilding, &aBuilding)
-	graph.GetSpeed(&iBuilding, &hBuilding)
-	graph.GetSpeed(&iBuilding, &jBuilding)
-	graph.GetSpeed(&jBuilding, &iBuilding)
-	graph.GetSpeed(&jBuilding, &aBuilding)
 	//  graph.AddEdge(&fBuidling, &gBuilding, 1)
 	//  graph.AddEdge(&d, &e, 2)
 	//  graph.AddEdge(&d, &g, 30)
@@ -213,7 +208,7 @@ func main() {
 	fmt.Println("How many passenger?")
 	fmt.Scanln(&inputPsg)
 
-	psgr := rs.NewPassenger1(stopList)
+	psgr := rs.NewPassenger1()
 	rand.Seed(time.Now().UnixNano())
 	//Passenger Generated -------------------------
 	// random1 := rs.Random(150, 200)
@@ -252,6 +247,7 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
+	go rs.TimeTick(&globalHour, &globalMin)
 	//Added for timetick
 	// for {
 	// 	time.Sleep(time.Nanosecond * 100)
