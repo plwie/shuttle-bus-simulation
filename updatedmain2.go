@@ -173,7 +173,7 @@ func main() {
 	fmt.Println("How many passenger?")
 	fmt.Scanln(&inputPsg)
 
-	psgr := rs.NewPassenger1()
+	psgr := rs.NewPassenger()
 	rand.Seed(time.Now().UnixNano())
 	//Passenger Generated -------------------------
 	// random1 := rs.Random(150, 200)
