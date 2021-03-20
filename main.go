@@ -33,6 +33,7 @@ func Busc(name string, path []*rs.BusStop) {
 	countPos++
 	var len int = len(path)
 	var count int = 0
+	passCount := 0
 	//create bus struct instance
 	busStruct := Bus{
 		availSeats: 30,
@@ -46,7 +47,7 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			// time.Sleep(time.Second * 1)
+			time.Sleep(time.Millisecond * 70)
 			busStruct.currStop = *&path[pos].Name
 			busStruct.nextStop = *&path[(pos+1)%len].Name
 
@@ -54,6 +55,7 @@ func Busc(name string, path []*rs.BusStop) {
 				if path[i%10].Q.Size != 0 {
 					m[path[i%10].Q.Pop().Destination]++
 					busStruct.passOn++
+					passCount++
 					busStruct.availSeats--
 				}
 			}
@@ -62,9 +64,11 @@ func Busc(name string, path []*rs.BusStop) {
 			m[busStruct.currStop] = 0
 
 			fmt.Println(count, name, busStruct.currStop, busStruct.nextStop, busStruct.availSeats, busStruct.passOn)
-			fmt.Println(globalHour, globalMin)
+			// fmt.Println(globalHour, globalMin)
+			fmt.Println("Passenger get on:", passCount)
 			pos++
 			count++
+			passCount = 0
 		} else {
 			pos = 0
 		}

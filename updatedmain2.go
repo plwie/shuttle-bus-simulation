@@ -53,7 +53,7 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			time.Sleep(time.Second * 1)
+			time.Sleep(time.Millisecond * 50)
 			busStruct.currStop = *&path[pos].Name
 			busStruct.nextStop = *&path[(pos+1)%len].Name
 
@@ -75,13 +75,12 @@ func Busc(name string, path []*rs.BusStop) {
 			spd := float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
 			dist := float64(graph.Edges[pos].Cost)
 			calcTime := float64(math.Round(((dist/spd)*3600)*100) / 100)
-			totalTime += calcTime
-			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
-
+			totalTime += (calcTime * float64(countPass))
+			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
+			passTotal += countPass
+			fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
 			pos++
 			count++
-			passTotal += countPass
-			fmt.Println("|countpass", countPass, "|passTotal", passTotal)
 
 			countPass = 0
 		} else {
@@ -197,15 +196,15 @@ func main() {
 
 	//  fmt.Println(graph.String())
 
-	for _, nodeStart := range stopList {
-		costTable := graph.Dijkstra(nodeStart)
-		// Make the costTable nice to read :)
-		fmt.Printf("Start node is %s\n", nodeStart.Name)
-		for node, cost := range costTable {
-			fmt.Printf("Distance from %s to %s = %d km\n", nodeStart.Name, node.Name, cost)
-		}
-		fmt.Println("----------------------")
-	}
+	// for _, nodeStart := range stopList {
+	// 	costTable := graph.Dijkstra(nodeStart)
+	// 	// Make the costTable nice to read :)
+	// 	fmt.Printf("Start node is %s\n", nodeStart.Name)
+	// 	for node, cost := range costTable {
+	// 		fmt.Printf("Distance from %s to %s = %d km\n", nodeStart.Name, node.Name, cost)
+	// 	}
+	// 	fmt.Println("----------------------")
+	// }
 
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
@@ -217,11 +216,11 @@ func main() {
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
 	//Passenger Generated -------------------------
-	random1 := rs.Random(150, 200)
-	rand.Seed(time.Now().UnixNano())
-	random2 := rs.Random(50, 100)
-	rand.Seed(time.Now().UnixNano())
-	random3 := rs.Random(150, 200)
+	// random1 := rs.Random(150, 200)
+	// rand.Seed(time.Now().UnixNano())
+	// random2 := rs.Random(50, 100)
+	// rand.Seed(time.Now().UnixNano())
+	// random3 := rs.Random(150, 200)
 
 	//Cars Generated ------------------------------
 	// cars1 := rs.CarGroup()
@@ -229,42 +228,36 @@ func main() {
 	// rs.TimeTick(globalHour, globalMin)
 
 	// Init -------------------------------------------------
-	if inputPsg != 0 {
-		fmt.Println("Total Passenger :", inputPsg)
-		rs.GnrPsg(stopList, inputPsg, psgr)
-	} else {
-		fmt.Println("Total Passenger :", random1)
-		rs.GnrPsg(stopList, random1, psgr)
-	}
-
+	fmt.Println("Total Passenger :", inputPsg)
+	rs.GnrPsg(stopList, inputPsg, psgr)
 	// // Event Class End --------------------------------------------
-	if (globalMin % 60) == 0 {
-		rs.GnrPsg(stopList, random1, psgr)
-	}
+	// if (globalMin % 60) == 0 {
+	// 	rs.GnrPsg(stopList, inputPsg, psgr)
+	// }
 
 	// Event train ----------------------------------------
-	if (globalMin % 120) == 0 {
-		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
-		cars := rs.CarGroup()
-		fmt.Println("Total cars")
-		fmt.Println(len(cars))
-	}
+	// if (globalMin % 120) == 0 {
+	// 	rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
+	// 	cars := rs.CarGroup()
+	// 	fmt.Println("Total cars")
+	// 	fmt.Println(len(cars))
+	// }
 
 	// // Event After 4pm ---------------------------------------------
-	if globalHour == 16 {
-		rs.GnrPsg(stopList, random3, psgr)
-	}
+	// if globalHour == 16 {
+	// 	rs.GnrPsg(stopList, random3, psgr)
+	// }
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
 		go Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 	//Added for timetick
-	for {
-		time.Sleep(time.Nanosecond * 100)
-		rs.TimeTick(&globalHour, &globalMin)
-		// fmt.Println(globalHour, globalMin)
-	}
-	// rs.Busc("test", stopList)
-	// fmt.Println("Ending main package...")
+	// for {
+	// 	time.Sleep(time.Nanosecond * 100)
+	// 	rs.TimeTick(&globalHour, &globalMin)
+	// 	// fmt.Println(globalHour, globalMin)
+	// }
+	rs.Busc("test", stopList)
+	fmt.Println("Ending main package...")
 }

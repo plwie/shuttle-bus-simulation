@@ -206,23 +206,23 @@ func main() {
 		rs.GnrPsg(stopList, random1, psgr)
 	}
 
-	// // Event Class End --------------------------------------------
-	if (globalMin % 60) == 0 {
-		rs.GnrPsg(stopList, random1, psgr)
-	}
+	// // // Event Class End --------------------------------------------
+	// if (globalMin % 60) == 0 {
+	// 	rs.GnrPsg(stopList, random1, psgr)
+	// }
 
-	// Event train ----------------------------------------
-	if (globalMin % 120) == 0 {
-		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
-		cars := rs.CarGroup()
-		fmt.Println("Total cars")
-		fmt.Println(len(cars))
-	}
+	// // Event train ----------------------------------------
+	// if (globalMin % 120) == 0 {
+	// 	rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
+	// 	cars := rs.CarGroup()
+	// 	fmt.Println("Total cars")
+	// 	fmt.Println(len(cars))
+	// }
 
-	// // Event After 4pm ---------------------------------------------
-	if globalHour == 16 {
-		rs.GnrPsg(stopList, random3, psgr)
-	}
+	// // // Event After 4pm ---------------------------------------------
+	// if globalHour == 16 {
+	// 	rs.GnrPsg(stopList, random3, psgr)
+	// }
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
