@@ -16,7 +16,7 @@ func random(min int, max int) int {
 	return rand.Intn(max-min) + min
 }
 
-//NewPassenger1 Create a new passenger
+//NewPassenger Create a new passenger
 func NewPassenger() *Passenger {
 	var p *Passenger
 	p = new(Passenger)
@@ -40,7 +40,7 @@ func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 
 //GnrPsgAt Generate psg and add to specific bus stop
 func GnrPsgAt(stopList []*BusStop, stop string, inputPsg int, psgr *Passenger) {
-	for i := 0; i < len(stopList)-1; i++ {
+	for i := 0; i < len(stopList); i++ {
 		if stop == *&stopList[i].Name {
 			for j := 0; j < inputPsg; j++ {
 				stopList[i].Q.Add(*psgr)
