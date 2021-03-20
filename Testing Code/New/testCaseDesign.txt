@@ -1,7 +1,9 @@
 List of files that have to be tested
 1. bst.go
-    1.1. Add
-    1.2. Remove
+    1.1. Add to queue
+        > Used with psg.go to add passengers to a bus stop
+    1.2. Remove from queue
+        > Used with psg.go to remove a passenger from a bus stop
 2. car.go
 3. psg.go
 4. rd.go
