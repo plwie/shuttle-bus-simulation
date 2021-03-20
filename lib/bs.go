@@ -1,14 +1,5 @@
 package rs
 
-import (
-	"fmt"
-)
-
-var (
-	countPos int = 0
-	count    int = 0
-)
-
 // Bus Struct
 type Bus struct {
 	availSeats int
@@ -17,6 +8,7 @@ type Bus struct {
 	nextStop   string
 }
 
+/*
 // Busc is the Threading Function
 func Busc(name string, path []*BusStop) {
 	//need to declare global count = 0
@@ -61,3 +53,4 @@ func Busc(name string, path []*BusStop) {
 		}
 	}
 }
+*/
