@@ -8,7 +8,7 @@ import (
 type Passenger struct {
 	Source      string
 	Destination string
-	next        *Passenger
+	Next        *Passenger
 	waitingTime int
 }
 
@@ -16,21 +16,27 @@ func random(min int, max int) int {
 	return rand.Intn(max-min) + min
 }
 
+<<<<<<< Updated upstream
 //NewPassenger Create a new passenger
 func NewPassenger() *Passenger {
 	var p *Passenger
 	p = new(Passenger)
+=======
+//NewPassenger1 Create a new passenger
+func NewPassenger() Passenger {
+	var p Passenger
+>>>>>>> Stashed changes
 	return p
 }
 
 //GnrPsg Generate psg and add to bus stop
-func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
+func GnrPsg(stopList []*BusStop, random1 int, psgr Passenger) {
 	for i := 1; i < random1; i++ {
 		psgr.Source = *&stopList[rand.Intn(10)].Name
 		psgr.Destination = *&stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-		for i := 0; i < len(stopList)-1; i++ {
-			if psgr.Source == *&stopList[i].Name {
-				stopList[i].Q.Add(*psgr)
+		for j := 0; j < len(stopList)-1; j++ {
+			if psgr.Source == *&stopList[j].Name {
+				stopList[j].Q.Add(psgr)
 				// fmt.Println(stopList[i].Name)
 				// fmt.Println(stopList[i].Q.Size)
 			}
@@ -39,11 +45,15 @@ func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 }
 
 //GnrPsgAt Generate psg and add to specific bus stop
+<<<<<<< Updated upstream
 func GnrPsgAt(stopList []*BusStop, stop string, inputPsg int, psgr *Passenger) {
+=======
+func GnrPsgAt(stopList []*BusStop, stop string, inputPsg int, psgr Passenger) {
+>>>>>>> Stashed changes
 	for i := 0; i < len(stopList); i++ {
 		if stop == *&stopList[i].Name {
 			for j := 0; j < inputPsg; j++ {
-				stopList[i].Q.Add(*psgr)
+				stopList[i].Q.Add(psgr)
 				// fmt.Println(stopList[i].Name)
 				// fmt.Println(stopList[i].Q.Size)
 			}

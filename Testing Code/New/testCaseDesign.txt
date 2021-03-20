@@ -18,15 +18,20 @@ List of files that have to be tested
 -----------------------------------------------------------------------
 
 Test.go function detail
-a. bstList()
-b. bstCreate()
-c. bstAdd()
+a. bstList()*
+b. bstCreate()*
+c. bstAdd()*
     > NewPassenger()
     > GnrPsgAt()
-d. bstRmv()
-e. tick()
+d. bstAddRd()
+    > NewPassenger()
+    > GnrPsg()
+e. bstRmv()
+f. tick()*
     > TimeTick()
     > ConTimeTick()
-f.
 g.
 h.
+i.
+
+* Completed
