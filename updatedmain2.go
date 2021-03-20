@@ -86,7 +86,7 @@ func Busc(name string, path []*rs.BusStop) {
 			}
 			if localTimeMin >= 60 {
 				localTimeMin = localTimeMin % 60
-				localTimeHour += 1
+				localTimeHour += globalHour + 1
 			}
 			fmt.Println("G:H", globalHour, "G:M", globalMin)
 			fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
