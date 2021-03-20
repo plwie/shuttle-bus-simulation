@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	rs "rs/lib"
 	"time"
-	"math"
 )
 
 var (
@@ -14,11 +14,11 @@ var (
 	globalHour int
 	globalMin  int
 	//for putting busc in main
-	countPos int = 0
-	count    int = 0
-	graph = rs.Graph{}
+	countPos  int     = 0
+	count     int     = 0
+	graph             = rs.Graph{}
 	totalTime float64 = 0
-	passTotal int = 0
+	passTotal int     = 0
 )
 
 // Bus Struct
@@ -39,7 +39,7 @@ func Busc(name string, path []*rs.BusStop) {
 	var len int = len(path)
 	var count int = 0
 	var countPass int = 0
-	
+
 	//create bus struct instance
 	busStruct := Bus{
 		availSeats: 30,
@@ -63,7 +63,7 @@ func Busc(name string, path []*rs.BusStop) {
 					busStruct.passOn++
 					countPass++
 					busStruct.availSeats--
-			
+
 				}
 			}
 			busStruct.passOn -= m[busStruct.currStop]
@@ -71,19 +71,18 @@ func Busc(name string, path []*rs.BusStop) {
 			m[busStruct.currStop] = 0
 
 			fmt.Println(count, name, busStruct.currStop, busStruct.nextStop, busStruct.availSeats, busStruct.passOn)
-			fmt.Println(globalHour, globalMin)
+			// fmt.Println(globalHour, globalMin)
 			spd := float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
 			dist := float64(graph.Edges[pos].Cost)
-			calcTime := float64(math.Round(((dist/spd)*3600)*100)/100)
+			calcTime := float64(math.Round(((dist/spd)*3600)*100) / 100)
 			totalTime += calcTime
 			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
-			
-			
+
 			pos++
 			count++
 			passTotal += countPass
 			fmt.Println("|countpass", countPass, "|passTotal", passTotal)
-			
+
 			countPass = 0
 		} else {
 			pos = 0
@@ -93,20 +92,19 @@ func Busc(name string, path []*rs.BusStop) {
 
 //End busc--------------------------------------------------------------------------------------------------------
 
-
 func main() {
 
 	//WaitingTime
 	//waitingTime := totalTime/float64(passTotal)
-	
+
 	// graph := rs.Graph{}
 
 	aBuilding := rs.BusStop{Name: "aBuilding"}
 	bBuilding := rs.BusStop{Name: "bBuilding"}
-	cBuilding := rs.BusStop{Name: "cBuilding"} 
-	dBuilding := rs.BusStop{Name: "dBuilding"} 
-	eBuilding := rs.BusStop{Name: "eBuilding"} 
-	fBuilding := rs.BusStop{Name: "fBuilding"} 
+	cBuilding := rs.BusStop{Name: "cBuilding"}
+	dBuilding := rs.BusStop{Name: "dBuilding"}
+	eBuilding := rs.BusStop{Name: "eBuilding"}
+	fBuilding := rs.BusStop{Name: "fBuilding"}
 	gBuilding := rs.BusStop{Name: "gBuilding"}
 	hBuilding := rs.BusStop{Name: "hBuilding"}
 	iBuilding := rs.BusStop{Name: "iBuilding"}
@@ -125,98 +123,96 @@ func main() {
 	stopList = append(stopList, &iBuilding)
 	stopList = append(stopList, &jBuilding)
 
- graph.AddEdge(&aBuilding, &bBuilding, 1)
- graph.AddEdge(&bBuilding, &cBuilding, 2)
- graph.AddEdge(&cBuilding, &dBuilding, 3)
- graph.AddEdge(&dBuilding, &eBuilding, 4)
- graph.AddEdge(&eBuilding, &fBuilding, 5)
- graph.AddEdge(&fBuilding, &gBuilding, 6)
- graph.AddEdge(&gBuilding, &hBuilding, 7)
- graph.AddEdge(&hBuilding, &iBuilding, 8)
- graph.AddEdge(&iBuilding, &jBuilding, 9)
- graph.AddEdge(&jBuilding, &aBuilding, 10)
- graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &bBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &dBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &cBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &eBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &dBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &fBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &eBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &gBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &fBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &hBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &gBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &aBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &iBuilding, &hBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &iBuilding, &jBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &iBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &aBuilding)
+	graph.AddEdge(&aBuilding, &bBuilding, 1)
+	graph.AddEdge(&bBuilding, &cBuilding, 2)
+	graph.AddEdge(&cBuilding, &dBuilding, 3)
+	graph.AddEdge(&dBuilding, &eBuilding, 4)
+	graph.AddEdge(&eBuilding, &fBuilding, 5)
+	graph.AddEdge(&fBuilding, &gBuilding, 6)
+	graph.AddEdge(&gBuilding, &hBuilding, 7)
+	graph.AddEdge(&hBuilding, &iBuilding, 8)
+	graph.AddEdge(&iBuilding, &jBuilding, 9)
+	graph.AddEdge(&jBuilding, &aBuilding, 10)
+	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &bBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &dBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &cBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &eBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &dBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &fBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &eBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &gBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &fBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &hBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &gBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &aBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &iBuilding, &hBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &iBuilding, &jBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &iBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &aBuilding)
 
-//  graph.GenerateTraffic(, &aBuilding, &bBuilding)
-//  graph.GenerateTraffic(&bBuilding, &aBuilding)
-//  graph.GenerateTraffic(&bBuilding, &cBuilding)
-//  graph.GenerateTraffic(&cBuilding, &bBuilding)
-//  graph.GenerateTraffic(&cBuilding, &dBuilding)
-//  graph.GenerateTraffic(&dBuilding, &cBuilding)
-//  graph.GenerateTraffic(&dBuilding, &eBuilding)
-//  graph.GenerateTraffic(&eBuilding, &dBuilding)
-//  graph.GenerateTraffic(&eBuilding, &fBuilding)
-//  graph.GenerateTraffic(&fBuilding, &eBuilding)
-//  graph.GenerateTraffic(&fBuilding, &gBuilding)
-//  graph.GenerateTraffic(&gBuilding, &fBuilding)
-//  graph.GenerateTraffic(&gBuilding, &hBuilding)
-//  graph.GenerateTraffic(&hBuilding, &gBuilding)
-//  graph.GenerateTraffic(&hBuilding, &aBuilding)
-//  graph.GenerateTraffic(&aBuilding, &hBuilding)
+	//  graph.GenerateTraffic(, &aBuilding, &bBuilding)
+	//  graph.GenerateTraffic(&bBuilding, &aBuilding)
+	//  graph.GenerateTraffic(&bBuilding, &cBuilding)
+	//  graph.GenerateTraffic(&cBuilding, &bBuilding)
+	//  graph.GenerateTraffic(&cBuilding, &dBuilding)
+	//  graph.GenerateTraffic(&dBuilding, &cBuilding)
+	//  graph.GenerateTraffic(&dBuilding, &eBuilding)
+	//  graph.GenerateTraffic(&eBuilding, &dBuilding)
+	//  graph.GenerateTraffic(&eBuilding, &fBuilding)
+	//  graph.GenerateTraffic(&fBuilding, &eBuilding)
+	//  graph.GenerateTraffic(&fBuilding, &gBuilding)
+	//  graph.GenerateTraffic(&gBuilding, &fBuilding)
+	//  graph.GenerateTraffic(&gBuilding, &hBuilding)
+	//  graph.GenerateTraffic(&hBuilding, &gBuilding)
+	//  graph.GenerateTraffic(&hBuilding, &aBuilding)
+	//  graph.GenerateTraffic(&aBuilding, &hBuilding)
 
+	graph.GetSpeed(&aBuilding, &bBuilding) // 0
+	graph.GetSpeed(&bBuilding, &aBuilding)
+	graph.GetSpeed(&bBuilding, &cBuilding)
+	graph.GetSpeed(&cBuilding, &bBuilding)
+	graph.GetSpeed(&cBuilding, &dBuilding)
+	graph.GetSpeed(&dBuilding, &cBuilding)
+	graph.GetSpeed(&dBuilding, &eBuilding)
+	graph.GetSpeed(&eBuilding, &dBuilding)
+	graph.GetSpeed(&eBuilding, &fBuilding)
+	graph.GetSpeed(&fBuilding, &eBuilding)
+	graph.GetSpeed(&fBuilding, &gBuilding)
+	graph.GetSpeed(&gBuilding, &fBuilding)
+	graph.GetSpeed(&gBuilding, &hBuilding)
+	graph.GetSpeed(&hBuilding, &gBuilding)
+	graph.GetSpeed(&hBuilding, &aBuilding)
+	graph.GetSpeed(&iBuilding, &hBuilding)
+	graph.GetSpeed(&iBuilding, &jBuilding)
+	graph.GetSpeed(&jBuilding, &iBuilding)
+	graph.GetSpeed(&jBuilding, &aBuilding)
+	//  graph.AddEdge(&fBuidling, &gBuilding, 1)
+	//  graph.AddEdge(&d, &e, 2)
+	//  graph.AddEdge(&d, &g, 30)
+	//  graph.AddEdge(&d, &f, 10)
+	//  graph.AddEdge(&f, &g, 1)
 
+	//  fmt.Println(graph.String())
 
- graph.GetSpeed(&aBuilding, &bBuilding)// 0
- graph.GetSpeed(&bBuilding, &aBuilding)
- graph.GetSpeed(&bBuilding, &cBuilding)
- graph.GetSpeed(&cBuilding, &bBuilding)
- graph.GetSpeed(&cBuilding, &dBuilding)
- graph.GetSpeed(&dBuilding, &cBuilding)
- graph.GetSpeed(&dBuilding, &eBuilding)
- graph.GetSpeed(&eBuilding, &dBuilding)
- graph.GetSpeed(&eBuilding, &fBuilding)
- graph.GetSpeed(&fBuilding, &eBuilding)
- graph.GetSpeed(&fBuilding, &gBuilding)
- graph.GetSpeed(&gBuilding, &fBuilding)
- graph.GetSpeed(&gBuilding, &hBuilding)
- graph.GetSpeed(&hBuilding, &gBuilding)
- graph.GetSpeed(&hBuilding, &aBuilding)
- graph.GetSpeed(&iBuilding, &hBuilding)
- graph.GetSpeed(&iBuilding, &jBuilding)
- graph.GetSpeed(&jBuilding, &iBuilding)
- graph.GetSpeed(&jBuilding, &aBuilding)
-//  graph.AddEdge(&fBuidling, &gBuilding, 1)
-//  graph.AddEdge(&d, &e, 2)
-//  graph.AddEdge(&d, &g, 30)
-//  graph.AddEdge(&d, &f, 10)
-//  graph.AddEdge(&f, &g, 1)
-
-//  fmt.Println(graph.String())
-
- for _, nodeStart := range stopList{
-	costTable := graph.Dijkstra(nodeStart)
-	// Make the costTable nice to read :)
-	fmt.Printf("Start node is %s\n", nodeStart.Name)
-	for node, cost := range costTable {
-		fmt.Printf("Distance from %s to %s = %d km\n", nodeStart.Name, node.Name, cost)
+	for _, nodeStart := range stopList {
+		costTable := graph.Dijkstra(nodeStart)
+		// Make the costTable nice to read :)
+		fmt.Printf("Start node is %s\n", nodeStart.Name)
+		for node, cost := range costTable {
+			fmt.Printf("Distance from %s to %s = %d km\n", nodeStart.Name, node.Name, cost)
+		}
+		fmt.Println("----------------------")
 	}
-	fmt.Println("----------------------")
- }
 
- fmt.Printf("Initiated bus stop list: %v\n", stopList)
- fmt.Println("How many bus?")
- fmt.Scanln(&inputNoBus)
- var inputPsg int
- fmt.Println("How many passenger?")
- fmt.Scanln(&inputPsg)
+	fmt.Printf("Initiated bus stop list: %v\n", stopList)
+	fmt.Println("How many bus?")
+	fmt.Scanln(&inputNoBus)
+	var inputPsg int
+	fmt.Println("How many passenger?")
+	fmt.Scanln(&inputPsg)
 
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
