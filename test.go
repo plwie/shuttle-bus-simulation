@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
 	rs "rs/lib"
 	"strconv"
@@ -47,11 +48,10 @@ func bstGet() bool {
 			temp := *v
 			fmt.Printf("Bus Stop Name: %v\n", temp.Name)
 			fmt.Printf("Total Passengers: %v\n", temp.Q.Size)
-			fmt.Printf("List of passengers: ")
+			fmt.Printf("List of passengers:\n")
 			for i := temp.Q.Head; i != nil; i = i.Next {
-				fmt.Printf("%v ", i)
+				fmt.Printf("Source: %v, Dest: %v, Next: %v\n", i.Source, i.Destination, i.Next)
 			}
-			fmt.Printf("\n")
 			return true
 		}
 	}
@@ -66,6 +66,7 @@ func bstCreate() bool {
 		return false
 	}
 	tStopLst = append(tStopLst, &rs.BusStop{Name: mainCmd[1]})
+	fmt.Printf("Succesfully created a new bus stop with name %v...\n", mainCmd[1])
 	return true
 }
 
@@ -85,9 +86,8 @@ func bstAdd() bool {
 	// Create a new passenger
 	start := time.Now()
 	p := rs.NewPassenger()
-	for i := 0; i < psgNum; i++ {
-		rs.GnrPsgAt(tStopLst, mainCmd[1], psgNum, p)
-	}
+	rand.Seed(time.Now().UnixNano())
+	rs.GnrPsgAt(tStopLst, mainCmd[1], psgNum, p)
 	end := time.Since(start)
 
 	// Check feedback
@@ -178,17 +178,9 @@ func help() bool {
 
 func main() {
 	// Setup
-	tStopLst = append(tStopLst, &rs.BusStop{Name: "cheatBst"})
-	p := rs.NewPassenger()
-	rs.GnrPsgAt(tStopLst, "cheatBst", 100, p)
-	/*
-		for i := 0; i < 100; i++ {
-			tStopLst[0].Q.Add(p)
-		}
-	*/
 	reader := bufio.NewReader(os.Stdin)
-	// text = strings.Replace(text, "\n", "", -1)
 
+	// Map functions
 	var cmdMap = map[string](func() bool){
 		"bstList":   bstList,
 		"bstGet":    bstGet,
