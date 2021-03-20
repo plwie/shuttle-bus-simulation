@@ -79,10 +79,10 @@ func main() {
 
 	aBuilding := rs.BusStop{Name: "aBuilding", TimeTaken: 5}
 	bBuilding := rs.BusStop{Name: "bBuilding", TimeTaken: 6}
-	cBuilding := rs.BusStop{Name: "cBuilding", TimeTaken: 3} 
-	dBuilding := rs.BusStop{Name: "dBuilding", TimeTaken: 4} 
-	eBuilding := rs.BusStop{Name: "eBuilding", TimeTaken: 6} 
-	fBuilding := rs.BusStop{Name: "fBuilding", TimeTaken: 3} 
+	cBuilding := rs.BusStop{Name: "cBuilding", TimeTaken: 3}
+	dBuilding := rs.BusStop{Name: "dBuilding", TimeTaken: 4}
+	eBuilding := rs.BusStop{Name: "eBuilding", TimeTaken: 6}
+	fBuilding := rs.BusStop{Name: "fBuilding", TimeTaken: 3}
 	gBuilding := rs.BusStop{Name: "gBuilding", TimeTaken: 1}
 	hBuilding := rs.BusStop{Name: "hBuilding", TimeTaken: 10}
 
@@ -96,93 +96,92 @@ func main() {
 	tempList = append(tempList, &fBuilding)
 	tempList = append(tempList, &gBuilding)
 	tempList = append(tempList, &hBuilding)
-// stopList = append(stopList, &hBuilding)
-// stopList = append(stopList, &iBuilding)
-// stopList = append(stopList, &jBuilding)
+	// stopList = append(stopList, &hBuilding)
+	// stopList = append(stopList, &iBuilding)
+	// stopList = append(stopList, &jBuilding)
 
+	graph.AddEdge(&aBuilding, &bBuilding, 1)
+	//  graph.AddEdge(&aBuilding, &hBuilding, 1)
+	graph.AddEdge(&bBuilding, &aBuilding, 1)
+	graph.AddEdge(&bBuilding, &cBuilding, 1)
+	graph.AddEdge(&cBuilding, &bBuilding, 1)
+	graph.AddEdge(&cBuilding, &dBuilding, 1)
+	graph.AddEdge(&dBuilding, &cBuilding, 1)
+	graph.AddEdge(&dBuilding, &eBuilding, 1)
+	graph.AddEdge(&eBuilding, &dBuilding, 1)
+	graph.AddEdge(&eBuilding, &fBuilding, 1)
+	graph.AddEdge(&fBuilding, &eBuilding, 1)
+	graph.AddEdge(&fBuilding, &gBuilding, 1)
+	graph.AddEdge(&gBuilding, &fBuilding, 1)
+	graph.AddEdge(&gBuilding, &hBuilding, 1)
+	graph.AddEdge(&hBuilding, &gBuilding, 1)
+	graph.AddEdge(&hBuilding, &aBuilding, 1)
+	graph.AddEdge(&aBuilding, &hBuilding, 1)
+	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &bBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &dBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &cBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &eBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &dBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &fBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &eBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &gBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &fBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &hBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &gBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &aBuilding)
+	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &hBuilding)
 
+	//  graph.GenerateTraffic(, &aBuilding, &bBuilding)
+	//  graph.GenerateTraffic(&bBuilding, &aBuilding)
+	//  graph.GenerateTraffic(&bBuilding, &cBuilding)
+	//  graph.GenerateTraffic(&cBuilding, &bBuilding)
+	//  graph.GenerateTraffic(&cBuilding, &dBuilding)
+	//  graph.GenerateTraffic(&dBuilding, &cBuilding)
+	//  graph.GenerateTraffic(&dBuilding, &eBuilding)
+	//  graph.GenerateTraffic(&eBuilding, &dBuilding)
+	//  graph.GenerateTraffic(&eBuilding, &fBuilding)
+	//  graph.GenerateTraffic(&fBuilding, &eBuilding)
+	//  graph.GenerateTraffic(&fBuilding, &gBuilding)
+	//  graph.GenerateTraffic(&gBuilding, &fBuilding)
+	//  graph.GenerateTraffic(&gBuilding, &hBuilding)
+	//  graph.GenerateTraffic(&hBuilding, &gBuilding)
+	//  graph.GenerateTraffic(&hBuilding, &aBuilding)
+	//  graph.GenerateTraffic(&aBuilding, &hBuilding)
 
+	graph.GetSpeed(&aBuilding, &bBuilding) // 0
+	//  graph.AddEdge(&fBuidling, &gBuilding, 1)
+	//  graph.AddEdge(&d, &e, 2)
+	//  graph.AddEdge(&d, &g, 30)
+	//  graph.AddEdge(&d, &f, 10)
+	//  graph.AddEdge(&f, &g, 1)
 
+	//  fmt.Println(graph.String())
 
- 
- graph.AddEdge(&aBuilding, &bBuilding, 1)
-//  graph.AddEdge(&aBuilding, &hBuilding, 1)
- graph.AddEdge(&bBuilding, &aBuilding, 1)
- graph.AddEdge(&bBuilding, &cBuilding, 1)
- graph.AddEdge(&cBuilding, &bBuilding, 1)
- graph.AddEdge(&cBuilding, &dBuilding, 1)
- graph.AddEdge(&dBuilding, &cBuilding, 1)
- graph.AddEdge(&dBuilding, &eBuilding, 1)
- graph.AddEdge(&eBuilding, &dBuilding, 1)
- graph.AddEdge(&eBuilding, &fBuilding, 1)
- graph.AddEdge(&fBuilding, &eBuilding, 1)
- graph.AddEdge(&fBuilding, &gBuilding, 1)
- graph.AddEdge(&gBuilding, &fBuilding, 1)
- graph.AddEdge(&gBuilding, &hBuilding, 1)
- graph.AddEdge(&hBuilding, &gBuilding, 1)
- graph.AddEdge(&hBuilding, &aBuilding, 1)
- graph.AddEdge(&aBuilding, &hBuilding, 1)
- graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &bBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &dBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &cBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &eBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &dBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &fBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &eBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &gBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &fBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &hBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &gBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &aBuilding)
- graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &hBuilding)
-
-//  graph.GenerateTraffic(, &aBuilding, &bBuilding)
-//  graph.GenerateTraffic(&bBuilding, &aBuilding)
-//  graph.GenerateTraffic(&bBuilding, &cBuilding)
-//  graph.GenerateTraffic(&cBuilding, &bBuilding)
-//  graph.GenerateTraffic(&cBuilding, &dBuilding)
-//  graph.GenerateTraffic(&dBuilding, &cBuilding)
-//  graph.GenerateTraffic(&dBuilding, &eBuilding)
-//  graph.GenerateTraffic(&eBuilding, &dBuilding)
-//  graph.GenerateTraffic(&eBuilding, &fBuilding)
-//  graph.GenerateTraffic(&fBuilding, &eBuilding)
-//  graph.GenerateTraffic(&fBuilding, &gBuilding)
-//  graph.GenerateTraffic(&gBuilding, &fBuilding)
-//  graph.GenerateTraffic(&gBuilding, &hBuilding)
-//  graph.GenerateTraffic(&hBuilding, &gBuilding)
-//  graph.GenerateTraffic(&hBuilding, &aBuilding)
-//  graph.GenerateTraffic(&aBuilding, &hBuilding)
-
-
-
- graph.GetSpeed(&aBuilding, &bBuilding) // 0
-//  graph.AddEdge(&fBuidling, &gBuilding, 1)
-//  graph.AddEdge(&d, &e, 2)
-//  graph.AddEdge(&d, &g, 30)
-//  graph.AddEdge(&d, &f, 10)
-//  graph.AddEdge(&f, &g, 1)
-
-//  fmt.Println(graph.String())
-
- for _, nodeStart := range tempList{
-	costTable := graph.Dijkstra(nodeStart)
-	// Make the costTable nice to read :)
-	fmt.Printf("Start node is %s\n", nodeStart.Name)
-	for node, cost := range costTable {
-		fmt.Printf("Distance from %s to %s = %d km\n", nodeStart.Name, node.Name, cost)
+	for _, nodeStart := range tempList {
+		costTable := graph.Dijkstra(nodeStart)
+		// Make the costTable nice to read :)
+		fmt.Printf("Start node is %s\n", nodeStart.Name)
+		for node, cost := range costTable {
+			fmt.Printf("Distance from %s to %s = %d km\n", nodeStart.Name, node.Name, cost)
+		}
+		fmt.Println("----------------------")
 	}
-	fmt.Println("----------------------")
- }
 
- fmt.Printf("Initiated bus stop list: %v\n", stopList)
- fmt.Println("How many bus?")
- fmt.Scanln(&inputNoBus)
- var inputPsg int
- fmt.Println("How many passenger?")
- fmt.Scanln(&inputPsg)
+	fmt.Println(aBuilding.Name)
+	fmt.Println(graph.GetSpeed(&aBuilding, &bBuilding))
+	fmt.Println(graph.Edges[1].Parent)
+	fmt.Println(graph.Edges[1].Child)
+	fmt.Println(graph.Edges[1].Cost)
+
+	fmt.Printf("Initiated bus stop list: %v\n", stopList)
+	fmt.Println("How many bus?")
+	fmt.Scanln(&inputNoBus)
+	var inputPsg int
+	fmt.Println("How many passenger?")
+	fmt.Scanln(&inputPsg)
 
 	psgr := rs.NewPassenger1(stopList)
 	rand.Seed(time.Now().UnixNano())
