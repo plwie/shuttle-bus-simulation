@@ -17,7 +17,7 @@ func random(min int, max int) int {
 }
 
 //NewPassenger1 Create a new passenger
-func NewPassenger1() *Passenger {
+func NewPassenger() *Passenger {
 	var p *Passenger
 	p = new(Passenger)
 	return p
