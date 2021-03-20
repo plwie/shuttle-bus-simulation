@@ -39,6 +39,7 @@ func Busc(name string, path []*rs.BusStop) {
 	var len int = len(path)
 	var count int = 0
 	var countPass int = 0
+	var 
 
 	//create bus struct instance
 	busStruct := Bus{
@@ -76,12 +77,16 @@ func Busc(name string, path []*rs.BusStop) {
 			dist := float64(graph.Edges[pos].Cost)
 			calcTime := float64(math.Round(((dist/spd)*3600)*100) / 100)
 			totalTime += (calcTime * float64(countPass))
-			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
+			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
 			passTotal += countPass
 			fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
-			pos++
-			count++
 
+			if localTimeHour != globalHour && localTimeMin != globalMin{
+				continue
+			}else{
+				pos++
+				count++
+			}
 			countPass = 0
 		} else {
 			pos = 0
@@ -258,6 +263,6 @@ func main() {
 	// 	rs.TimeTick(&globalHour, &globalMin)
 	// 	// fmt.Println(globalHour, globalMin)
 	// }
-	Busc("test", stopList)
+	rs.Busc("test", stopList)
 	fmt.Println("Ending main package...")
 }
