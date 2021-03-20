@@ -1,10 +1,32 @@
 List of files that have to be tested
 1. bst.go
-    1.1. Add to queue
-        > Used with psg.go to add passengers to a bus stop
-    1.2. Remove from queue
-        > Used with psg.go to remove a passenger from a bus stop
+    1.1. Q.Add()
+    1.2. Q.Pop()
 2. car.go
 3. psg.go
+    3.1. NewPassenger()
+    3.2. GnrPsg()
+        > Q.Add()
+    3.3. GnrPsgAt()
+        > Q.Add()
 4. rd.go
-5. main.go
+5. time.go
+    5.1. TimeTick()
+    5.2. ConTimeTick()
+6. main.go
+
+-----------------------------------------------------------------------
+
+Test.go function detail
+a. bstList()
+b. bstCreate()
+c. bstAdd()
+    > NewPassenger()
+    > GnrPsgAt()
+d. bstRmv()
+e. tick()
+    > TimeTick()
+    > ConTimeTick()
+f.
+g.
+h.

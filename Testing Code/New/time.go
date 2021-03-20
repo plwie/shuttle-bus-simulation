@@ -1,29 +1,24 @@
-package main
+package rs
 
 import (
 	"fmt"
+	"time"
 )
 
-var (
-	globalHour   int = 0
-	globalMinute int = 0
-	globalDay    int = 0
-)
-
-func main() {
-	fmt.Printf("Input the starting hour(0-24): ")
-	fmt.Scanln(&globalHour)
-	fmt.Printf("%v Days -> %v:%v\n", globalDay, globalHour, globalMinute)
-	for {
-		timeTick(&globalHour, &globalMinute)
-		fmt.Printf("%v Days -> %v:%v\n", globalDay, globalHour, globalMinute)
-	}
-}
-
-func timeTick(hour *int, min *int) {
+// TimeTick add 1 min to the global clock
+func TimeTick(hour *int, min *int) {
 	*min++
 	if *min >= 60 {
 		*hour += *min / 60
 		*min -= 60 * (*min / 60)
+	}
+	fmt.Printf("%02v:%02v\n", *hour, *min)
+}
+
+// ConTimeTick constantly call Time Tick
+func ConTimeTick(hour *int, min *int) {
+	for *hour < 24 {
+		TimeTick(hour, min)
+		time.Sleep(time.Millisecond * 1)
 	}
 }

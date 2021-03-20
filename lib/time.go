@@ -1,6 +1,9 @@
 package rs
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // TimeTick add 1 min to the global clock
 func TimeTick(hour *int, min *int) {
@@ -9,7 +12,7 @@ func TimeTick(hour *int, min *int) {
 		*hour += *min / 60
 		*min -= 60 * (*min / 60)
 	}
-	// fmt.Printf("%02v:%02v\n", *hour, *min)
+	fmt.Printf("%02v:%02v\n", *hour, *min)
 }
 
 // ConTimeTick constantly call Time Tick

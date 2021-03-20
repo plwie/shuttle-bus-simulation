@@ -18,8 +18,8 @@ var (
 	tHr       int
 )
 
+// This function should print out the list of created bus stop
 func bstList() bool {
-	// This function should print out the list of created bus stop
 	if len(tStopLst) == 0 {
 		fmt.Println("Error: no item in bus stop list")
 		return false
@@ -32,8 +32,9 @@ func bstList() bool {
 	return true
 }
 
+// This function should create a new bus stop and add it to the list
 func bstCreate() bool {
-	// This function should create a new bus stop and add it to the list
+	// Check parameters
 	if len(mainCmd) < 2 {
 		fmt.Println("Error: invalid parameter")
 		return false
@@ -42,8 +43,9 @@ func bstCreate() bool {
 	return true
 }
 
+// This function should add psg into queue of target bus stop
 func bstAdd() bool {
-	// This function should add psg into queue of target bus stop
+	// Check parameters
 	if len(mainCmd) < 3 {
 		fmt.Println("Error: invalid parameter")
 		return false
@@ -72,15 +74,17 @@ func bstRmv() bool {
 
 func tick() bool {
 	fmt.Println("Starting the clock...")
-	tMin = 0
 	tHr = 0
-	for tHr < 24 {
-		fmt.Printf("%02v:%02v\n", tHr, tMin)
-		rs.TimeTick(&tHr, &tMin)
-	}
+	tMin = 0
 	fmt.Printf("%02v:%02v\n", tHr, tMin)
-	fmt.Println("Clock check successful")
-	return true
+	rs.ConTimeTick(&tHr, &tMin)
+	if tHr == 24 && tMin == 0 {
+		fmt.Println("Clock check successful")
+		return true
+	} else {
+		fmt.Println("Error: clock check failed")
+		return false
+	}
 }
 
 func help() bool {
