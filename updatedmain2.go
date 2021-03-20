@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	rs "rs/lib"
 	"time"
+	"math"
 )
 
 var (
@@ -15,6 +16,9 @@ var (
 	//for putting busc in main
 	countPos int = 0
 	count    int = 0
+	graph = rs.Graph{}
+	totalTime float64 = 0
+	passTotal int = 0
 )
 
 // Bus Struct
@@ -28,11 +32,14 @@ type Bus struct {
 //busc threading function---------------------------------------------------------------
 func Busc(name string, path []*rs.BusStop) {
 	//need to declare global count = 0
+	// graph := rs.Graph{}
 	m := make(map[string]int)
 	pos := countPos
 	countPos++
 	var len int = len(path)
 	var count int = 0
+	var countPass int = 0
+	
 	//create bus struct instance
 	busStruct := Bus{
 		availSeats: 30,
@@ -46,7 +53,7 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			// time.Sleep(time.Second * 1)
+			time.Sleep(time.Second * 1)
 			busStruct.currStop = *&path[pos].Name
 			busStruct.nextStop = *&path[(pos+1)%len].Name
 
@@ -54,7 +61,9 @@ func Busc(name string, path []*rs.BusStop) {
 				if path[i%10].Q.Size != 0 {
 					m[path[i%10].Q.Pop().Destination]++
 					busStruct.passOn++
+					countPass++
 					busStruct.availSeats--
+			
 				}
 			}
 			busStruct.passOn -= m[busStruct.currStop]
@@ -63,8 +72,19 @@ func Busc(name string, path []*rs.BusStop) {
 
 			fmt.Println(count, name, busStruct.currStop, busStruct.nextStop, busStruct.availSeats, busStruct.passOn)
 			fmt.Println(globalHour, globalMin)
+			spd := float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
+			dist := float64(graph.Edges[pos].Cost)
+			calcTime := float64(math.Round(((dist/spd)*3600)*100)/100)
+			totalTime += calcTime
+			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
+			
+			
 			pos++
 			count++
+			passTotal += countPass
+			fmt.Println("|countpass", countPass, "|passTotal", passTotal)
+			
+			countPass = 0
 		} else {
 			pos = 0
 		}
@@ -73,20 +93,24 @@ func Busc(name string, path []*rs.BusStop) {
 
 //End busc--------------------------------------------------------------------------------------------------------
 
+
 func main() {
 
-	graph := rs.Graph{}
+	//WaitingTime
+	//waitingTime := totalTime/float64(passTotal)
+	
+	// graph := rs.Graph{}
 
-	aBuilding := rs.BusStop{Name: "aBuilding", TimeTaken: 5}
-	bBuilding := rs.BusStop{Name: "bBuilding", TimeTaken: 6}
-	cBuilding := rs.BusStop{Name: "cBuilding", TimeTaken: 3} 
-	dBuilding := rs.BusStop{Name: "dBuilding", TimeTaken: 4} 
-	eBuilding := rs.BusStop{Name: "eBuilding", TimeTaken: 6} 
-	fBuilding := rs.BusStop{Name: "fBuilding", TimeTaken: 3} 
-	gBuilding := rs.BusStop{Name: "gBuilding", TimeTaken: 1}
-	hBuilding := rs.BusStop{Name: "hBuilding", TimeTaken: 5}
-	iBuilding := rs.BusStop{Name: "iBuilding", TimeTaken: 7}
-	jBuilding := rs.BusStop{Name: "jBuilding", TimeTaken: 4}
+	aBuilding := rs.BusStop{Name: "aBuilding"}
+	bBuilding := rs.BusStop{Name: "bBuilding"}
+	cBuilding := rs.BusStop{Name: "cBuilding"} 
+	dBuilding := rs.BusStop{Name: "dBuilding"} 
+	eBuilding := rs.BusStop{Name: "eBuilding"} 
+	fBuilding := rs.BusStop{Name: "fBuilding"} 
+	gBuilding := rs.BusStop{Name: "gBuilding"}
+	hBuilding := rs.BusStop{Name: "hBuilding"}
+	iBuilding := rs.BusStop{Name: "iBuilding"}
+	jBuilding := rs.BusStop{Name: "jBuilding"}
 
 	stopList := graph.StopList
 
@@ -98,35 +122,19 @@ func main() {
 	stopList = append(stopList, &fBuilding)
 	stopList = append(stopList, &gBuilding)
 	stopList = append(stopList, &hBuilding)
-// stopList = append(stopList, &hBuilding)
 	stopList = append(stopList, &iBuilding)
 	stopList = append(stopList, &jBuilding)
 
-
-
-
-
- 
  graph.AddEdge(&aBuilding, &bBuilding, 1)
-//  graph.AddEdge(&aBuilding, &hBuilding, 1)
- graph.AddEdge(&bBuilding, &aBuilding, 1)
- graph.AddEdge(&bBuilding, &cBuilding, 1)
- graph.AddEdge(&cBuilding, &bBuilding, 1)
- graph.AddEdge(&cBuilding, &dBuilding, 1)
- graph.AddEdge(&dBuilding, &cBuilding, 1)
- graph.AddEdge(&dBuilding, &eBuilding, 1)
- graph.AddEdge(&eBuilding, &dBuilding, 1)
- graph.AddEdge(&eBuilding, &fBuilding, 1)
- graph.AddEdge(&fBuilding, &eBuilding, 1)
- graph.AddEdge(&fBuilding, &gBuilding, 1)
- graph.AddEdge(&gBuilding, &fBuilding, 1)
- graph.AddEdge(&gBuilding, &hBuilding, 1)
- graph.AddEdge(&hBuilding, &gBuilding, 1)
- graph.AddEdge(&hBuilding, &iBuilding, 1)
- graph.AddEdge(&iBuilding, &hBuilding, 1)
- graph.AddEdge(&iBuilding, &jBuilding, 1)
- graph.AddEdge(&jBuilding, &iBuilding, 1)
- graph.AddEdge(&jBuilding, &aBuilding, 1)
+ graph.AddEdge(&bBuilding, &cBuilding, 2)
+ graph.AddEdge(&cBuilding, &dBuilding, 3)
+ graph.AddEdge(&dBuilding, &eBuilding, 4)
+ graph.AddEdge(&eBuilding, &fBuilding, 5)
+ graph.AddEdge(&fBuilding, &gBuilding, 6)
+ graph.AddEdge(&gBuilding, &hBuilding, 7)
+ graph.AddEdge(&hBuilding, &iBuilding, 8)
+ graph.AddEdge(&iBuilding, &jBuilding, 9)
+ graph.AddEdge(&jBuilding, &aBuilding, 10)
  graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
  graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
  graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
