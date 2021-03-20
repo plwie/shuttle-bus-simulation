@@ -23,14 +23,15 @@ func NewPassenger() *Passenger {
 
 //GnrPsg Generate psg and add to bus stop
 func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
-	for i := 1; i < random1; i++ {
-		psgr.Source = *&stopList[rand.Intn(10)].Name
-		psgr.Destination = *&stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-		for j := 0; j < len(stopList)-1; j++ {
-			if psgr.Source == *&stopList[j].Name {
+	for i := 0; i < random1; i++ {
+		psgr.Source = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
+		for j := 0; j < len(stopList); j++ {
+			if psgr.Source == stopList[j].Name {
+				psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
+				for psgr.Source == psgr.Destination {
+					psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
+				}
 				stopList[j].Q.Add(*psgr)
-				// fmt.Println(stopList[i].Name)
-				// fmt.Println(stopList[i].Q.Size)
 			}
 		}
 	}
@@ -39,12 +40,12 @@ func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 //GnrPsgAt Generate psg and add to specific bus stop
 func GnrPsgAt(stopList []*BusStop, stop string, inputPsg int, psgr *Passenger) {
 	for i := 0; i < len(stopList); i++ {
-		if stop == *&stopList[i].Name {
+		if stop == stopList[i].Name {
 			psgr.Source = stop
 			for j := 0; j < inputPsg; j++ {
-				psgr.Destination = *&stopList[rand.Intn((len(stopList)-0-1)+1)].Name
+				psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
 				for psgr.Source == psgr.Destination {
-					psgr.Destination = *&stopList[rand.Intn((len(stopList)-0-1)+1)].Name
+					psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
 				}
 				stopList[i].Q.Add(*psgr)
 				// fmt.Println(stopList[i].Name)
