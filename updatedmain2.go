@@ -218,12 +218,6 @@ func main() {
 		go Busc("bus"+fmt.Sprint((i+1)), stopList)
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin)
-	//Added for timetick
-	// for {
-	// 	time.Sleep(time.Nanosecond * 100)
-	// 	rs.TimeTick(&globalHour, &globalMin)
-	// 	// fmt.Println(globalHour, globalMin)
-	// }
 	Busc("test", stopList)
 	fmt.Println("Ending main package...")
 }
