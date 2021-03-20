@@ -200,7 +200,6 @@ func tick() bool {
 	fmt.Println("Starting the clock...")
 	tHr = 0
 	tMin = 0
-	// fmt.Printf("%02v:%02v\n", tHr, tMin)
 	rs.ConTimeTick(&tHr, &tMin)
 	end := time.Since(start)
 	if tHr == 24 && tMin == 0 {
@@ -228,6 +227,7 @@ func help() bool {
 	fmt.Println("bstRmv")
 	fmt.Println("timeTick")
 	fmt.Println("carAdd")
+
 	return true
 }
 

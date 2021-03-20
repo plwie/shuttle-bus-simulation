@@ -11,7 +11,6 @@ func TimeTick(hour *int, min *int) {
 		*hour += *min / 60
 		*min -= 60 * (*min / 60)
 	}
-	// fmt.Printf("%02v:%02v\n", *hour, *min)
 }
 
 // ConTimeTick constantly call Time Tick
