@@ -42,8 +42,8 @@ func bstEnqueue() bool {
 		return success
 	}
 	// Create a new passenger
-	p := rs.NewPassenger1(tStopLst)
-	for i := 0; i < j; i++ {
+	p := rs.NewPassenger()
+	for i := 0; i < psgNum; i++ {
 		rs.GnrPsgAt(tStopLst, mainCmd[1], psgNum, p)
 
 	}
