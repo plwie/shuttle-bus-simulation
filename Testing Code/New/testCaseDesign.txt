@@ -3,6 +3,7 @@ List of files that have to be tested
     1.1. Q.Add()
     1.2. Q.Pop()
 2. car.go
+    2.1. CarGroup()
 3. psg.go
     3.1. NewPassenger()
     3.2. GnrPsg()
@@ -14,6 +15,7 @@ List of files that have to be tested
     5.1. TimeTick()
     5.2. ConTimeTick()
 6. main.go
+    6.1. Busc()
 
 -----------------------------------------------------------------------
 
@@ -23,15 +25,15 @@ b. bstCreate()*
 c. bstAdd()*
     > NewPassenger()
     > GnrPsgAt()
-d. bstAddRd()
+d. bstAddRd()*
     > NewPassenger()
     > GnrPsg()
 e. bstRmv()
 f. tick()*
     > TimeTick()
     > ConTimeTick()
-g.
-h.
+g. carAdd()
+h. 
 i.
 
 * Completed

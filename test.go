@@ -38,7 +38,7 @@ func bstList() bool {
 func bstGet() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter; bstGet take 2 parameters")
+		fmt.Println("Error: invalid parameter; bstGet targetStop")
 		return false
 	}
 
@@ -63,8 +63,15 @@ func bstGet() bool {
 func bstCreate() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter; bstCreate take 1 parameter")
+		fmt.Println("Error: invalid parameter; bstCreate name")
 		return false
+	}
+	// Check for duplicated stop
+	for _, v := range tStopLst {
+		if v.Name == mainCmd[1] {
+			fmt.Println("Error: bus stop with such name already existed")
+			return false
+		}
 	}
 	tStopLst = append(tStopLst, &rs.BusStop{Name: mainCmd[1]})
 	fmt.Printf("Succesfully created a new bus stop with name %v...\n", mainCmd[1])
@@ -75,7 +82,12 @@ func bstCreate() bool {
 func bstAdd() bool {
 	// Check parameters
 	if len(mainCmd) < 3 {
-		fmt.Println("Error: invalid parameter; bstAdd take 3 parameters")
+		fmt.Println("Error: invalid parameter; bstAdd targetStop psgValue")
+		return false
+	}
+	// Check target list
+	if len(tStopLst) < 2 {
+		fmt.Println("Error: insufficient amount of bus stop")
 		return false
 	}
 	// Convert second parameter into int
@@ -128,7 +140,12 @@ func bstAdd() bool {
 func bstAddRd() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter; bstAddRd take 2 parameters")
+		fmt.Println("Error: invalid parameter; bstAddRd psgValue")
+		return false
+	}
+	// Check target list
+	if len(tStopLst) < 2 {
+		fmt.Println("Error: insufficient amount of bus stop")
 		return false
 	}
 	// Convert second parameter into int
@@ -185,8 +202,8 @@ func tick() bool {
 	tMin = 0
 	// fmt.Printf("%02v:%02v\n", tHr, tMin)
 	rs.ConTimeTick(&tHr, &tMin)
+	end := time.Since(start)
 	if tHr == 24 && tMin == 0 {
-		end := time.Since(start)
 		fmt.Println("Clock check successful")
 		fmt.Printf("Time taken: %v\n", end)
 		return true
@@ -196,18 +213,21 @@ func tick() bool {
 	}
 }
 
+// This function should add car into the map
+func carAdd() bool {
+	return true
+}
+
 func help() bool {
-	fmt.Println("help	-> Display the list of available commands")
-	fmt.Println("bstList	-> Print out the list of created bus stop")
-	fmt.Println("bstGet tgStop	-> Get data of the tgStop bus stop")
-	fmt.Println("bstCreate name	-> Create a new bus stop with a name")
-	fmt.Println("bstAdd tgStop psgNum	-> Add psgNum passengers into the tgStop bus stop")
-	fmt.Println("bstAddRd psgNum	-> Add psgNum passengers into bus stops randomly")
-	fmt.Println("bstRmv tgStop psgNum 	-> Remove psgNum passengers into the tgStop bus stop")
-	fmt.Println("timeTick	-> Run 1 day of time tick and print the clock")
-	fmt.Println("")
-	fmt.Println("")
-	fmt.Println("")
+	fmt.Println("help")
+	fmt.Println("bstList")
+	fmt.Println("bstGet")
+	fmt.Println("bstCreate")
+	fmt.Println("bstAdd")
+	fmt.Println("bstAddRd")
+	fmt.Println("bstRmv")
+	fmt.Println("timeTick")
+	fmt.Println("carAdd")
 	return true
 }
 
@@ -224,10 +244,10 @@ func main() {
 		"bstAddRd":  bstAddRd,
 		"bstRmv":    bstRmv,
 		"timeTick":  tick,
+		"carAdd":    carAdd,
 		"help":      help,
 	}
 
-	fmt.Println(cmdMap)
 	fmt.Println("Test Drive Initiated...!")
 
 	// Simple shell
@@ -236,7 +256,7 @@ func main() {
 		fmt.Printf("> ")
 		mainInput, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println("Error: input unsuccessful")
+			fmt.Println("Error: keyboard interrupt")
 			continue
 		}
 		mainInput = strings.TrimSpace(mainInput)
