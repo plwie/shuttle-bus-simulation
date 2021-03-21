@@ -10,7 +10,7 @@ type Car struct {
 	id string
 }
 
-//CarGroupTr create group of cars
+//CarGroupTr create group of cars in train arrival event
 func CarGroupTr() []*Car {
 	CarGroup := []*Car{}
 	rand.Seed(time.Now().UnixNano())
@@ -23,11 +23,24 @@ func CarGroupTr() []*Car {
 	return CarGroup
 }
 
-//CarGroup represent typical car generation
+//CarGroup represent typical car generates
 func CarGroup() []*Car {
 	CarGroup := []*Car{}
 	rand.Seed(time.Now().UnixNano())
-	random1 := random(25, 35)
+	random1 := random(15, 25)
+	for i := 1; i < random1; i++ {
+		var p *Car
+		p = new(Car)
+		CarGroup = append(CarGroup, p)
+	}
+	return CarGroup
+}
+
+//CarGroupBusy create group of cars in busy event
+func CarGroupBusy() []*Car {
+	CarGroup := []*Car{}
+	rand.Seed(time.Now().UnixNano())
+	random1 := random(30, 35)
 	for i := 1; i < random1; i++ {
 		var p *Car
 		p = new(Car)
