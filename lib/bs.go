@@ -26,7 +26,8 @@ func GetPass(path []*BusStop, bus *Bus) {
 
 }
 
-func DropPass(m map[string]int, bus *Bus) {
-	bus.PassOn -= m[bus.CurrStop]
-	bus.AvailSeats += m[bus.CurrStop]
+func DropPass(bus *Bus) {
+	bus.PassOn -= bus.M[bus.CurrStop]
+	bus.AvailSeats += bus.M[bus.CurrStop]
+	bus.M[bus.CurrStop] = 0
 }

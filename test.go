@@ -333,10 +333,23 @@ func bsPick() bool {
 func bsDrop() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter;")
+		fmt.Println("Error: invalid parameter; bsPick busIndex")
 		return false
 	}
+	// Get target bus
+	index, err := strconv.Atoi(mainCmd[1])
+	if err != nil {
+		fmt.Printf("Error: invalid parameter %v\n", mainCmd[1])
+		return false
+	}
+	target := tBusLst[index]
 
+	// Pick up passengers
+	start := time.Now()
+	rs.GetPass(tStopLst, target)
+	end := time.Since(start)
+
+	fmt.Printf("Pick up successful; Time taken: %v\n", end)
 	return true
 }
 
