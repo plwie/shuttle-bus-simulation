@@ -74,7 +74,7 @@ func bstCreate() bool {
 		}
 	}
 	tStopLst = append(tStopLst, &rs.BusStop{Name: mainCmd[1]})
-	fmt.Printf("Succesfully created a new bus stop with name %v...\n", mainCmd[1])
+	// fmt.Printf("Succesfully created a new bus stop with name %v...\n", mainCmd[1])
 	return true
 }
 
@@ -95,7 +95,7 @@ func bstDel() bool {
 		if v.Name == mainCmd[1] {
 			tStopLst[i] = tStopLst[len(tStopLst)-1]
 			tStopLst = tStopLst[:len(tStopLst)-1]
-			fmt.Println("Successfully removed bus stop")
+			// fmt.Println("Successfully removed bus stop")
 			return true
 		}
 	}
@@ -158,7 +158,7 @@ func psgAdd() bool {
 					return false
 				}
 			}
-			fmt.Printf("Added passengers successsfully\n")
+			// fmt.Printf("Added passengers successsfully\n")
 			fmt.Printf("Time taken: %v\n", end)
 			return true
 		}
@@ -216,21 +216,21 @@ func psgAddRd() bool {
 		fmt.Printf("%v %v %v\n", finalSize, initSize, psgNum)
 		return false
 	}
-	fmt.Printf("Added passengers successsfully\n")
+	// fmt.Printf("Added passengers successsfully\n")
 	fmt.Printf("Time taken: %v\n", end)
 	return true
 }
 
 func timeTick() bool {
-	start := time.Now()
-	fmt.Println("Starting the clock...")
+	// start := time.Now()
+	// fmt.Println("Starting the clock...")
 	tHr = 0
 	tMin = 0
 	rs.ConTimeTick(&tHr, &tMin)
-	end := time.Since(start)
+	// end := time.Since(start)
 	if tHr == 24 && tMin == 0 {
-		fmt.Println("Clock check successful")
-		fmt.Printf("Time taken: %v\n", end)
+		// fmt.Println("Clock check successful")
+		// fmt.Printf("Time taken: %v\n", end)
 		return true
 	} else {
 		fmt.Println("Error: clock check failed")
@@ -288,23 +288,49 @@ func runTest() bool {
 	bstDelAll()
 	mainCmd = make([]string, 3, 3)
 	correct := 0
+	bstVal := []int{10, 100, 1000, 10000}
+	psgVal := []int{100, 1000, 100000, 500000, 1000000, 5000000}
+	var lcTime time.Duration
 
 	// Test psgAdd
-	bstVal := []int{0, 1, 10, 100, 1000}
-	psgVal := []int{100, 1000, 100000, 500000, 1000000}
-	for i := 0; i < 1; i++ {
-		for _, v := range bstVal {
-			mainCmd[1] = string(v)
+	for i := 0; i < len(bstVal); i++ {
+		// Create bstVal[i] bus stop
+		for j := 0; j < bstVal[i]; j++ {
+			mainCmd[1] = strconv.Itoa(j)
 			bstCreate()
-			for _, k := range psgVal {
-				mainCmd[2] = string(k)
-				psgAdd()
+		}
+		// Add psgVal[k] psg
+		for k := 0; k < len(psgVal); k++ {
+			mainCmd[2] = strconv.Itoa(psgVal[k])
+			slcTime := time.Now()
+			if psgAdd() {
+				lcTime += time.Since(slcTime)
+				correct++
 			}
 		}
 		bstDelAll()
 	}
+	fmt.Printf("Case 1: Passed %v/%v in %v\n", correct, len(psgVal)*len(bstVal), lcTime)
 
 	// Test psgAddRd
+	for i := 0; i < len(bstVal); i++ {
+		// Create bstVal[i] bus stop
+		for j := 0; j < bstVal[i]; j++ {
+			mainCmd[1] = strconv.Itoa(j)
+			bstCreate()
+		}
+		// Add psgVal[k] psg
+		for k := 0; k < len(psgVal); k++ {
+			mainCmd[1] = strconv.Itoa(psgVal[k])
+			slcTime := time.Now()
+			if psgAddRd() {
+				lcTime += time.Since(slcTime)
+				correct++
+			}
+		}
+		bstDelAll()
+	}
+	fmt.Printf("Case 2: Passed %v/%v in %v\n", correct, len(psgVal)*len(bstVal), lcTime)
 
 	return true
 }
