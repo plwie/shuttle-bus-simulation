@@ -26,7 +26,7 @@ var (
 func Busc(name string, path []*rs.BusStop) {
 	//need to declare global count = 0
 	// graph := rs.Graph{}
-	m := make(map[string]int)
+	// m := make(map[string]int)
 	pos := countPos
 	countPos++
 	var lenPath int = len(path)
@@ -45,24 +45,27 @@ func Busc(name string, path []*rs.BusStop) {
 		PassOn:     0,
 		CurrStop:   path[pos].Name,
 		NextStop:   path[pos+1].Name,
+		M:          make(map[string]int),
 	}
+
 	// Assign key value
 	for i := 0; i < lenPath; i++ {
-		m[path[i].Name] = 0
+		busStruct.M[path[i].Name] = 0
 	}
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < lenPath && name != "test" {
-			time.Sleep(time.Millisecond * 1)
-			busStruct.CurrStop = *&path[pos].Name
-			busStruct.NextStop = *&path[(pos+1)%lenPath].Name
+			time.Sleep(time.Millisecond * 10)
+			busStruct.CurrStop = path[pos].Name
+			busStruct.NextStop = path[(pos+1)%lenPath].Name
 
 			// busStruct.PassOn -= m[busStruct.CurrStop]
 			// busStruct.AvailSeats += m[busStruct.CurrStop]
-			rs.DropPass(m, &busStruct)
+			rs.DropPass(busStruct.M, &busStruct)
+			fmt.Println("Map of", name, busStruct.M)
 			// fmt.Println("Passenger of", name, "off at", busStruct.CurrStop, "is:", m[busStruct.CurrStop])
-			m[busStruct.CurrStop] = 0
-
+			busStruct.M[busStruct.CurrStop] = 0
+			fmt.Println("Map of", name, busStruct.M)
 			fmt.Println(count, name, busStruct.CurrStop, busStruct.NextStop, busStruct.AvailSeats, busStruct.PassOn)
 			// fmt.Println(globalHour, globalMin)
 
@@ -76,7 +79,7 @@ func Busc(name string, path []*rs.BusStop) {
 				for i := 0; i < busStruct.AvailSeats; i++ {
 					if path[i%10].Q.Size != 0 {
 						// m[path[i%10].Q.Pop().Destination]++
-						rs.GetPass(m, path, i)
+						rs.GetPass(busStruct.M, path, i)
 						busStruct.PassOn++
 						countPass++
 						busStruct.AvailSeats--
@@ -236,7 +239,7 @@ func main() {
 	}
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
-	for i := 0; i <= inputNoBus; i++ {
+	for i := 0; i < inputNoBus; i++ {
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin)

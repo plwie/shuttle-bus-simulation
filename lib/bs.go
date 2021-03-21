@@ -6,6 +6,7 @@ type Bus struct {
 	PassOn     int
 	CurrStop   string
 	NextStop   string
+	M          map[string]int
 }
 
 func GetPass(m map[string]int, path []*BusStop, i int) {
@@ -18,12 +19,4 @@ func GetPass(m map[string]int, path []*BusStop, i int) {
 func DropPass(m map[string]int, bus *Bus) {
 	bus.PassOn -= m[bus.CurrStop]
 	bus.AvailSeats += m[bus.CurrStop]
-}
-
-func PopulateMap(m map[string]int, path []*BusStop) map[string]int {
-	lenPath := len(path)
-	for i := 0; i < lenPath; i++ {
-		m[path[i].Name] = 0
-	}
-	return m
 }
