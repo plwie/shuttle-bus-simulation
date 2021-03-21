@@ -284,6 +284,28 @@ func bsDrop() bool {
 
 // This function is the main test drive
 func runTest() bool {
+	fmt.Println("Beginning the test drive...")
+	bstDelAll()
+	mainCmd = make([]string, 3, 3)
+	correct := 0
+
+	// Test psgAdd
+	bstVal := []int{0, 1, 10, 100, 1000}
+	psgVal := []int{100, 1000, 100000, 500000, 1000000}
+	for i := 0; i < 1; i++ {
+		for _, v := range bstVal {
+			mainCmd[1] = string(v)
+			bstCreate()
+			for _, k := range psgVal {
+				mainCmd[2] = string(k)
+				psgAdd()
+			}
+		}
+		bstDelAll()
+	}
+
+	// Test psgAddRd
+
 	return true
 }
 
