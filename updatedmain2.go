@@ -194,7 +194,18 @@ func main() {
 	fmt.Println("How many initial passenger?")
 	fmt.Scanln(&inputPsg)
 	fmt.Println("Simulation in progress.....")
-	fmt.Println("Events will add more passengers into the simulation")
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Println("REMINDER:")
+	fmt.Println("-Not all passengers will be delivered")
+	fmt.Println("-The simulation will stop after the time reaches the threshold")
+	fmt.Println("-Events will add more passengers into the simulation")
+	fmt.Println("-Waiting Time depends directly on the traffic of the road")
+	fmt.Println("-More traffic means bus can travel slower")
+	fmt.Println("-Waiting Time is calculated from the passengers that are successfully delivered")
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Println("Results: ")
+
+	start := time.Now()
 	psgr := rs.NewPassenger()
 	rand.Seed(time.Now().UnixNano())
 	//Passenger Generated -------------------------
@@ -221,5 +232,8 @@ func main() {
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 	Busc("test", stopList)
+	duration := time.Since(start)
+	fmt.Println("Simulation run time: ", duration)
+	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Simulation has ended...")
 }
