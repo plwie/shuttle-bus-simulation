@@ -22,14 +22,6 @@ var (
 	waitingTime float64 = 0
 )
 
-// Bus Struct
-// type Bus struct {
-// 	availSeats int
-// 	passOn     int
-// 	currStop   string
-// 	nextStop   string
-// }
-
 //busc threading function---------------------------------------------------------------
 func Busc(name string, path []*rs.BusStop) {
 	//need to declare global count = 0
@@ -37,7 +29,7 @@ func Busc(name string, path []*rs.BusStop) {
 	m := make(map[string]int)
 	pos := countPos
 	countPos++
-	var len int = len(path)
+	var lenPath int = len(path)
 	var count int = 0
 	var countPass int = 0
 	var localTimeHour int = 0
@@ -51,18 +43,19 @@ func Busc(name string, path []*rs.BusStop) {
 	busStruct := rs.Bus{
 		AvailSeats: 30,
 		PassOn:     0,
-		CurrStop:   *&path[pos].Name,
-		NextStop:   *&path[pos+1].Name,
+		CurrStop:   path[pos].Name,
+		NextStop:   path[pos+1].Name,
 	}
-	for i := 0; i < 10; i++ {
+	// Assign key value
+	for i := 0; i < lenPath; i++ {
 		m[path[i].Name] = 0
 	}
 	//code for bus traveling (busstop to another busstop)
 	for {
-		if pos < len && name != "test" {
+		if pos < lenPath && name != "test" {
 			time.Sleep(time.Millisecond * 10)
 			busStruct.CurrStop = *&path[pos].Name
-			busStruct.NextStop = *&path[(pos+1)%len].Name
+			busStruct.NextStop = *&path[(pos+1)%lenPath].Name
 
 			// busStruct.PassOn -= m[busStruct.CurrStop]
 			// busStruct.AvailSeats += m[busStruct.CurrStop]
@@ -77,7 +70,7 @@ func Busc(name string, path []*rs.BusStop) {
 			fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
 
 			if localTimeHour <= globalHour && localTimeMin <= globalMin {
-				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
+				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
 				dist = float64(graph.Edges[pos].Cost)
 				calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
 				for i := 0; i < busStruct.AvailSeats; i++ {

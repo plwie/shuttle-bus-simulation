@@ -14,7 +14,10 @@ List of files that have to be tested
 5. time.go*
     5.1. TimeTick()
     5.2. ConTimeTick()
-6. main.go
+6. bs.go
+    6.1. GetPass()
+    6.2. DropPass()
+7. main.go
     6.1. Busc()
 
 -----------------------------------------------------------------------
@@ -23,18 +26,17 @@ Test.go function detail
 a. bstList()*
 b. bstGet()*
 c. bstCreate()*
-d. bstDel()*
-e. psgAdd()*
+d. psgAdd()*
     > NewPassenger()
     > GnrPsgAt()
-f. psgAddRd()*
+e. psgAddRd()*
     > NewPassenger()
     > GnrPsg()
-g. timeTick()*
+f. timeTick()*
     > TimeTick()
     > ConTimeTick()
-h. carAdd()
+g. carAdd()
+h. 
 i. 
-j. 
 
 * Completed

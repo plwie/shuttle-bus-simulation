@@ -16,6 +16,7 @@ var (
 	mainCmd   []string
 	err       error
 	tStopLst  []*rs.BusStop
+	tBusLst   []*rs.Bus
 	tMin      int
 	tHr       int
 )
@@ -249,15 +250,75 @@ func carAdd() bool {
 	return true
 }
 
-// This function should create a bus thread
-func bsCreate() bool {
+// This function should print out the list of created bus
+func bsList() bool {
+	if len(tBusLst) == 0 {
+		fmt.Println("Error: no item in bus list")
+		return false
+	}
+	fmt.Printf("List of buses: ")
+	for _, v := range tBusLst {
+		fmt.Printf("%v ", v)
+	}
+	fmt.Printf("\n")
+	return true
+}
+
+// This function should print out the data of the target bus
+func bsGet() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter;")
+		fmt.Println("Error: invalid parameter; bsGet index")
 		return false
 	}
 
+	// Convert second parameter into int
+	index, err := strconv.Atoi(mainCmd[1])
+	if err != nil {
+		fmt.Printf("Error: invalid argument %v\n", mainCmd[1])
+		return false
+	}
+	if index > len(tBusLst)-1 {
+		fmt.Printf("Error: %v out of range\n", mainCmd[1])
+		return false
+	}
+	fmt.Printf("%v:\nAvailable Seat: %v\nCurrent Passenger: %v\nCurrently at: %v\nNext: %v\n", tBusLst[index], tBusLst[index].AvailSeats, tBusLst[index].PassOn, tBusLst[index].CurrStop, tBusLst[index].NextStop)
 	return true
+}
+
+// This function should create a bus instance
+func bsCreate() bool {
+	// Check parameters
+	if len(mainCmd) < 3 {
+		fmt.Println("Error: invalid parameter; bsCreate availSeat targetStop")
+		return false
+	}
+	if len(tStopLst) < 2 {
+		fmt.Println("Error: insufficient amount of bus stop")
+		return false
+	}
+
+	// Convert second parameter into int
+	availSeat, err := strconv.Atoi(mainCmd[1])
+	if err != nil {
+		fmt.Printf("Error: invalid argument %v\n", mainCmd[1])
+		return false
+	}
+	// Get next bus stop for positioning
+	for i, v := range tStopLst {
+		if v.Name == mainCmd[2] {
+			var nextName string
+			if i == len(tStopLst)-1 {
+				nextName = tStopLst[0].Name
+			} else {
+				nextName = tStopLst[i+1].Name
+			}
+			tBusLst = append(tBusLst, &rs.Bus{AvailSeats: availSeat, PassOn: 0, CurrStop: mainCmd[2], NextStop: nextName})
+			return true
+		}
+	}
+	fmt.Println("Error: bus stop with such name does not exist")
+	return false
 }
 
 // This function should pick up passsengers and add to the bus
@@ -340,11 +401,13 @@ func help() bool {
 	fmt.Println("bstList")
 	fmt.Println("bstGet")
 	fmt.Println("bstCreate")
-	fmt.Println("bstDel")
+	fmt.Println("bstDelAll")
 	fmt.Println("psgAdd")
 	fmt.Println("psgAddRd")
 	fmt.Println("timeTick")
 	fmt.Println("carAdd")
+	fmt.Println("bsList")
+	fmt.Println("bsGet")
 	fmt.Println("bsCreate")
 	fmt.Println("bsPick")
 	fmt.Println("bsDrop")
@@ -359,12 +422,13 @@ func main() {
 		"bstList":   bstList,
 		"bstGet":    bstGet,
 		"bstCreate": bstCreate,
-		"bstDel":    bstDel,
 		"bstDelAll": bstDelAll,
 		"psgAdd":    psgAdd,
 		"psgAddRd":  psgAddRd,
 		"timeTick":  timeTick,
 		"carAdd":    carAdd,
+		"bsList":    bsList,
+		"bsGet":     bsGet,
 		"bsCreate":  bsCreate,
 		"bsPick":    bsPick,
 		"bsDrop":    bsDrop,
