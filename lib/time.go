@@ -1,7 +1,6 @@
 package rs
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -20,13 +19,12 @@ func ConTimeTick(hour *int, min *int, lst []*BusStop, p *Passenger) int {
 	eventCalled := 0
 	initTime := 0
 	for *hour < 24 {
-		fmt.Printf("%02v:%02v\n", *hour, *min)
+		// fmt.Printf("%02v:%02v\n", *hour, *min)
 		TimeTick(hour, min)
 		time.Sleep(time.Millisecond * 1)
 		// Event Class End --------------------------------------------
 		if initTime != *hour {
 			GnrPsg(lst, Random(150, 200), p)
-			fmt.Println("case1")
 			eventCalled++
 			initTime++
 			//rs.GnrTrf(CarGroup())
@@ -34,8 +32,7 @@ func ConTimeTick(hour *int, min *int, lst []*BusStop, p *Passenger) int {
 
 		// Event train ----------------------------------------
 		if *hour%2 == 0 && *min == 0 {
-			GnrPsgAt(lst, "b", Random(50, 100), p)
-			fmt.Println("case2")
+			GnrPsgAt(lst, "hBuilding", Random(50, 100), p)
 			eventCalled++
 			//rs.GnrTrf(CarGroupTr())
 		}
@@ -43,11 +40,9 @@ func ConTimeTick(hour *int, min *int, lst []*BusStop, p *Passenger) int {
 		// // Event After 4pm ---------------------------------------------
 		if (*hour == 16 || *hour == 17 || *hour == 18) && *min == 0 {
 			GnrPsg(lst, Random(150, 200), p)
-			fmt.Println("case3")
 			eventCalled++
 			//rs.GnrTrf(CarGroupBusy())
 		}
 	}
-	fmt.Println(eventCalled)
 	return eventCalled
 }
