@@ -45,6 +45,7 @@ func Busc(name string, path []*rs.BusStop) {
 	var spd float64
 	var dist float64
 	var calcTime float64
+	var hourRunTime int = 6
 
 	//create bus struct instance
 	busStruct := rs.Bus{
@@ -111,7 +112,7 @@ func Busc(name string, path []*rs.BusStop) {
 			} else {
 				pos = 0
 			}
-			if globalHour == 1{
+			if globalHour == hourRunTime{
 				waitingTime = ((totalTime)/float64(passTotal))/60
 				secc := math.Round((((math.Mod(waitingTime,1))*60)*1000)/1000)
 				minn := (math.Floor(waitingTime/1))
