@@ -17,6 +17,7 @@ var (
 	err       error
 	tStopLst  []*rs.BusStop
 	tBusLst   []*rs.Bus
+	tMap      map[string]int
 	tMin      int
 	tHr       int
 )
@@ -436,7 +437,7 @@ func main() {
 		"runTest":   runTest,
 		"help":      help,
 	}
-
+	tMap = make(map[string]int)
 	fmt.Println("Test Drive Initiated...!")
 
 	// Simple shell
