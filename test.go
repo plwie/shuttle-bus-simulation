@@ -205,7 +205,7 @@ func timeTick() bool {
 	// fmt.Println("Starting the clock...")
 	tHr = 0
 	tMin = 0
-	rs.ConTimeTick(&tHr, &tMin)
+	rs.ConTimeTick(&tHr, &tMin, tStopLst, rs.NewPassenger())
 	// end := time.Since(start)
 	if tHr == 24 && tMin == 0 {
 		// fmt.Println("Clock check successful")
@@ -323,7 +323,7 @@ func bsPick() bool {
 	// Pick up passengers
 	start := time.Now()
 	for i := 0; i < target.AvailSeats; i++ {
-		rs.GetPass(target.M, tStopLst, i)
+		rs.GetPass(target.M, tStopLst, i, target)
 	}
 	end := time.Since(start)
 
