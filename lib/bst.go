@@ -4,8 +4,8 @@ import "fmt"
 
 // Queue implementation using Passenger node
 type Queue struct {
-	head *Passenger
-	tail *Passenger
+	Head *Passenger
+	Tail *Passenger
 	Size int
 }
 
@@ -14,12 +14,12 @@ type Adder interface{ Add(node Passenger) }
 
 // Add does not return anything
 func (q *Queue) Add(node Passenger) {
-	if q.head == nil {
-		q.head = &node
-		q.tail = &node
+	if q.Head == nil {
+		q.Head = &node
+		q.Tail = &node
 	} else {
-		q.tail.next = &node
-		q.tail = &node
+		q.Tail.Next = &node
+		q.Tail = &node
 	}
 	q.Size++
 }
@@ -29,16 +29,16 @@ type Popper interface{ Pop() *Passenger }
 
 // Pop return pointer of the removed node
 func (q *Queue) Pop() *Passenger {
-	if q.head == nil {
+	if q.Head == nil {
 		fmt.Println("Error: queue is empty")
 		return nil
 	}
-	temp := q.head
+	temp := q.Head
 	if q.Size == 1 {
-		q.head = nil
-		q.tail = nil
+		q.Head = nil
+		q.Tail = nil
 	} else {
-		q.head = q.head.next
+		q.Head = q.Head.Next
 	}
 	q.Size--
 	return temp
@@ -50,10 +50,10 @@ type Printer interface{ printD() }
 // printQ does not return anything
 func (q Queue) printD() {
 	fmt.Printf("Current Queue: ")
-	for i := q.head; i != nil; i = i.next {
+	for i := q.Head; i != nil; i = i.Next {
 		fmt.Printf("%v ", i)
 	}
-	fmt.Printf("\nCurrent Queue Info: %v\nHead: %v\nTail: %v\nSize: %v\n", q, q.head, q.tail, q.Size)
+	fmt.Printf("\nCurrent Queue Info: %v\nHead: %v\nTail: %v\nSize: %v\n", q, q.Head, q.Tail, q.Size)
 }
 
 func (bStop BusStop) printD() {

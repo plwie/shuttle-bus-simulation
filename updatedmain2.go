@@ -156,6 +156,8 @@ func main() {
 	graph.AddEdge(&hBuilding, &iBuilding, 1)
 	graph.AddEdge(&iBuilding, &jBuilding, 3)
 	graph.AddEdge(&jBuilding, &aBuilding, 2)
+
+	//---------------------------------------------------------------
 	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
@@ -175,6 +177,7 @@ func main() {
 	graph.GenerateTraffic(rs.CarGroup(), &iBuilding, &jBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &iBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &aBuilding)
+	//-----------------------------------------------------------------
 
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
