@@ -9,7 +9,7 @@ type Bus struct {
 	M          map[string]int
 }
 
-func GetPass(path []*BusStop, bus *Bus) {
+func GetPass(path []*BusStop, bus *Bus, countP *int) {
 	var target *BusStop
 	for _, v := range path {
 		if bus.CurrStop == v.Name {
@@ -21,6 +21,9 @@ func GetPass(path []*BusStop, bus *Bus) {
 			bus.M[target.Q.Pop().Destination]++
 			bus.PassOn++
 			bus.AvailSeats--
+			(*countP)++
+		} else {
+			break
 		}
 	}
 
