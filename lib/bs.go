@@ -14,3 +14,9 @@ func GetPass(m map[string]int, path []*BusStop, i int) {
 		m[path[i%len].Q.Pop().Destination]++
 	}
 }
+
+func DropPass(m map[string]int, bus *Bus) {
+	bus.PassOn -= m[bus.CurrStop]
+	bus.AvailSeats += m[bus.CurrStop]
+
+}

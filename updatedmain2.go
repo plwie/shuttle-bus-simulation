@@ -14,11 +14,11 @@ var (
 	globalHour int
 	globalMin  int
 	//for putting busc in main
-	countPos  int     = 0
-	count     int     = 0
-	graph             = rs.Graph{}
-	totalTime float64 = 0
-	passTotal int     = 0
+	countPos    int     = 0
+	count       int     = 0
+	graph               = rs.Graph{}
+	totalTime   float64 = 0
+	passTotal   int     = 0
 	waitingTime float64 = 0
 )
 
@@ -60,12 +60,13 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			time.Sleep(time.Millisecond * 1000)
+			time.Sleep(time.Millisecond * 100)
 			busStruct.CurrStop = *&path[pos].Name
 			busStruct.NextStop = *&path[(pos+1)%len].Name
 
-			busStruct.PassOn -= m[busStruct.CurrStop]
-			busStruct.AvailSeats += m[busStruct.CurrStop]
+			// busStruct.PassOn -= m[busStruct.CurrStop]
+			// busStruct.AvailSeats += m[busStruct.CurrStop]
+			rs.DropPass(m, &busStruct)
 			fmt.Println("Passenger of", name, "off at", busStruct.CurrStop, "is:", m[busStruct.CurrStop])
 			m[busStruct.CurrStop] = 0
 
@@ -109,18 +110,18 @@ func Busc(name string, path []*rs.BusStop) {
 			// pos++
 			// count++
 			countPass = 0
-			} else {
-				pos = 0
-			}
-			if globalHour == hourRunTime{
-				waitingTime = ((totalTime)/float64(passTotal))/60
-				secc := math.Round((((math.Mod(waitingTime,1))*60)*1000)/1000)
-				minn := (math.Floor(waitingTime/1))
-				fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
-				break
-			}
-			}
-			}
+		} else {
+			pos = 0
+		}
+		if globalHour == hourRunTime {
+			waitingTime = ((totalTime) / float64(passTotal)) / 60
+			secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
+			minn := (math.Floor(waitingTime / 1))
+			fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
+			break
+		}
+	}
+}
 
 //End busc--------------------------------------------------------------------------------------------------------
 
