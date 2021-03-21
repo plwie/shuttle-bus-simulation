@@ -25,7 +25,6 @@ var (
 //busc threading function---------------------------------------------------------------
 func Busc(name string, path []*rs.BusStop) {
 	//need to declare global count = 0
-	// graph := rs.Graph{}
 	// m := make(map[string]int)
 	pos := countPos
 	countPos++
@@ -242,8 +241,7 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
-	go rs.ConTimeTick(&globalHour, &globalMin)
+	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 	Busc("test", stopList)
-	fmt.Println("Total Passenger : %v/n", totalPsg)
 	fmt.Println("Ending main package...")
 }
