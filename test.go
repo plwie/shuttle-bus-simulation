@@ -105,7 +105,7 @@ func bstDel() bool {
 }
 
 func bstDelAll() bool {
-	fmt.Printf("Successfully deleted %v bus stop(s)\n", len(tStopLst))
+	// fmt.Printf("Successfully deleted %v bus stop(s)\n", len(tStopLst))
 	tStopLst = tStopLst[:0]
 	return true
 }
@@ -241,12 +241,13 @@ func timeTick() bool {
 
 // This function should add car into the map
 func carAdd() bool {
-	// Check parameters
-	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter;")
+	var temp []*rs.Car
+	temp = rs.CarGroup()
+	if temp == nil {
+		fmt.Println("Error: car group is nil")
 		return false
 	}
-
+	fmt.Printf("Car generated(%v cars): %v\n", len(temp), temp)
 	return true
 }
 

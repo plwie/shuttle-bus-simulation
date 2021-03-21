@@ -160,7 +160,7 @@ func main() {
 	graph.AddEdge(&iBuilding, &jBuilding, 3)
 	graph.AddEdge(&jBuilding, &aBuilding, 2)
 
-	//---------------------------------------------------------------
+	//GnrTrf Function---------------------------------------------------------------
 	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
@@ -186,43 +186,54 @@ func main() {
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	var inputPsg int
+	totalPsg := 0
 	fmt.Println("How many passenger?")
 	fmt.Scanln(&inputPsg)
 
 	psgr := rs.NewPassenger()
 	rand.Seed(time.Now().UnixNano())
 	//Passenger Generated -------------------------
-	// random1 := rs.Random(150, 200)
-	// rand.Seed(time.Now().UnixNano())
-	// random2 := rs.Random(50, 100)
-	// rand.Seed(time.Now().UnixNano())
-	// random3 := rs.Random(150, 200)
-
-	//Cars Generated ------------------------------
-	// cars1 := rs.CarGroup()
+	random1 := rs.Random(150, 200)
+	rand.Seed(time.Now().UnixNano())
+	random2 := rs.Random(50, 100)
+	rand.Seed(time.Now().UnixNano())
+	random3 := rs.Random(150, 200)
 
 	// rs.TimeTick(globalHour, globalMin)
 
 	// Init -------------------------------------------------
-	fmt.Println("Total Passenger :", inputPsg)
-	rs.GnrPsg(stopList, inputPsg, psgr)
+	if inputPsg != 0 {
+		fmt.Println("Total initiate Passenger : %v/n", inputPsg)
+		rs.GnrPsg(stopList, inputPsg, psgr)
+		//rs.GnrTrf(CarGroup())
+		totalPsg += inputPsg
+	} else {
+		fmt.Println("Total initiate Passenger : %v/n", random1)
+		rs.GnrPsg(stopList, random1, psgr)
+		//rs.GnrTrf(CarGroup())
+		totalPsg += random1
+	}
+
 	// // Event Class End --------------------------------------------
-	// if (globalMin % 60) == 0 {
-	// 	rs.GnrPsg(stopList, inputPsg, psgr)
-	// }
+	if (globalHour%1) == 0 && globalMin == 0 {
+		rs.GnrPsg(stopList, random1, psgr)
+		//rs.GnrTrf(CarGroup())
+		totalPsg += random1
+	}
 
 	// Event train ----------------------------------------
-	// if (globalMin % 120) == 0 {
-	// 	rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
-	// 	cars := rs.CarGroup()
-	// 	fmt.Println("Total cars")
-	// 	fmt.Println(len(cars))
-	// }
+	if (globalHour%2) == 0 && globalMin == 0 {
+		rs.GnrPsgAt(stopList, "hBuilding", random2, psgr)
+		//rs.GnrTrf(CarGroupTr())
+		totalPsg += random2
+	}
 
 	// // Event After 4pm ---------------------------------------------
-	// if globalHour == 16 {
-	// 	rs.GnrPsg(stopList, random3, psgr)
-	// }
+	if globalHour == 16 && globalMin == 0 {
+		rs.GnrPsg(stopList, random3, psgr)
+		//rs.GnrTrf(CarGroupBusy())
+		totalPsg += random3
+	}
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i <= inputNoBus; i++ {
@@ -230,5 +241,6 @@ func main() {
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin)
 	Busc("test", stopList)
+	fmt.Println("Total Passenger : %v/n", totalPsg)
 	fmt.Println("Ending main package...")
 }
