@@ -22,12 +22,12 @@ var (
 )
 
 // Bus Struct
-type Bus struct {
-	availSeats int
-	passOn     int
-	currStop   string
-	nextStop   string
-}
+// type Bus struct {
+// 	availSeats int
+// 	passOn     int
+// 	currStop   string
+// 	nextStop   string
+// }
 
 //busc threading function---------------------------------------------------------------
 func Busc(name string, path []*rs.BusStop) {
@@ -46,11 +46,11 @@ func Busc(name string, path []*rs.BusStop) {
 	var calcTime float64
 
 	//create bus struct instance
-	busStruct := Bus{
-		availSeats: 30,
-		passOn:     0,
-		currStop:   *&path[pos].Name,
-		nextStop:   *&path[pos+1].Name,
+	busStruct := rs.Bus{
+		AvailSeats: 30,
+		PassOn:     0,
+		CurrStop:   *&path[pos].Name,
+		NextStop:   *&path[pos+1].Name,
 	}
 	for i := 0; i < 10; i++ {
 		m[path[i].Name] = 0
@@ -58,15 +58,16 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			time.Sleep(time.Millisecond * 100)
-			busStruct.currStop = *&path[pos].Name
-			busStruct.nextStop = *&path[(pos+1)%len].Name
+			time.Sleep(time.Millisecond * 1000)
+			busStruct.CurrStop = *&path[pos].Name
+			busStruct.NextStop = *&path[(pos+1)%len].Name
 
-			busStruct.passOn -= m[busStruct.currStop]
-			busStruct.availSeats += m[busStruct.currStop]
-			m[busStruct.currStop] = 0
+			busStruct.PassOn -= m[busStruct.CurrStop]
+			busStruct.AvailSeats += m[busStruct.CurrStop]
+			fmt.Println("Passenger of", name, "off at", busStruct.CurrStop, "is:", m[busStruct.CurrStop])
+			m[busStruct.CurrStop] = 0
 
-			fmt.Println(count, name, busStruct.currStop, busStruct.nextStop, busStruct.availSeats, busStruct.passOn)
+			fmt.Println(count, name, busStruct.CurrStop, busStruct.NextStop, busStruct.AvailSeats, busStruct.PassOn)
 			// fmt.Println(globalHour, globalMin)
 
 			fmt.Println("G:H", globalHour, "G:M", globalMin)
@@ -76,15 +77,19 @@ func Busc(name string, path []*rs.BusStop) {
 				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%len]))
 				dist = float64(graph.Edges[pos].Cost)
 				calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
-				for i := 0; i < busStruct.availSeats; i++ {
+				for i := 0; i < busStruct.AvailSeats; i++ {
 					if path[i%10].Q.Size != 0 {
-						m[path[i%10].Q.Pop().Destination]++
-						busStruct.passOn++
+						// m[path[i%10].Q.Pop().Destination]++
+						rs.GetPass(m, path, i)
+						busStruct.PassOn++
 						countPass++
-						busStruct.availSeats--
+						busStruct.AvailSeats--
 
 					}
 				}
+
+				fmt.Println(m)
+
 				if localTimeMin <= 60 {
 					localTimeMin = globalMin + (int(calcTime) / 60)
 				}

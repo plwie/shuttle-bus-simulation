@@ -2,8 +2,15 @@ package rs
 
 // Bus Struct
 type Bus struct {
-	availSeats int
-	passOn     int
-	currStop   string
-	nextStop   string
+	AvailSeats int
+	PassOn     int
+	CurrStop   string
+	NextStop   string
+}
+
+func GetPass(m map[string]int, path []*BusStop, i int) {
+	len := len(path)
+	if path[i%len].Q.Size != 0 {
+		m[path[i%len].Q.Pop().Destination]++
+	}
 }
