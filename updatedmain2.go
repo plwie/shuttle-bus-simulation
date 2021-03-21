@@ -19,6 +19,7 @@ var (
 	graph             = rs.Graph{}
 	totalTime float64 = 0
 	passTotal int     = 0
+	waitingTime float64 = 0
 )
 
 // Bus Struct
@@ -107,11 +108,18 @@ func Busc(name string, path []*rs.BusStop) {
 			// pos++
 			// count++
 			countPass = 0
-		} else {
-			pos = 0
-		}
-	}
-}
+			} else {
+				pos = 0
+			}
+			if globalHour == 1{
+				waitingTime = ((totalTime)/float64(passTotal))/60
+				secc := math.Round((((math.Mod(waitingTime,1))*60)*1000)/1000)
+				minn := (math.Floor(waitingTime/1))
+				fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
+				break
+			}
+			}
+			}
 
 //End busc--------------------------------------------------------------------------------------------------------
 
