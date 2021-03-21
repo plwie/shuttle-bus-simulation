@@ -17,7 +17,6 @@ var (
 	err       error
 	tStopLst  []*rs.BusStop
 	tBusLst   []*rs.Bus
-	tMap      map[string]int
 	tMin      int
 	tHr       int
 )
@@ -65,7 +64,7 @@ func bstGet() bool {
 func bstCreate() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter; bstCreate name")
+		fmt.Println("Error: invalid parameter; bstCreate stopName")
 		return false
 	}
 	// Check for duplicated stop
@@ -77,32 +76,10 @@ func bstCreate() bool {
 	}
 	tStopLst = append(tStopLst, &rs.BusStop{Name: mainCmd[1]})
 	// fmt.Printf("Succesfully created a new bus stop with name %v...\n", mainCmd[1])
+	for _, v := range tBusLst {
+		v.M[mainCmd[1]] = 0
+	}
 	return true
-}
-
-// This function should remove the target bus stop from the list
-func bstDel() bool {
-	// Check parameters and list
-	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter; bstDel targetStop")
-		return false
-	}
-	if len(tStopLst) == 0 {
-		fmt.Println("Error: bus stop list is empty")
-		return false
-	}
-
-	// Check target list
-	for i, v := range tStopLst {
-		if v.Name == mainCmd[1] {
-			tStopLst[i] = tStopLst[len(tStopLst)-1]
-			tStopLst = tStopLst[:len(tStopLst)-1]
-			// fmt.Println("Successfully removed bus stop")
-			return true
-		}
-	}
-	fmt.Println("Error: bus stop with such name does not exist")
-	return false
 }
 
 func bstDelAll() bool {
@@ -228,7 +205,7 @@ func timeTick() bool {
 	// fmt.Println("Starting the clock...")
 	tHr = 0
 	tMin = 0
-	rs.ConTimeTick(&tHr, &tMin)
+	rs.ConTimeTick(&tHr, &tMin, tStopLst, rs.NewPassenger())
 	// end := time.Since(start)
 	if tHr == 24 && tMin == 0 {
 		// fmt.Println("Clock check successful")
@@ -315,7 +292,12 @@ func bsCreate() bool {
 			} else {
 				nextName = tStopLst[i+1].Name
 			}
-			tBusLst = append(tBusLst, &rs.Bus{AvailSeats: availSeat, PassOn: 0, CurrStop: mainCmd[2], NextStop: nextName})
+			newBus := &rs.Bus{AvailSeats: availSeat, PassOn: 0, CurrStop: mainCmd[2], NextStop: nextName}
+			newBus.M = make(map[string]int)
+			for _, k := range tStopLst {
+				newBus.M[k.Name] = 0
+			}
+			tBusLst = append(tBusLst, newBus)
 			return true
 		}
 	}
@@ -327,10 +309,25 @@ func bsCreate() bool {
 func bsPick() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter;")
+		fmt.Println("Error: invalid parameter; bsPick busIndex")
 		return false
 	}
+	// Get target bus
+	index, err := strconv.Atoi(mainCmd[1])
+	if err != nil {
+		fmt.Printf("Error: invalid parameter %v\n", mainCmd[1])
+		return false
+	}
+	target := tBusLst[index]
 
+	// Pick up passengers
+	start := time.Now()
+	for i := 0; i < target.AvailSeats; i++ {
+		rs.GetPass(target.M, tStopLst, i, target)
+	}
+	end := time.Since(start)
+
+	fmt.Printf("Pick up successful; Time taken: %v\n", end)
 	return true
 }
 
@@ -437,7 +434,6 @@ func main() {
 		"runTest":   runTest,
 		"help":      help,
 	}
-	tMap = make(map[string]int)
 	fmt.Println("Test Drive Initiated...!")
 
 	// Simple shell
