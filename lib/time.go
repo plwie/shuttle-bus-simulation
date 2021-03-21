@@ -1,8 +1,6 @@
 package rs
 
-import (
-	"time"
-)
+import "time"
 
 // TimeTick add 1 min to the global clock
 func TimeTick(hour *int, min *int) {

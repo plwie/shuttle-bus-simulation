@@ -60,14 +60,14 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < len && name != "test" {
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 10)
 			busStruct.CurrStop = *&path[pos].Name
 			busStruct.NextStop = *&path[(pos+1)%len].Name
 
 			// busStruct.PassOn -= m[busStruct.CurrStop]
 			// busStruct.AvailSeats += m[busStruct.CurrStop]
 			rs.DropPass(m, &busStruct)
-			fmt.Println("Passenger of", name, "off at", busStruct.CurrStop, "is:", m[busStruct.CurrStop])
+			// fmt.Println("Passenger of", name, "off at", busStruct.CurrStop, "is:", m[busStruct.CurrStop])
 			m[busStruct.CurrStop] = 0
 
 			fmt.Println(count, name, busStruct.CurrStop, busStruct.NextStop, busStruct.AvailSeats, busStruct.PassOn)
@@ -104,9 +104,9 @@ func Busc(name string, path []*rs.BusStop) {
 				pos++
 				count++
 			}
-			fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
+			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
 			passTotal += countPass
-			fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
+			// fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
 			// pos++
 			// count++
 			countPass = 0
@@ -233,7 +233,7 @@ func main() {
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
-		go Busc("bus"+fmt.Sprint((i+1)), stopList)
+		go Busc("bus"+fmt.Sprint((i)+1), stopList)
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin)
 	Busc("test", stopList)
