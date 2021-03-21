@@ -138,7 +138,7 @@ func psgAdd() bool {
 				}
 			}
 			// fmt.Printf("Added passengers successsfully\n")
-			fmt.Printf("Added %v passengers; Time taken: %v\n", mainCmd[2], end)
+			fmt.Printf("Added %v passengers to %v stops; Time taken: %v\n", mainCmd[2], len(tStopLst), end)
 			return true
 		}
 	}
@@ -196,7 +196,7 @@ func psgAddRd() bool {
 		return false
 	}
 	// fmt.Printf("Added passengers successsfully\n")
-	fmt.Printf("Added %v passengers; Time taken: %v\n", mainCmd[1], end)
+	fmt.Printf("Added %v passengers to %v stops; Time taken: %v\n", mainCmd[1], len(tStopLst), end)
 	return true
 }
 
@@ -359,11 +359,15 @@ func runTest() bool {
 	bstDelAll()
 	mainCmd = make([]string, 3, 3)
 	correct := 0
-	bstVal := []int{10, 100, 1000, 10000}
-	psgVal := []int{100, 1000, 100000, 500000, 1000000, 5000000}
+	totalCorrect := 0
+	totalCase := 0
+	bstVal := []int{10, 100, 1000, 5000}
+	psgVal := []int{100, 1000, 100000, 500000, 1000000}
 	var lcTime time.Duration
 
 	// Test psgAdd
+	fmt.Println("\n=====================================================================")
+	fmt.Println("Testing case 1: Adding passengers to specific bus stop")
 	for i := 0; i < len(bstVal); i++ {
 		// Create bstVal[i] bus stop
 		for j := 0; j < bstVal[i]; j++ {
@@ -382,8 +386,13 @@ func runTest() bool {
 		bstDelAll()
 	}
 	fmt.Printf("Case 1: Passed %v/%v in %v\n", correct, len(psgVal)*len(bstVal), lcTime)
+	totalCorrect += correct
+	correct = 0
+	totalCase += len(psgVal) * len(bstVal)
+	fmt.Println("=====================================================================\n")
 
 	// Test psgAddRd
+	fmt.Println("Testing case 2: Adding passengers to random bus stop")
 	for i := 0; i < len(bstVal); i++ {
 		// Create bstVal[i] bus stop
 		for j := 0; j < bstVal[i]; j++ {
@@ -402,7 +411,31 @@ func runTest() bool {
 		bstDelAll()
 	}
 	fmt.Printf("Case 2: Passed %v/%v in %v\n", correct, len(psgVal)*len(bstVal), lcTime)
+	totalCorrect += correct
+	correct = 0
+	totalCase = len(psgVal) * len(bstVal)
+	fmt.Println("=====================================================================\n")
 
+	// Test Global Event
+	fmt.Println("Testing case 3: Check clock and global event generator")
+	case3stop := []string{"hBuilding", "tst1", "tst2", "tst3", "tst4", "tst5"}
+	for _, v := range case3stop {
+		mainCmd[1] = v
+		bstCreate()
+	}
+	slcTime := time.Now()
+	if timeTick() {
+		lcTime = time.Since(slcTime)
+		correct++
+		totalCorrect++
+	}
+	bstDelAll()
+	fmt.Printf("Case 3: Passed %v/1 in %v\n", correct, lcTime)
+	correct = 0
+	totalCase++
+	fmt.Println("=====================================================================\n")
+
+	fmt.Printf("Result: %v/%v cases passed\n", totalCorrect, totalCase)
 	return true
 }
 
@@ -422,7 +455,14 @@ func help() bool {
 	fmt.Println("bsPick")
 	fmt.Println("bsDrop")
 	fmt.Println("runTest")
+	fmt.Println("exit")
 	return true
+}
+
+func exit() bool {
+	fmt.Printf("Ending test drive...\n")
+	os.Exit(0)
+	return false
 }
 
 func main() {
@@ -444,6 +484,7 @@ func main() {
 		"bsDrop":    bsDrop,
 		"runTest":   runTest,
 		"help":      help,
+		"exit":      exit,
 	}
 	fmt.Println("Test Drive Initiated...!")
 
@@ -454,7 +495,7 @@ func main() {
 		mainInput, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Error: keyboard interrupt")
-			continue
+			exit()
 		}
 		mainInput = strings.TrimSpace(mainInput)
 		mainCmd = strings.Split(mainInput, " ")
