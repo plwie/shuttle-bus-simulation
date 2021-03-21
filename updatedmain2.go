@@ -241,8 +241,7 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
-	go rs.ConTimeTick(&globalHour, &globalMin)
+	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 	Busc("test", stopList)
-	fmt.Println("Total Passenger : %v/n", totalPsg)
 	fmt.Println("Ending main package...")
 }
