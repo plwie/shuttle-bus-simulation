@@ -21,7 +21,7 @@ func ConTimeTick(hour *int, min *int, lst []*BusStop, p *Passenger) int {
 	for *hour < 24 {
 		// fmt.Printf("%02v:%02v\n", *hour, *min)
 		TimeTick(hour, min)
-		time.Sleep(time.Millisecond * 1)
+		time.Sleep(time.Millisecond * 30)
 		// Event Class End --------------------------------------------
 		if initTime != *hour {
 			GnrPsg(lst, Random(150, 200), p)

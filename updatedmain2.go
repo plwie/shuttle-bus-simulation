@@ -36,7 +36,7 @@ func Busc(name string, path []*rs.BusStop) {
 	var spd float64
 	var dist float64
 	var calcTime float64
-	var hourRunTime int = 6
+	var hourRunTime int = 10
 
 	//create bus struct instance
 	busStruct := rs.Bus{
@@ -54,37 +54,38 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < lenPath && name != "test" {
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(time.Millisecond * 1)
 			busStruct.CurrStop = path[pos].Name
 			busStruct.NextStop = path[(pos+1)%lenPath].Name
 
 			// busStruct.PassOn -= m[busStruct.CurrStop]
 			// busStruct.AvailSeats += m[busStruct.CurrStop]
-			rs.DropPass(busStruct.M, &busStruct)
-			fmt.Println("Map of", name, busStruct.M)
+			rs.DropPass(&busStruct)
+			// fmt.Println("Map of", name, busStruct.M)
 			// fmt.Println("Passenger of", name, "off at", busStruct.CurrStop, "is:", m[busStruct.CurrStop])
-			busStruct.M[busStruct.CurrStop] = 0
-			fmt.Println("Map of", name, busStruct.M)
-			fmt.Println(count, name, busStruct.CurrStop, busStruct.NextStop, busStruct.AvailSeats, busStruct.PassOn)
+			// busStruct.M[busStruct.CurrStop] = 0
+			// fmt.Println("Map of", name, busStruct.M)
+			// fmt.Println(count, name, busStruct.CurrStop, busStruct.NextStop, busStruct.AvailSeats, busStruct.PassOn)
 			// fmt.Println(globalHour, globalMin)
 
-			fmt.Println("G:H", globalHour, "G:M", globalMin)
-			fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
+			// fmt.Println("G:H", globalHour, "G:M", globalMin)
+			// fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
 
 			if localTimeHour <= globalHour && localTimeMin <= globalMin {
 				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
 				dist = float64(graph.Edges[pos].Cost)
 				calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
-				for i := 0; i < busStruct.AvailSeats; i++ {
-					if path[i%10].Q.Size != 0 {
-						// m[path[i%10].Q.Pop().Destination]++
-						rs.GetPass(busStruct.M, path, i, &busStruct)
-						// busStruct.PassOn++
-						countPass++
-						// busStruct.AvailSeats--
+				// for i := 0; i < busStruct.AvailSeats; i++ {
+				// 	if path[i%10].Q.Size != 0 {
+				// 		// m[path[i%10].Q.Pop().Destination]++
+				// 		rs.GetPass(busStruct.M, path, i, &busStruct)
+				// 		// busStruct.PassOn++
+				// 		countPass++
+				// 		// busStruct.AvailSeats--
 
-					}
-				}
+				// 	}
+				// }
+				rs.GetPass(path, &busStruct, &countPass)
 
 				// fmt.Println(m)
 
@@ -113,6 +114,7 @@ func Busc(name string, path []*rs.BusStop) {
 			secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 			minn := (math.Floor(waitingTime / 1))
 			fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
+			fmt.Println("Total Passengers Delivered: ", passTotal)
 			break
 		}
 	}
@@ -189,9 +191,21 @@ func main() {
 	fmt.Scanln(&inputNoBus)
 	var inputPsg int
 	totalPsg := 0
-	fmt.Println("How many passenger?")
+	fmt.Println("How many initial passenger?")
 	fmt.Scanln(&inputPsg)
+	fmt.Println("Simulation in progress.....")
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Println("REMINDER:")
+	fmt.Println("-Not all passengers will be delivered")
+	fmt.Println("-The simulation will stop after the time reaches the threshold")
+	fmt.Println("-Events will add more passengers into the simulation")
+	fmt.Println("-Waiting Time depends directly on the traffic of the road")
+	fmt.Println("-More traffic means bus can travel slower")
+	fmt.Println("-Waiting Time is calculated from the passengers that are successfully delivered")
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Println("Results: ")
 
+	start := time.Now()
 	psgr := rs.NewPassenger()
 	rand.Seed(time.Now().UnixNano())
 	//Passenger Generated -------------------------
@@ -201,22 +215,25 @@ func main() {
 
 	// Init -------------------------------------------------
 	if inputPsg != 0 {
-		fmt.Println("Total initiate Passenger : %v/n", inputPsg)
+		// fmt.Println("Total initiate Passenger : %v/n", inputPsg)
 		rs.GnrPsg(stopList, inputPsg, psgr)
 		//rs.GnrTrf(CarGroup())
 		totalPsg += inputPsg
 	} else {
-		fmt.Println("Total initiate Passenger : %v/n", random1)
+		// fmt.Println("Total initiate Passenger : %v/n", random1)
 		rs.GnrPsg(stopList, random1, psgr)
 		//rs.GnrTrf(CarGroup())
 		totalPsg += random1
 	}
 
-	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
+	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 	Busc("test", stopList)
-	fmt.Println("Ending main package...")
+	duration := time.Since(start)
+	fmt.Println("Simulation run time: ", duration)
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Println("Simulation has ended...")
 }
