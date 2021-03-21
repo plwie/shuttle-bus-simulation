@@ -9,10 +9,12 @@ type Bus struct {
 	M          map[string]int
 }
 
-func GetPass(m map[string]int, path []*BusStop, i int) {
+func GetPass(m map[string]int, path []*BusStop, i int, bus *Bus) {
 	len := len(path)
 	if path[i%len].Q.Size != 0 {
 		m[path[i%len].Q.Pop().Destination]++
+		bus.PassOn++
+		bus.AvailSeats--
 	}
 }
 
