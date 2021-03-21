@@ -160,7 +160,7 @@ func psgAdd() bool {
 				}
 			}
 			// fmt.Printf("Added passengers successsfully\n")
-			fmt.Printf("Time taken: %v\n", end)
+			fmt.Printf("Added %v passengers; Time taken: %v\n", mainCmd[2], end)
 			return true
 		}
 	}
@@ -218,7 +218,7 @@ func psgAddRd() bool {
 		return false
 	}
 	// fmt.Printf("Added passengers successsfully\n")
-	fmt.Printf("Time taken: %v\n", end)
+	fmt.Printf("Added %v passengers; Time taken: %v\n", mainCmd[1], end)
 	return true
 }
 
