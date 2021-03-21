@@ -35,6 +35,9 @@ e. psgAddRd()*
 f. timeTick()*
     > TimeTick()
     > ConTimeTick()
+    > NewPassenger()
+    > GnrPsgAt()
+    > GnrPsg()
 g. carAdd()
 h. 
 i. 
