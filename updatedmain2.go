@@ -53,7 +53,7 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < lenPath && name != "test" {
-			time.Sleep(time.Millisecond * 10)
+			time.Sleep(time.Millisecond * 1)
 			busStruct.CurrStop = *&path[pos].Name
 			busStruct.NextStop = *&path[(pos+1)%lenPath].Name
 
@@ -84,7 +84,7 @@ func Busc(name string, path []*rs.BusStop) {
 					}
 				}
 
-				fmt.Println(m)
+				// fmt.Println(m)
 
 				if localTimeMin <= 60 {
 					localTimeMin = globalMin + (int(calcTime) / 60)
@@ -225,8 +225,8 @@ func main() {
 	// }
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
-	for i := 0; i < inputNoBus; i++ {
-		go Busc("bus"+fmt.Sprint((i)+1), stopList)
+	for i := 0; i <= inputNoBus; i++ {
+		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
 	go rs.ConTimeTick(&globalHour, &globalMin)
 	Busc("test", stopList)
