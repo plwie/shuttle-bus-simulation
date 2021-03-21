@@ -25,7 +25,6 @@ var (
 //busc threading function---------------------------------------------------------------
 func Busc(name string, path []*rs.BusStop) {
 	//need to declare global count = 0
-	// graph := rs.Graph{}
 	// m := make(map[string]int)
 	pos := countPos
 	countPos++
