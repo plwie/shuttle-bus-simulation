@@ -1,9 +1,5 @@
 package rs
 
-import (
-	"time"
-)
-
 // TimeTick add 1 min to the global clock
 func TimeTick(hour *int, min *int) {
 	*min++
@@ -17,6 +13,6 @@ func TimeTick(hour *int, min *int) {
 func ConTimeTick(hour *int, min *int) {
 	for *hour < 24 {
 		TimeTick(hour, min)
-		time.Sleep(time.Millisecond * 50)
+		// time.Sleep(time.Millisecond * 50)
 	}
 }

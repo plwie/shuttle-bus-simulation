@@ -1,17 +1,17 @@
 List of files that have to be tested
-1. bst.go
+1. bst.go*
     1.1. Q.Add()
     1.2. Q.Pop()
 2. car.go
     2.1. CarGroup()
-3. psg.go
+3. psg.go*
     3.1. NewPassenger()
     3.2. GnrPsg()
         > Q.Add()
     3.3. GnrPsgAt()
         > Q.Add()
 4. rd.go
-5. time.go
+5. time.go*
     5.1. TimeTick()
     5.2. ConTimeTick()
 6. main.go
@@ -21,19 +21,20 @@ List of files that have to be tested
 
 Test.go function detail
 a. bstList()*
-b. bstCreate()*
-c. bstAdd()*
+b. bstGet()*
+c. bstCreate()*
+d. bstDel()*
+e. psgAdd()*
     > NewPassenger()
     > GnrPsgAt()
-d. bstAddRd()*
+f. psgAddRd()*
     > NewPassenger()
     > GnrPsg()
-e. bstRmv()
-f. tick()*
+g. timeTick()*
     > TimeTick()
     > ConTimeTick()
-g. carAdd()
-h. 
-i.
+h. carAdd()
+i. 
+j.
 
 * Completed

@@ -78,11 +78,42 @@ func bstCreate() bool {
 	return true
 }
 
+// This function should remove the target bus stop from the list
+func bstDel() bool {
+	// Check parameters and list
+	if len(mainCmd) < 2 {
+		fmt.Println("Error: invalid parameter; bstDel targetStop")
+		return false
+	}
+	if len(tStopLst) == 0 {
+		fmt.Println("Error: bus stop list is empty")
+		return false
+	}
+
+	// Check target list
+	for i, v := range tStopLst {
+		if v.Name == mainCmd[1] {
+			tStopLst[i] = tStopLst[len(tStopLst)-1]
+			tStopLst = tStopLst[:len(tStopLst)-1]
+			fmt.Println("Successfully removed bus stop")
+			return true
+		}
+	}
+	fmt.Println("Error: bus stop with such name does not exist")
+	return false
+}
+
+func bstDelAll() bool {
+	fmt.Printf("Successfully deleted %v bus stop(s)\n", len(tStopLst))
+	tStopLst = tStopLst[:0]
+	return true
+}
+
 // This function should add psg into queue of target bus stop
-func bstAdd() bool {
+func psgAdd() bool {
 	// Check parameters
 	if len(mainCmd) < 3 {
-		fmt.Println("Error: invalid parameter; bstAdd targetStop psgValue")
+		fmt.Println("Error: invalid parameter; psgAdd targetStop psgValue")
 		return false
 	}
 	// Check target list
@@ -137,10 +168,10 @@ func bstAdd() bool {
 }
 
 // This function should add psg into queue of random bus stop
-func bstAddRd() bool {
+func psgAddRd() bool {
 	// Check parameters
 	if len(mainCmd) < 2 {
-		fmt.Println("Error: invalid parameter; bstAddRd psgValue")
+		fmt.Println("Error: invalid parameter; psgAddRd psgValue")
 		return false
 	}
 	// Check target list
@@ -190,12 +221,7 @@ func bstAddRd() bool {
 	return true
 }
 
-// This function should remove psg out of queue of target bus stop
-func bstRmv() bool {
-	return true
-}
-
-func tick() bool {
+func timeTick() bool {
 	start := time.Now()
 	fmt.Println("Starting the clock...")
 	tHr = 0
@@ -214,6 +240,50 @@ func tick() bool {
 
 // This function should add car into the map
 func carAdd() bool {
+	// Check parameters
+	if len(mainCmd) < 2 {
+		fmt.Println("Error: invalid parameter;")
+		return false
+	}
+
+	return true
+}
+
+// This function should create a bus thread
+func bsCreate() bool {
+	// Check parameters
+	if len(mainCmd) < 2 {
+		fmt.Println("Error: invalid parameter;")
+		return false
+	}
+
+	return true
+}
+
+// This function should pick up passsengers and add to the bus
+func bsPick() bool {
+	// Check parameters
+	if len(mainCmd) < 2 {
+		fmt.Println("Error: invalid parameter;")
+		return false
+	}
+
+	return true
+}
+
+// This function should drop off passengers from the bus
+func bsDrop() bool {
+	// Check parameters
+	if len(mainCmd) < 2 {
+		fmt.Println("Error: invalid parameter;")
+		return false
+	}
+
+	return true
+}
+
+// This function is the main test drive
+func runTest() bool {
 	return true
 }
 
@@ -222,28 +292,35 @@ func help() bool {
 	fmt.Println("bstList")
 	fmt.Println("bstGet")
 	fmt.Println("bstCreate")
-	fmt.Println("bstAdd")
-	fmt.Println("bstAddRd")
-	fmt.Println("bstRmv")
+	fmt.Println("bstDel")
+	fmt.Println("psgAdd")
+	fmt.Println("psgAddRd")
 	fmt.Println("timeTick")
 	fmt.Println("carAdd")
+	fmt.Println("bsCreate")
+	fmt.Println("bsPick")
+	fmt.Println("bsDrop")
+	fmt.Println("runTest")
 	return true
 }
 
 func main() {
-	// Setup
+	// Setup and Map functions
 	reader := bufio.NewReader(os.Stdin)
-
-	// Map functions
 	var cmdMap = map[string](func() bool){
 		"bstList":   bstList,
 		"bstGet":    bstGet,
 		"bstCreate": bstCreate,
-		"bstAdd":    bstAdd,
-		"bstAddRd":  bstAddRd,
-		"bstRmv":    bstRmv,
-		"timeTick":  tick,
+		"bstDel":    bstDel,
+		"bstDelAll": bstDelAll,
+		"psgAdd":    psgAdd,
+		"psgAddRd":  psgAddRd,
+		"timeTick":  timeTick,
 		"carAdd":    carAdd,
+		"bsCreate":  bsCreate,
+		"bsPick":    bsPick,
+		"bsDrop":    bsDrop,
+		"runTest":   runTest,
 		"help":      help,
 	}
 
