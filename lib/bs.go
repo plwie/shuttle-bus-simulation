@@ -9,13 +9,16 @@ type Bus struct {
 	M          map[string]int
 }
 
-func GetPass(m map[string]int, path []*BusStop, i int, bus *Bus) {
+func GetPass(m map[string]int, path []*BusStop, bus *Bus, availSeat int) {
 	len := len(path)
-	if path[i%len].Q.Size != 0 {
-		m[path[i%len].Q.Pop().Destination]++
-		bus.PassOn++
-		bus.AvailSeats--
+	for i := 0; i < availSeat; i++ {
+		if path[i%len].Q.Size != 0 {
+			m[path[i%len].Q.Pop().Destination]++
+			bus.PassOn++
+			bus.AvailSeats--
+		}
 	}
+
 }
 
 func DropPass(m map[string]int, bus *Bus) {
