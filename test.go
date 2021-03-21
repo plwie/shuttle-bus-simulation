@@ -82,6 +82,7 @@ func bstCreate() bool {
 	return true
 }
 
+// This function clear all bus stop from the list
 func bstDelAll() bool {
 	// fmt.Printf("Successfully deleted %v bus stop(s)\n", len(tStopLst))
 	tStopLst = tStopLst[:0]
@@ -305,6 +306,13 @@ func bsCreate() bool {
 	return false
 }
 
+// This function clear all bus from the list
+func bsDelAll() bool {
+	// fmt.Printf("Successfully deleted %v bus(s)\n", len(tBusLst))
+	tBusLst = tBusLst[:0]
+	return true
+}
+
 // This function should pick up passsengers and add to the bus
 func bsPick() bool {
 	// Check parameters
@@ -318,11 +326,16 @@ func bsPick() bool {
 		fmt.Printf("Error: invalid parameter %v\n", mainCmd[1])
 		return false
 	}
+	if index > len(tBusLst)-1 {
+		fmt.Printf("Error: %v out of range\n", mainCmd[1])
+		return false
+	}
 	target := tBusLst[index]
 
 	// Pick up passengers
 	start := time.Now()
-	rs.GetPass(tStopLst, target)
+	temp := 0
+	rs.GetPass(tStopLst, target, &temp)
 	end := time.Since(start)
 
 	fmt.Printf("Pick up successful; Time taken: %v\n", end)
@@ -342,14 +355,18 @@ func bsDrop() bool {
 		fmt.Printf("Error: invalid parameter %v\n", mainCmd[1])
 		return false
 	}
+	if index > len(tBusLst)-1 {
+		fmt.Printf("Error: %v out of range\n", mainCmd[1])
+		return false
+	}
 	target := tBusLst[index]
 
-	// Pick up passengers
+	// Drop off passengers
 	start := time.Now()
-	rs.GetPass(tStopLst, target)
+	rs.DropPass(target)
 	end := time.Since(start)
 
-	fmt.Printf("Pick up successful; Time taken: %v\n", end)
+	fmt.Printf("Drop off successful; Time taken: %v\n", end)
 	return true
 }
 
@@ -435,6 +452,14 @@ func runTest() bool {
 	totalCase++
 	fmt.Println("=====================================================================\n")
 
+	// Test Global Event
+	fmt.Println("Testing case 4: Pick up passengers from bus stop")
+
+	bstDelAll()
+	fmt.Printf("Case 3: Passed %v/1 in %v\n", correct, lcTime)
+	correct = 0
+	fmt.Println("=====================================================================\n")
+
 	fmt.Printf("Result: %v/%v cases passed\n", totalCorrect, totalCase)
 	return true
 }
@@ -452,6 +477,7 @@ func help() bool {
 	fmt.Println("bsList")
 	fmt.Println("bsGet")
 	fmt.Println("bsCreate")
+	fmt.Println("bsDelAll")
 	fmt.Println("bsPick")
 	fmt.Println("bsDrop")
 	fmt.Println("runTest")
@@ -480,6 +506,7 @@ func main() {
 		"bsList":    bsList,
 		"bsGet":     bsGet,
 		"bsCreate":  bsCreate,
+		"bsDelAll":  bstDelAll,
 		"bsPick":    bsPick,
 		"bsDrop":    bsDrop,
 		"runTest":   runTest,
