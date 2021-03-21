@@ -19,3 +19,10 @@ func DropPass(m map[string]int, bus *Bus) {
 	bus.PassOn -= m[bus.CurrStop]
 	bus.AvailSeats += m[bus.CurrStop]
 }
+
+func PopulateMap(m map[string]int, path []*BusStop) {
+	lenPath := len(path)
+	for i := 0; i < lenPath; i++ {
+		m[path[i].Name] = 0
+	}
+}
