@@ -323,7 +323,7 @@ func bsPick() bool {
 	// Pick up passengers
 	start := time.Now()
 	for i := 0; i < target.AvailSeats; i++ {
-		rs.GetPass(target.M, tStopLst, i, target)
+		rs.GetPass(target.M, tStopLst, target)
 	}
 	end := time.Since(start)
 
