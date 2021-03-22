@@ -54,7 +54,7 @@ func Busc(name string, path []*rs.BusStop) {
 	//code for bus traveling (busstop to another busstop)
 	for {
 		if pos < lenPath && name != "test" {
-			time.Sleep(time.Millisecond * 1)
+			// time.Sleep(time.Millisecond * 1)
 			busStruct.CurrStop = path[pos].Name
 			busStruct.NextStop = path[(pos+1)%lenPath].Name
 
