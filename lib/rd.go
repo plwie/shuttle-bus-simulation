@@ -172,7 +172,7 @@ func (g *Graph) GenerateTraffic(randomCar []*Car, parent *BusStop, child *BusSto
 	// random1 car capacity
 	for _, edge := range g.Edges {
 		if edge.Parent == parent && edge.Child == child {
-			temp := rand.Intn(70) + len(randomCar)
+			temp := rand.Intn(65) + len(randomCar)
 			edge.Density = float64(temp / 2)
 			edge.Level = int(math.Floor(edge.Density / 10))
 		}

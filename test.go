@@ -430,7 +430,7 @@ func runTest() bool {
 	fmt.Printf("Case 2: Passed %v/%v in %v\n", correct, len(psgVal)*len(bstVal), lcTime)
 	totalCorrect += correct
 	correct = 0
-	totalCase = len(psgVal) * len(bstVal)
+	totalCase += len(psgVal) * len(bstVal)
 	fmt.Println("=====================================================================\n")
 
 	// Test Global Event
@@ -451,14 +451,15 @@ func runTest() bool {
 	correct = 0
 	totalCase++
 	fmt.Println("=====================================================================\n")
+	/*
+		// Test Global Event
+		fmt.Println("Testing case 4: Pick up passengers from bus stop")
 
-	// Test Global Event
-	fmt.Println("Testing case 4: Pick up passengers from bus stop")
-
-	bstDelAll()
-	fmt.Printf("Case 3: Passed %v/1 in %v\n", correct, lcTime)
-	correct = 0
-	fmt.Println("=====================================================================\n")
+		bstDelAll()
+		fmt.Printf("Case 3: Passed %v/1 in %v\n", correct, lcTime)
+		correct = 0
+		fmt.Println("=====================================================================\n")
+	*/
 
 	fmt.Printf("Result: %v/%v cases passed\n", totalCorrect, totalCase)
 	return true
