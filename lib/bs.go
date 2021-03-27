@@ -7,9 +7,13 @@ type Bus struct {
 	CurrStop   string
 	NextStop   string
 	M          map[string]int
+	DistToNext float64
+	AtStop     bool
+	Pos        int
+	FirstTime  bool
 }
 
-func GetPass(path []*BusStop, bus *Bus, countP *int) {
+func GetPassngr(path []*BusStop, bus *Bus, count *int) {
 	var target *BusStop
 	for _, v := range path {
 		if bus.CurrStop == v.Name {
@@ -20,8 +24,8 @@ func GetPass(path []*BusStop, bus *Bus, countP *int) {
 		if target.Q.Size != 0 {
 			bus.M[target.Q.Pop().Destination]++
 			bus.PassOn++
+			(*count)++
 			bus.AvailSeats--
-			(*countP)++
 		} else {
 			break
 		}

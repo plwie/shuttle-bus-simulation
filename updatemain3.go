@@ -23,87 +23,59 @@ var (
 	countBWG    *int
 	tick        *int
 	mutx        sync.Mutex
+	BusArr      []*rs.Bus
 )
 
 //busc threading function---------------------------------------------------------------
-func BusD(name string, path []*rs.BusStop) {
-	pos := countPos
-	countPos++
+func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
+	// pos := countPos
+	// countPos++
 	var lenPath int = len(path)
-	var count int = 0
-	var countPass int = 0
 	var spd float64
 	var dist float64
-	var calcTime float64
+	var calcDist float64
+	var distTrav float64
+	var countPass int = 0
+	// // Assign key value
+	// for i := 0; i < lenPath; i++ {
+	// 	busStruct.M[path[i].Name] = 0
+	// }
 
-	//create bus struct instance
-	busStruct := rs.Bus{
-		AvailSeats: 30,
-		PassOn:     0,
-		CurrStop:   path[pos].Name,
-		NextStop:   path[pos+1].Name,
-		M:          make(map[string]int),
+	//pass struct values
+
+	//initial position
+	//only enter this condition when first run simulation
+	if BusArr.FirstTime == false {
+		BusArr.Pos = name
+		BusArr.FirstTime = true
+	}
+	if BusArr.Pos >= 10 {
+		BusArr.Pos = 0
 	}
 
-	// Assign key value
-	for i := 0; i < lenPath; i++ {
-		busStruct.M[path[i].Name] = 0
+	calcDist = dist
+	dist = float64(graph.Edges[BusArr.Pos].Cost)
+	spd = float64(graph.GetSpeed(path[BusArr.Pos], path[(BusArr.Pos+1)%lenPath]))
+	distTrav = dist - ((dist*1000)/60)*spd
+
+	if BusArr.CurrStop == "Traveling" {
+		if calcDist-distTrav > 0 {
+			//move 1 step
+			BusArr.AtStop = false
+			calcDist = dist - distTrav
+		}
+		if calcDist-distTrav <= 1 {
+			rs.DropPass(BusArr)
+			rs.GetPassngr(path, BusArr, &countPass)
+			mutx.Lock()
+			totalTime += (dist / spd)
+			mutx.Unlock()
+			BusArr.Pos++
+		}
 	}
-	//code for bus traveling (busstop to another busstop)
-	for {
-		if pos < lenPath && name != "test" {
-			// time.Sleep(time.Millisecond * 1)
-			busStruct.CurrStop = path[pos].Name
-			busStruct.NextStop = path[(pos+1)%lenPath].Name
+	passTotal += countPass
+	bwg.Done()
 
-			// busStruct.PassOn -= m[busStruct.CurrStop]
-			// busStruct.AvailSeats += m[busStruct.CurrStop]
-			rs.DropPass(&busStruct)
-			// fmt.Println("Map of", name, busStruct.M)
-			// fmt.Println("Passenger of", name, "off at", busStruct.CurrStop, "is:", m[busStruct.CurrStop])
-			// busStruct.M[busStruct.CurrStop] = 0
-			// fmt.Println("Map of", name, busStruct.M)
-			// fmt.Println(count, name, busStruct.CurrStop, busStruct.NextStop, busStruct.AvailSeats, busStruct.PassOn)
-			// fmt.Println(globalHour, globalMin)
-
-			// fmt.Println("G:H", globalHour, "G:M", globalMin)
-			// fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
-
-			spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
-
-			dist = float64(graph.Edges[pos].Cost)
-
-			// calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
-
-			(dist*1000)/60 * spd = distance travel in one minute
-
-			for dist!=0{
-				dist -= 
-			}
-			rs.GetPass(path, &busStruct, &countPass)
-
-			totalTime += (calcTime * float64(countPass))
-			pos++
-			count++
-
-			// //put lock unlock here
-			// mutx.Lock()
-			// (*tick)++
-			// mutx.Unlock()
-
-		} else {
-			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
-			passTotal += countPass
-			// fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
-			countPass = 0
-			pos = 0
-		} 
-	}
-	waitingTime = ((totalTime) / float64(passTotal)) / 60
-	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
-	minn := (math.Floor(waitingTime / 1))
-	fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
-	fmt.Println("Total Passengers Delivered: ", passTotal)
 }
 
 //End busc--------------------------------------------------------------------------------------------------------
@@ -211,17 +183,26 @@ func main() {
 		//rs.GnrTrf(CarGroup())
 		totalPsg += random1
 	}
+	//create bus struct array
+
+	for i := 0; i <= inputNoBus; i++ {
+		BusArr = append(BusArr, &rs.Bus{})
+	}
 
 	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
 		bwg.Add(1)
-		go Busc("bus"+fmt.Sprint(i), stopList)
+		go Busc(i, stopList, BusArr[i], &bwg)
 	}
 	// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
-	bwg.Add(1)
-	BusD("test", stopList)
+	// Busc(inputNoBus+1, stopList, , &bwg)
 	bwg.Wait()
 
+	waitingTime = ((totalTime) / float64(passTotal)) / 60
+	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
+	minn := (math.Floor(waitingTime / 1))
+	fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
+	fmt.Println("Total Passengers Delivered: ", passTotal)
 	duration := time.Since(start)
 	fmt.Println("Simulation run time: ", duration)
 	fmt.Println("-------------------------------------------------------------------------------------------")
