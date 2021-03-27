@@ -63,21 +63,30 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	calcDist = dist
 	dist = float64(graph.Edges[BusArr.Pos].Cost)
 	spd = float64(graph.GetSpeed(path[BusArr.Pos], path[(BusArr.Pos+1)%lenPath]))
-	distTrav = dist - ((dist*1000)/60)*spd
+	distTrav = ((dist * 1000) / 60) * spd
+
+	BusArr.CurrStop = "Traveling"
+	// BusArr.NextStop = path[(BusArr.Pos + 1)].Name
 
 	if BusArr.CurrStop == "Traveling" {
-		if calcDist-distTrav > 0 {
+		if calcDist-distTrav > 1 {
 			//move 1 step
 			BusArr.AtStop = false
 			calcDist = dist - distTrav
 		}
-		if calcDist-distTrav <= 1 {
+		if calcDist-distTrav < 1 {
+			BusArr.CurrStop = BusArr.NextStop
+			BusArr.NextStop = path[(BusArr.Pos+2)%lenPath].Name
+			mutx.Lock()
 			rs.DropPass(BusArr)
+			mutx.Unlock()
 			rs.GetPassngr(path, BusArr, &countPass)
 			mutx.Lock()
 			totalTime += (dist / spd)
 			mutx.Unlock()
 			BusArr.Pos++
+			BusArr.CurrStop = "Traveling"
+
 		}
 	}
 	mutx.Lock()
@@ -199,7 +208,7 @@ func main() {
 	}
 
 	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
-	for worldTime <= 120 {
+	for worldTime <= 600 {
 		worldTime++
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
@@ -207,16 +216,16 @@ func main() {
 		}
 		// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 
-		// bussTest := rs.Bus{}
-		// bwg.Add(1)
-		// go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
+		bussTest := rs.Bus{}
+		bwg.Add(1)
+		go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
 		bwg.Wait()
 	}
 
 	fmt.Println(totalTime)
-	fmt.Println(waitingTime)
 	fmt.Println(passTotal)
-	waitingTime = ((totalTime) / float64(passTotal)) / 60
+	waitingTime = ((totalTime) / float64(passTotal))
+	fmt.Println(waitingTime)
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
 	fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
