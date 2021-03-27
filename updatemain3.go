@@ -34,6 +34,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var spd float64
 	var dist float64
 	var calcDist float64
+	var calcTime float64
 	var distTrav float64
 	var countPass int = 0
 	// var pWaitTime *float64 = &waitingTime
@@ -50,9 +51,9 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	//only enter this condition when first run simulation
 	if BusArr.FirstTime == false {
 		BusArr.Pos = name
-		BusArr.M = make(map[string]int)
+		BusArr.M = make(map[string]*int)
 		for i := 0; i < lenPath; i++ {
-			BusArr.M[path[i].Name] = 0
+			*BusArr.M[path[i].Name] = 0
 		}
 		BusArr.FirstTime = true
 	}
@@ -63,26 +64,26 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	calcDist = dist
 	dist = float64(graph.Edges[BusArr.Pos].Cost)
 	spd = float64(graph.GetSpeed(path[BusArr.Pos], path[(BusArr.Pos+1)%lenPath]))
-	distTrav = ((dist * 1000) / 60) * spd
+	distTrav = (dist / 60) * spd
 
-	BusArr.CurrStop = "Traveling"
-	// BusArr.NextStop = path[(BusArr.Pos + 1)].Name
+	BusArr.Status = "Traveling"
+	BusArr.CurrStop = path[(BusArr.Pos)].Name
+	BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
 
-	if BusArr.CurrStop == "Traveling" {
+	if BusArr.Status == "Traveling" {
 		if calcDist-distTrav > 1 {
 			//move 1 step
 			BusArr.AtStop = false
-			calcDist = dist - distTrav
+			calcDist = (dist * 1000) - distTrav
 		}
 		if calcDist-distTrav < 1 {
-			BusArr.CurrStop = BusArr.NextStop
-			BusArr.NextStop = path[(BusArr.Pos+2)%lenPath].Name
 			mutx.Lock()
 			rs.DropPass(BusArr)
 			mutx.Unlock()
 			rs.GetPassngr(path, BusArr, &countPass)
 			mutx.Lock()
-			totalTime += (dist / spd)
+			calcTime = float64(math.Round((dist / spd) * 3600))
+			totalTime += calcTime
 			mutx.Unlock()
 			BusArr.Pos++
 			BusArr.CurrStop = "Traveling"
@@ -222,9 +223,9 @@ func main() {
 		bwg.Wait()
 	}
 
-	fmt.Println(totalTime)
+	fmt.Println(totalTime / 60)
 	fmt.Println(passTotal)
-	waitingTime = ((totalTime) / float64(passTotal))
+	waitingTime = ((totalTime) / float64(passTotal)) / 60
 	fmt.Println(waitingTime)
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))

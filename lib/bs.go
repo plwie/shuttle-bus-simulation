@@ -6,11 +6,12 @@ type Bus struct {
 	PassOn     int
 	CurrStop   string
 	NextStop   string
-	M          map[string]int
+	M          map[string]*int
 	DistToNext float64
 	AtStop     bool
 	Pos        int
 	FirstTime  bool
+	Status     string
 }
 
 func GetPassngr(path []*BusStop, bus *Bus, count *int) {
@@ -22,7 +23,7 @@ func GetPassngr(path []*BusStop, bus *Bus, count *int) {
 	}
 	for bus.AvailSeats != 0 {
 		if target.Q.Size != 0 {
-			bus.M[target.Q.Pop().Destination]++
+			*bus.M[target.Q.Pop().Destination]++
 			bus.PassOn++
 			(*count)++
 			bus.AvailSeats--
@@ -34,7 +35,7 @@ func GetPassngr(path []*BusStop, bus *Bus, count *int) {
 }
 
 func DropPass(bus *Bus) {
-	bus.PassOn -= bus.M[bus.CurrStop]
-	bus.AvailSeats += bus.M[bus.CurrStop]
-	bus.M[bus.CurrStop] = 0
+	bus.PassOn -= *bus.M[bus.CurrStop]
+	bus.AvailSeats += *bus.M[bus.CurrStop]
+	*bus.M[bus.CurrStop] = 0
 }
