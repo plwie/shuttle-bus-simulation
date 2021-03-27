@@ -12,8 +12,6 @@ import (
 var (
 	stopList   []*rs.BusStop
 	inputNoBus int
-	globalHour int
-	globalMin  int
 	//for putting busc in main
 	countPos    int     = 0
 	count       int     = 0
@@ -23,8 +21,9 @@ var (
 	waitingTime float64 = 0
 	bwg         sync.WaitGroup
 	countBWG    *int
-	tick        *int
+	tick        int = 0
 	mutx        sync.Mutex
+	step        int = 0
 )
 
 //busc threading function---------------------------------------------------------------
@@ -34,12 +33,10 @@ func Busc(name string, path []*rs.BusStop) {
 	var lenPath int = len(path)
 	var count int = 0
 	var countPass int = 0
-	var localTimeHour int = 0
-	var localTimeMin int = 0
 	var spd float64
 	var dist float64
 	var calcTime float64
-	var hourRunTime int = 10
+	var tiktok int = 0
 
 	//create bus struct instance
 	busStruct := rs.Bus{
@@ -55,7 +52,7 @@ func Busc(name string, path []*rs.BusStop) {
 		busStruct.M[path[i].Name] = 0
 	}
 	//code for bus traveling (busstop to another busstop)
-	for {
+	for tiktok != 10 {
 		if pos < lenPath && name != "test" {
 			// time.Sleep(time.Millisecond * 1)
 			busStruct.CurrStop = path[pos].Name
@@ -83,10 +80,10 @@ func Busc(name string, path []*rs.BusStop) {
 			totalTime += (calcTime * float64(countPass))
 			pos++
 			count++
-
+			tiktok++
 			//put lock unlock here
 			mutx.Lock()
-			(*tick)++
+			(tick)++
 			mutx.Unlock()
 
 		} else {
@@ -169,7 +166,6 @@ func main() {
 	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &iBuilding)
 	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &aBuilding)
 	//-----------------------------------------------------------------
-
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
@@ -215,7 +211,19 @@ func main() {
 		bwg.Add(1)
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
-	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
+
+	// if tick%inputNoBus == 0 {
+	// 	step++
+	// }
+	// if step%20 == 10 {
+	// 	rs.ClassEnd(stopList, psgr)
+	// }
+	// if step%20 == 0 {
+	// 	rs.Train(stopList, psgr)
+	// }
+	// if step > 180 {
+	// 	rs.Train(stopList, psgr)
+	// }
 	Busc("test", stopList)
 	bwg.Wait()
 	duration := time.Since(start)
