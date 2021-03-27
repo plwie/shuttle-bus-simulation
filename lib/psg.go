@@ -9,6 +9,7 @@ type Passenger struct {
 	Source      string
 	Destination string
 	Next        *Passenger
+	WaitTime    int
 }
 
 func random(min int, max int) int {
@@ -24,6 +25,7 @@ func NewPassenger() *Passenger {
 //GnrPsg Generate psg and add to bus stop
 func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 	for i := 0; i < random1; i++ {
+		psgr.WaitTime = 0
 		psgr.Source = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
 		for j := 0; j < len(stopList); j++ {
 			if psgr.Source == stopList[j].Name {

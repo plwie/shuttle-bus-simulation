@@ -14,7 +14,7 @@ type Bus struct {
 	Status     string
 }
 
-func GetPassngr(path []*BusStop, bus *Bus, count *int) {
+func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {
 	var target *BusStop
 	for _, v := range path {
 		if bus.CurrStop == v.Name {
@@ -24,6 +24,7 @@ func GetPassngr(path []*BusStop, bus *Bus, count *int) {
 	for bus.AvailSeats != 0 {
 		// fmt.Println(target.Q.Size)
 		if target.Q.Size != 0 {
+			*calculatedTime += target.Q.Head.WaitTime
 			bus.M[target.Q.Pop().Destination]++
 			bus.PassOn++
 			*count++

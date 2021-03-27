@@ -66,7 +66,18 @@ func (bStop BusStop) printD() {
 
 // BusStop create a bus stop object
 type BusStop struct {
-	Name      string
-	Q         Queue
-	TimeTaken int
+	Name string
+	Q    Queue
+}
+
+func IncreasePassengerWaitingTime(stopList []*BusStop) {
+	for i := 0; i < len(stopList); i++ {
+		if stopList[i].Q.Size != 0 {
+			stopList[i].Q.Tail = stopList[i].Q.Head
+			for j := 0; j < stopList[i].Q.Size; j++ {
+				stopList[i].Q.Tail.WaitTime++
+				stopList[i].Q.Tail = stopList[i].Q.Tail.Next
+			}
+		}
+	}
 }

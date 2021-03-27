@@ -13,17 +13,18 @@ var (
 	stopList   []*rs.BusStop
 	inputNoBus int
 	//for putting busc in main
-	countPos    int
-	count       int
-	graph       = rs.Graph{}
-	totalTime   float64
-	passTotal   int
-	waitingTime float64
-	bwg         sync.WaitGroup
-	countBWG    *int
-	worldTime   int
-	mutx        sync.Mutex
-	BusArr      []*rs.Bus
+	countPos       int
+	count          int
+	graph          = rs.Graph{}
+	totalTime      float64
+	passTotal      int
+	waitingTime    float64
+	totalPassenger int
+	// bwg         sync.WaitGroup
+	countBWG  *int
+	worldTime int
+	mutx      sync.Mutex
+	BusArr    []*rs.Bus
 )
 
 //busc threading function---------------------------------------------------------------
@@ -34,9 +35,10 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var spd float64
 	var dist float64
 	var calcDist float64
-	var calcTime float64
+	// var calcTime float64
 	var distTrav float64
 	var countPass int = 0
+	var calculatedT int = 0
 	// var pWaitTime *float64 = &waitingTime
 	// var pPassTotal *int = &passTotal
 
@@ -64,41 +66,48 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	}
 
 	pos = BusArr.Pos
+	if BusArr.DistToNext == 0 {
+		BusArr.DistToNext = float64(graph.Edges[pos].Cost)
+	}
 	dist = float64(graph.Edges[pos].Cost)
 	spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
 	distTrav = (dist / 60) * spd
-	calcDist = dist
-
+	calcDist = BusArr.DistToNext
+	// fmt.Println(dist)
 	BusArr.Status = "Traveling"
 	BusArr.CurrStop = path[(pos)%lenPath].Name
 	BusArr.NextStop = path[(pos+1)%lenPath].Name
-	fmt.Println("FIRSTCURR,FIRSTNEXT,:", BusArr.CurrStop, BusArr.NextStop)
+	// fmt.Println("FIRSTCURR,FIRSTNEXT,:", BusArr.CurrStop, BusArr.NextStop)
 	// fmt.Println("kut")
 	if BusArr.Status == "Traveling" {
 		// fmt.Println(calcDist)
 		// fmt.Println(distTrav)
 		// แก้ตรงifนี้ด้วย \/
-		if (calcDist - distTrav) > 1 {
+		// fmt.Printf("Dist %f, Trav %f\n", dist, distTrav)
+		if (calcDist - distTrav) > 1 { //
 			// fmt.Println("hello")
 			//move 1 step
-			BusArr.AtStop = false
-			calcDist = (dist * 1000) - distTrav
+			calcDist -= distTrav
+			BusArr.DistToNext = calcDist
 			// fmt.Println(calcDist)
-		}
-		if calcDist-distTrav < 1 {
+		} else {
+			BusArr.DistToNext = 0
 			mutx.Lock()
 			rs.DropPass(BusArr)
-			calcTime = float64(math.Round((dist / spd) * 3600))
-			totalTime += calcTime
+			// calcTime = float64(math.Round((dist / spd) * 3600)) //bus travel from one stop to neighbor stop (s)
+			rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
+			if passTotal != totalPassenger {
+				totalTime += (float64(calculatedT) * 60)
+			}
 			mutx.Unlock()
-			rs.GetPassngr(path, BusArr, &countPass)
-			fmt.Println("CP:", countPass)
+			fmt.Println("PT,WT:", passTotal, worldTime)
+			// fmt.Println("CP:", countPass)
 
 			BusArr.Pos++
-			BusArr.CurrStop = path[pos%10].Name
-			BusArr.NextStop = path[(pos+1)&10].Name
+			BusArr.CurrStop = path[BusArr.Pos%lenPath].Name
+			BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
 			fmt.Println("NEW POS:", pos)
-			fmt.Println("NEWCURR,NEWNEXT,:", BusArr.CurrStop, BusArr.NextStop)
+			// fmt.Println("NEWCURR,NEWNEXT,:", BusArr.CurrStop, BusArr.NextStop)
 
 		}
 	}
@@ -141,15 +150,25 @@ func main() {
 	stopList = append(stopList, &jBuilding)
 
 	graph.AddEdge(&aBuilding, &bBuilding, 1)
+	graph.AddEdge(&bBuilding, &aBuilding, 1)
 	graph.AddEdge(&bBuilding, &cBuilding, 2)
+	graph.AddEdge(&cBuilding, &bBuilding, 2)
 	graph.AddEdge(&cBuilding, &dBuilding, 1)
+	graph.AddEdge(&dBuilding, &cBuilding, 1)
 	graph.AddEdge(&dBuilding, &eBuilding, 2)
+	graph.AddEdge(&eBuilding, &dBuilding, 2)
 	graph.AddEdge(&eBuilding, &fBuilding, 3)
+	graph.AddEdge(&fBuilding, &eBuilding, 3)
 	graph.AddEdge(&fBuilding, &gBuilding, 1)
+	graph.AddEdge(&gBuilding, &fBuilding, 1)
 	graph.AddEdge(&gBuilding, &hBuilding, 2)
+	graph.AddEdge(&hBuilding, &gBuilding, 2)
 	graph.AddEdge(&hBuilding, &iBuilding, 1)
+	graph.AddEdge(&iBuilding, &hBuilding, 1)
 	graph.AddEdge(&iBuilding, &jBuilding, 3)
+	graph.AddEdge(&jBuilding, &iBuilding, 3)
 	graph.AddEdge(&jBuilding, &aBuilding, 2)
+	graph.AddEdge(&aBuilding, &jBuilding, 2)
 
 	//GnrTrf Function---------------------------------------------------------------
 	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
@@ -199,7 +218,7 @@ func main() {
 	random1 := rs.Random(150, 200)
 
 	// rs.TimeTick(globalHour, globalMin)
-
+	totalPassenger = inputPsg
 	// Init -------------------------------------------------
 	if inputPsg != 0 {
 		// fmt.Println("Total initiate Passenger : %v/n", inputPsg)
@@ -221,15 +240,16 @@ func main() {
 	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for worldTime <= 600 {
 		worldTime++
-
-		fmt.Println("PT2:", passTotal)
+		var bwg sync.WaitGroup
 		// fmt.Println(BusArr[0])
 		// fmt.Println(BusArr[1])
 		// fmt.Println("WT:", worldTime)
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
+			// go Busc(i, stopList, BusArr[i], &bwg)
 			go Busc(i, stopList, BusArr[i], &bwg)
 		}
+		rs.IncreasePassengerWaitingTime(stopList)
 		// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 		// bussTest := rs.Bus{}
 		// bwg.Add(1)
@@ -240,13 +260,14 @@ func main() {
 	fmt.Println(totalTime / 60)
 	fmt.Println(passTotal)
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
-	fmt.Println(waitingTime)
+	// fmt.Println(waitingTime)
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
-	fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
+	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
 	fmt.Println("Total Passengers Delivered: ", passTotal)
 	duration := time.Since(start)
 	fmt.Println("Simulation run time: ", duration)
+	// fmt.Println(len(stopList))
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Simulation has ended...")
 }
