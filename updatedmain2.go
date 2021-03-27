@@ -12,8 +12,6 @@ import (
 var (
 	stopList   []*rs.BusStop
 	inputNoBus int
-	globalHour int
-	globalMin  int
 	//for putting busc in main
 	countPos    int     = 0
 	count       int     = 0
@@ -34,12 +32,9 @@ func Busc(name string, path []*rs.BusStop) {
 	var lenPath int = len(path)
 	var count int = 0
 	var countPass int = 0
-	var localTimeHour int = 0
-	var localTimeMin int = 0
 	var spd float64
 	var dist float64
 	var calcTime float64
-	var hourRunTime int = 10
 
 	//create bus struct instance
 	busStruct := rs.Bus{
@@ -215,7 +210,7 @@ func main() {
 		bwg.Add(1)
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
-	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
+	// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 	Busc("test", stopList)
 	bwg.Wait()
 	duration := time.Since(start)
