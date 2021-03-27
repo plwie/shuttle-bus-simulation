@@ -13,12 +13,12 @@ var (
 	stopList   []*rs.BusStop
 	inputNoBus int
 	//for putting busc in main
-	countPos    int     = 0
-	count       int     = 0
-	graph               = rs.Graph{}
-	totalTime   float64 = 0
-	passTotal   int     = 0
-	waitingTime float64 = 0
+	countPos    int
+	count       int
+	graph       = rs.Graph{}
+	totalTime   float64
+	passTotal   int
+	waitingTime float64
 	bwg         sync.WaitGroup
 	countBWG    *int
 	worldTime   int
@@ -28,7 +28,7 @@ var (
 
 //busc threading function---------------------------------------------------------------
 func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
-	// pos := countPos
+	var pos int
 	// countPos++
 	var lenPath int = len(path)
 	var spd float64
@@ -38,7 +38,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var distTrav float64
 	var countPass int = 0
 	// var pWaitTime *float64 = &waitingTime
-	var pPassTotal *int = &passTotal
+	// var pPassTotal *int = &passTotal
 
 	// // Assign key value
 	// for i := 0; i < lenPath; i++ {
@@ -51,47 +51,62 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	//only enter this condition when first run simulation
 	if BusArr.FirstTime == false {
 		BusArr.Pos = name
-		BusArr.M = make(map[string]*int)
+		fmt.Println("FIRST POS:", BusArr.Pos)
+		BusArr.M = make(map[string]int)
 		for i := 0; i < lenPath; i++ {
-			*BusArr.M[path[i].Name] = 0
+			BusArr.M[path[i].Name] = 0
 		}
+		BusArr.AvailSeats = 30
 		BusArr.FirstTime = true
 	}
 	if BusArr.Pos >= 10 {
 		BusArr.Pos = 0
 	}
 
-	calcDist = dist
-	dist = float64(graph.Edges[BusArr.Pos].Cost)
-	spd = float64(graph.GetSpeed(path[BusArr.Pos], path[(BusArr.Pos+1)%lenPath]))
+	pos = BusArr.Pos
+	dist = float64(graph.Edges[pos].Cost)
+	spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
 	distTrav = (dist / 60) * spd
+	calcDist = dist
 
 	BusArr.Status = "Traveling"
-	BusArr.CurrStop = path[(BusArr.Pos)].Name
-	BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
-
+	BusArr.CurrStop = path[(pos)%lenPath].Name
+	BusArr.NextStop = path[(pos+1)%lenPath].Name
+	fmt.Println("FIRSTCURR,FIRSTNEXT,:", BusArr.CurrStop, BusArr.NextStop)
+	// fmt.Println("kut")
 	if BusArr.Status == "Traveling" {
-		if calcDist-distTrav > 1 {
+		// fmt.Println(calcDist)
+		// fmt.Println(distTrav)
+		// แก้ตรงifนี้ด้วย \/
+		if (calcDist - distTrav) > 1 {
+			// fmt.Println("hello")
 			//move 1 step
 			BusArr.AtStop = false
 			calcDist = (dist * 1000) - distTrav
+			// fmt.Println(calcDist)
 		}
 		if calcDist-distTrav < 1 {
 			mutx.Lock()
 			rs.DropPass(BusArr)
-			mutx.Unlock()
-			rs.GetPassngr(path, BusArr, &countPass)
-			mutx.Lock()
 			calcTime = float64(math.Round((dist / spd) * 3600))
 			totalTime += calcTime
 			mutx.Unlock()
+			rs.GetPassngr(path, BusArr, &countPass)
+			fmt.Println("CP:", countPass)
+
 			BusArr.Pos++
-			BusArr.CurrStop = "Traveling"
+			BusArr.CurrStop = path[pos%10].Name
+			BusArr.NextStop = path[(pos+1)&10].Name
+			fmt.Println("NEW POS:", pos)
+			fmt.Println("NEWCURR,NEWNEXT,:", BusArr.CurrStop, BusArr.NextStop)
 
 		}
 	}
 	mutx.Lock()
-	*pPassTotal += countPass
+	// fmt.Println(countPass)
+	// fmt.Println(pPassTotal)
+	passTotal += countPass
+	// fmt.Println("PT:", passTotal)
 	mutx.Unlock()
 	bwg.Done()
 
@@ -100,11 +115,6 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 //End busc--------------------------------------------------------------------------------------------------------
 
 func main() {
-
-	//WaitingTime
-	//waitingTime := totalTime/float64(passTotal)
-
-	// graph := rs.Graph{}
 
 	aBuilding := rs.BusStop{Name: "aBuilding"}
 	bBuilding := rs.BusStop{Name: "bBuilding"}
@@ -211,15 +221,19 @@ func main() {
 	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for worldTime <= 600 {
 		worldTime++
+
+		fmt.Println("PT2:", passTotal)
+		// fmt.Println(BusArr[0])
+		// fmt.Println(BusArr[1])
+		// fmt.Println("WT:", worldTime)
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
 		}
 		// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
-
-		bussTest := rs.Bus{}
-		bwg.Add(1)
-		go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
+		// bussTest := rs.Bus{}
+		// bwg.Add(1)
+		// go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
 		bwg.Wait()
 	}
 
