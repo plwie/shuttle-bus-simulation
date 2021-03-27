@@ -21,7 +21,7 @@ var (
 	waitingTime float64 = 0
 	bwg         sync.WaitGroup
 	countBWG    *int
-	tick        *int
+	worldTime   int
 	mutx        sync.Mutex
 	BusArr      []*rs.Bus
 )
@@ -199,16 +199,19 @@ func main() {
 	}
 
 	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
-	for i := 0; i < inputNoBus; i++ {
-		bwg.Add(1)
-		go Busc(i, stopList, BusArr[i], &bwg)
-	}
-	// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
+	for worldTime <= 120 {
+		worldTime++
+		for i := 0; i < inputNoBus; i++ {
+			bwg.Add(1)
+			go Busc(i, stopList, BusArr[i], &bwg)
+		}
+		// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 
-	bussTest := rs.Bus{}
-	bwg.Add(1)
-	go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
-	bwg.Wait()
+		// bussTest := rs.Bus{}
+		// bwg.Add(1)
+		// go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
+		bwg.Wait()
+	}
 
 	fmt.Println(totalTime)
 	fmt.Println(waitingTime)
