@@ -215,7 +215,6 @@ func main() {
 		bwg.Add(1)
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
-	bwg.Add(1)
 	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 	Busc("test", stopList)
 	bwg.Wait()
