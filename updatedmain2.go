@@ -22,12 +22,11 @@ var (
 	passTotal   int     = 0
 	waitingTime float64 = 0
 	bwg         sync.WaitGroup
+	countBWG    *int
 )
 
 //busc threading function---------------------------------------------------------------
 func Busc(name string, path []*rs.BusStop) {
-	//need to declare global count = 0
-	// m := make(map[string]int)
 	pos := countPos
 	countPos++
 	var lenPath int = len(path)
@@ -55,6 +54,7 @@ func Busc(name string, path []*rs.BusStop) {
 	}
 	//code for bus traveling (busstop to another busstop)
 	for {
+		bwg.Add(1)
 		if pos < lenPath && name != "test" {
 			// time.Sleep(time.Millisecond * 1)
 			busStruct.CurrStop = path[pos].Name
@@ -77,16 +77,7 @@ func Busc(name string, path []*rs.BusStop) {
 				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
 				dist = float64(graph.Edges[pos].Cost)
 				calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
-				// for i := 0; i < busStruct.AvailSeats; i++ {
-				// 	if path[i%10].Q.Size != 0 {
-				// 		// m[path[i%10].Q.Pop().Destination]++
-				// 		rs.GetPass(busStruct.M, path, i, &busStruct)
-				// 		// busStruct.PassOn++
-				// 		countPass++
-				// 		// busStruct.AvailSeats--
 
-				// 	}
-				// }
 				rs.GetPass(path, &busStruct, &countPass)
 
 				// fmt.Println(m)
@@ -105,8 +96,7 @@ func Busc(name string, path []*rs.BusStop) {
 			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
 			passTotal += countPass
 			// fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
-			// pos++
-			// count++
+
 			countPass = 0
 		} else {
 			pos = 0
@@ -119,7 +109,10 @@ func Busc(name string, path []*rs.BusStop) {
 			fmt.Println("Total Passengers Delivered: ", passTotal)
 			break
 		}
-
+		(*countBWG)++
+		if *countBWG == 10 {
+			bwg.Done()
+		}
 	}
 }
 
