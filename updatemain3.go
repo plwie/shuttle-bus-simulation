@@ -36,6 +36,9 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var calcDist float64
 	var distTrav float64
 	var countPass int = 0
+	// var pWaitTime *float64 = &waitingTime
+	var pPassTotal *int = &passTotal
+
 	// // Assign key value
 	// for i := 0; i < lenPath; i++ {
 	// 	busStruct.M[path[i].Name] = 0
@@ -78,7 +81,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 		}
 	}
 	mutx.Lock()
-	passTotal += countPass
+	*pPassTotal += countPass
 	mutx.Unlock()
 	bwg.Done()
 
@@ -207,6 +210,9 @@ func main() {
 	go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
 	bwg.Wait()
 
+	fmt.Println(totalTime)
+	fmt.Println(waitingTime)
+	fmt.Println(passTotal)
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
