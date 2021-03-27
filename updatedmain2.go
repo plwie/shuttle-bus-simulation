@@ -82,7 +82,10 @@ func Busc(name string, path []*rs.BusStop) {
 			totalTime += (calcTime * float64(countPass))
 			pos++
 			count++
+
+			//put lock unlock here
 			(*tick)++
+
 		} else {
 			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
 			passTotal += countPass
@@ -90,7 +93,6 @@ func Busc(name string, path []*rs.BusStop) {
 			countPass = 0
 			pos = 0
 		}
-
 	}
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
