@@ -47,6 +47,10 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	//only enter this condition when first run simulation
 	if BusArr.FirstTime == false {
 		BusArr.Pos = name
+		BusArr.M = make(map[string]int)
+		for i := 0; i < lenPath; i++ {
+			BusArr.M[path[i].Name] = 0
+		}
 		BusArr.FirstTime = true
 	}
 	if BusArr.Pos >= 10 {
@@ -73,7 +77,9 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 			BusArr.Pos++
 		}
 	}
+	mutx.Lock()
 	passTotal += countPass
+	mutx.Unlock()
 	bwg.Done()
 
 }
@@ -195,7 +201,10 @@ func main() {
 		go Busc(i, stopList, BusArr[i], &bwg)
 	}
 	// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
-	// Busc(inputNoBus+1, stopList, , &bwg)
+
+	bussTest := rs.Bus{}
+	bwg.Add(1)
+	go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
 	bwg.Wait()
 
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
