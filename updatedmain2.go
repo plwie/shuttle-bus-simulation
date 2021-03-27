@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand"
 	rs "rs/lib"
+	"sync"
 	"time"
 )
 
@@ -20,6 +21,7 @@ var (
 	totalTime   float64 = 0
 	passTotal   int     = 0
 	waitingTime float64 = 0
+	bwg         sync.WaitGroup
 )
 
 //busc threading function---------------------------------------------------------------
@@ -117,6 +119,7 @@ func Busc(name string, path []*rs.BusStop) {
 			fmt.Println("Total Passengers Delivered: ", passTotal)
 			break
 		}
+
 	}
 }
 
