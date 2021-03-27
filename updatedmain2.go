@@ -23,6 +23,7 @@ var (
 	waitingTime float64 = 0
 	bwg         sync.WaitGroup
 	countBWG    *int
+	tick        *int
 )
 
 //busc threading function---------------------------------------------------------------
@@ -54,7 +55,6 @@ func Busc(name string, path []*rs.BusStop) {
 	}
 	//code for bus traveling (busstop to another busstop)
 	for {
-		bwg.Add(1)
 		if pos < lenPath && name != "test" {
 			// time.Sleep(time.Millisecond * 1)
 			busStruct.CurrStop = path[pos].Name
@@ -73,47 +73,30 @@ func Busc(name string, path []*rs.BusStop) {
 			// fmt.Println("G:H", globalHour, "G:M", globalMin)
 			// fmt.Println("L:H", localTimeHour, "L:M", localTimeMin)
 
-			if localTimeHour <= globalHour && localTimeMin <= globalMin {
-				spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
-				dist = float64(graph.Edges[pos].Cost)
-				calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
+			spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
+			dist = float64(graph.Edges[pos].Cost)
+			calcTime = float64(math.Round(((dist/spd)*3600)*100) / 100)
 
-				rs.GetPass(path, &busStruct, &countPass)
+			rs.GetPass(path, &busStruct, &countPass)
 
-				// fmt.Println(m)
-
-				if localTimeMin <= 60 {
-					localTimeMin = globalMin + (int(calcTime) / 60)
-				}
-				if localTimeMin >= 60 {
-					localTimeMin = localTimeMin - 60*(localTimeMin/60)
-					localTimeHour++
-				}
-				totalTime += (calcTime * float64(countPass))
-				pos++
-				count++
-			}
+			totalTime += (calcTime * float64(countPass))
+			pos++
+			count++
+			(*tick)++
+		} else {
 			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
 			passTotal += countPass
 			// fmt.Println("|countpass", countPass, "|passTotal", passTotal, "totaltime: ", totalTime)
-
 			countPass = 0
-		} else {
 			pos = 0
 		}
-		if globalHour == hourRunTime {
-			waitingTime = ((totalTime) / float64(passTotal)) / 60
-			secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
-			minn := (math.Floor(waitingTime / 1))
-			fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
-			fmt.Println("Total Passengers Delivered: ", passTotal)
-			break
-		}
-		(*countBWG)++
-		if *countBWG == 10 {
-			bwg.Done()
-		}
+
 	}
+	waitingTime = ((totalTime) / float64(passTotal)) / 60
+	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
+	minn := (math.Floor(waitingTime / 1))
+	fmt.Println("Waiting Time:", minn, "minutes", secc, "secs")
+	fmt.Println("Total Passengers Delivered: ", passTotal)
 }
 
 //End busc--------------------------------------------------------------------------------------------------------
@@ -224,10 +207,13 @@ func main() {
 
 	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
+		bwg.Add(1)
 		go Busc("bus"+fmt.Sprint(i), stopList)
 	}
+	bwg.Add(1)
 	go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
 	Busc("test", stopList)
+	bwg.Wait()
 	duration := time.Since(start)
 	fmt.Println("Simulation run time: ", duration)
 	fmt.Println("-------------------------------------------------------------------------------------------")
