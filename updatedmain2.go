@@ -24,6 +24,7 @@ var (
 	bwg         sync.WaitGroup
 	countBWG    *int
 	tick        *int
+	mutx        sync.Mutex
 )
 
 //busc threading function---------------------------------------------------------------
@@ -84,7 +85,9 @@ func Busc(name string, path []*rs.BusStop) {
 			count++
 
 			//put lock unlock here
+			mutx.Lock()
 			(*tick)++
+			mutx.Unlock()
 
 		} else {
 			// fmt.Println("|distance:", dist, "|speed:", spd, "|time:", calcTime, "sec", "|totalTime:", totalTime)
