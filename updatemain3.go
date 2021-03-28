@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"os"
 	rs "rs/lib"
 	"sync"
 	"time"
@@ -53,7 +54,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	//only enter this condition when first run simulation
 	if BusArr.FirstTime == false {
 		BusArr.Pos = name
-		fmt.Println("FIRST POS:", BusArr.Pos)
+		// fmt.Println("FIRST POS:", BusArr.Pos)
 		BusArr.M = make(map[string]int)
 		for i := 0; i < lenPath; i++ {
 			BusArr.M[path[i].Name] = 0
@@ -100,13 +101,13 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 				totalTime += (float64(calculatedT) * 60)
 			}
 			mutx.Unlock()
-			fmt.Println("PT,WT:", passTotal, worldTime)
+			// fmt.Println("PT,WT:", passTotal, worldTime)
 			// fmt.Println("CP:", countPass)
 
 			BusArr.Pos++
 			BusArr.CurrStop = path[BusArr.Pos%lenPath].Name
 			BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
-			fmt.Println("NEW POS:", pos)
+			// fmt.Println("NEW POS:", pos)
 			// fmt.Println("NEWCURR,NEWNEXT,:", BusArr.CurrStop, BusArr.NextStop)
 
 		}
@@ -195,6 +196,20 @@ func main() {
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
+	var proceedDecision string
+	if inputNoBus > 10 {
+		fmt.Println("-------------------------------------------------------------------------------------------")
+		fmt.Println("Warning: The number of Bus exceeded the number of bus stop")
+		fmt.Println("the bus might overlapped with each other")
+		fmt.Println("-------------------------------------------------------------------------------------------")
+		fmt.Println("Would you like to proceed? y/N")
+		fmt.Scanln(&proceedDecision)
+		if proceedDecision == "N" {
+			fmt.Println("Exiting the simulation...")
+			fmt.Println("-------------------------------------------------------------------------------------------")
+			os.Exit(1)
+		}
+	}
 	var inputPsg int
 	totalPsg := 0
 	fmt.Println("How many initial passenger?")
@@ -207,7 +222,7 @@ func main() {
 	fmt.Println("-Events will add more passengers into the simulation")
 	fmt.Println("-Waiting Time depends directly on the traffic of the road")
 	fmt.Println("-More traffic means bus can travel slower")
-	fmt.Println("-Waiting Time is calculated from the passengers that are successfully delivered")
+	fmt.Println("-The longer the queue, the longer the later person has to wait")
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Results: ")
 
@@ -257,8 +272,8 @@ func main() {
 		bwg.Wait()
 	}
 
-	fmt.Println(totalTime / 60)
-	fmt.Println(passTotal)
+	// fmt.Println(totalTime / 60)
+	// fmt.Println(passTotal)
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
 	// fmt.Println(waitingTime)
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
