@@ -85,8 +85,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 		// fmt.Println(distTrav)
 		// แก้ตรงifนี้ด้วย \/
 		// fmt.Printf("Dist %f, Trav %f\n", dist, distTrav)
-		if (calcDist - distTrav) > 1 { //
-			// fmt.Println("hello")
+		if (calcDist - distTrav) > 1 {
 			//move 1 step
 			calcDist -= distTrav
 			BusArr.DistToNext = calcDist
@@ -95,21 +94,14 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 			BusArr.DistToNext = 0
 			mutx.Lock()
 			rs.DropPass(BusArr)
-			// calcTime = float64(math.Round((dist / spd) * 3600)) //bus travel from one stop to neighbor stop (s)
 			rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
 			if passTotal != totalPassenger {
 				totalTime += (float64(calculatedT) * 60)
 			}
 			mutx.Unlock()
-			// fmt.Println("PT,WT:", passTotal, worldTime)
-			// fmt.Println("CP:", countPass)
-
 			BusArr.Pos++
 			BusArr.CurrStop = path[BusArr.Pos%lenPath].Name
 			BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
-			// fmt.Println("NEW POS:", pos)
-			// fmt.Println("NEWCURR,NEWNEXT,:", BusArr.CurrStop, BusArr.NextStop)
-
 		}
 	}
 	mutx.Lock()
@@ -232,7 +224,6 @@ func main() {
 	//Passenger Generated -------------------------
 	random1 := rs.Random(150, 200)
 
-	// rs.TimeTick(globalHour, globalMin)
 	totalPassenger = inputPsg
 	// Init -------------------------------------------------
 	if inputPsg != 0 {
