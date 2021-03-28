@@ -78,8 +78,6 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	BusArr.Status = "Traveling"
 	BusArr.CurrStop = path[(pos)%lenPath].Name
 	BusArr.NextStop = path[(pos+1)%lenPath].Name
-	// fmt.Println("FIRSTCURR,FIRSTNEXT,:", BusArr.CurrStop, BusArr.NextStop)
-	// fmt.Println("kut")
 	if BusArr.Status == "Traveling" {
 		// fmt.Println(calcDist)
 		// fmt.Println(distTrav)
