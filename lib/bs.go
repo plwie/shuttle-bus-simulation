@@ -8,10 +8,8 @@ type Bus struct {
 	NextStop   string
 	M          map[string]int
 	DistToNext float64
-	AtStop     bool
 	Pos        int
 	FirstTime  bool
-	Status     string
 }
 
 func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {

@@ -74,15 +74,10 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
 	distTrav = (dist / 60) * spd
 	calcDist = BusArr.DistToNext
-	// fmt.Println(dist)
-	// BusArr.Status = "Traveling"
+
 	BusArr.CurrStop = path[(pos)%lenPath].Name
 	BusArr.NextStop = path[(pos+1)%lenPath].Name
-	// if BusArr.Status == "Traveling" {
-	// 	// fmt.Println(calcDist)
-	// 	// fmt.Println(distTrav)
-	// 	// แก้ตรงifนี้ด้วย \/
-	// 	// fmt.Printf("Dist %f, Trav %f\n", dist, distTrav)
+
 	if (calcDist - distTrav) > 1 {
 		//move 1 step
 		calcDist -= distTrav
