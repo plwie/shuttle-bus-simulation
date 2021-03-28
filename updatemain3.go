@@ -265,10 +265,6 @@ func main() {
 			go Busc(i, stopList, BusArr[i], &bwg)
 		}
 		rs.IncreasePassengerWaitingTime(stopList)
-		// go rs.ConTimeTick(&globalHour, &globalMin, stopList, psgr)
-		// bussTest := rs.Bus{}
-		// bwg.Add(1)
-		// go Busc(inputNoBus-1, stopList, &bussTest, &bwg)
 		bwg.Wait()
 	}
 
