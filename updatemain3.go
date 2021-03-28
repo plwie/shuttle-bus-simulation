@@ -272,10 +272,7 @@ func main() {
 		bwg.Wait()
 	}
 
-	// fmt.Println(totalTime / 60)
-	// fmt.Println(passTotal)
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
-	// fmt.Println(waitingTime)
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
 	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
