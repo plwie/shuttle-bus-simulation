@@ -75,32 +75,31 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	distTrav = (dist / 60) * spd
 	calcDist = BusArr.DistToNext
 	// fmt.Println(dist)
-	BusArr.Status = "Traveling"
+	// BusArr.Status = "Traveling"
 	BusArr.CurrStop = path[(pos)%lenPath].Name
 	BusArr.NextStop = path[(pos+1)%lenPath].Name
-	if BusArr.Status == "Traveling" {
+	// if BusArr.Status == "Traveling" {
+	// 	// fmt.Println(calcDist)
+	// 	// fmt.Println(distTrav)
+	// 	// แก้ตรงifนี้ด้วย \/
+	// 	// fmt.Printf("Dist %f, Trav %f\n", dist, distTrav)
+	if (calcDist - distTrav) > 1 {
+		//move 1 step
+		calcDist -= distTrav
+		BusArr.DistToNext = calcDist
 		// fmt.Println(calcDist)
-		// fmt.Println(distTrav)
-		// แก้ตรงifนี้ด้วย \/
-		// fmt.Printf("Dist %f, Trav %f\n", dist, distTrav)
-		if (calcDist - distTrav) > 1 {
-			//move 1 step
-			calcDist -= distTrav
-			BusArr.DistToNext = calcDist
-			// fmt.Println(calcDist)
-		} else {
-			BusArr.DistToNext = 0
-			mutx.Lock()
-			rs.DropPass(BusArr)
-			rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
-			if passTotal != totalPassenger {
-				totalTime += (float64(calculatedT) * 60)
-			}
-			mutx.Unlock()
-			BusArr.Pos++
-			BusArr.CurrStop = path[BusArr.Pos%lenPath].Name
-			BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
+	} else {
+		BusArr.DistToNext = 0
+		mutx.Lock()
+		rs.DropPass(BusArr)
+		rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
+		if passTotal != totalPassenger {
+			totalTime += (float64(calculatedT) * 60)
 		}
+		mutx.Unlock()
+		BusArr.Pos++
+		BusArr.CurrStop = path[BusArr.Pos%lenPath].Name
+		BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
 	}
 	mutx.Lock()
 	// fmt.Println(countPass)
