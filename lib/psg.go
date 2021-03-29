@@ -2,7 +2,10 @@ package rs
 
 import (
 	"math/rand"
+	"sync"
 )
+
+var muts sync.Mutex
 
 // Passenger create a passenger object
 type Passenger struct {
@@ -33,6 +36,7 @@ func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 				for psgr.Source == psgr.Destination {
 					psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
 				}
+				// fmt.Println(psgr.Source, stopList[j].Name, stopList[j].Q.Size)
 				stopList[j].Q.Add(*psgr)
 			}
 		}
@@ -43,6 +47,7 @@ func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 func GnrPsgAt(stopList []*BusStop, stop string, inputPsg int, psgr *Passenger) {
 	for i := 0; i < len(stopList); i++ {
 		if stop == stopList[i].Name {
+			psgr.WaitTime = 0
 			psgr.Source = stop
 			for j := 0; j < inputPsg; j++ {
 				psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
