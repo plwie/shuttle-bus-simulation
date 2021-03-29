@@ -1,5 +1,9 @@
 package rs
 
+import (
+	"sync"
+)
+
 // Bus Struct
 type Bus struct {
 	AvailSeats int
@@ -12,6 +16,10 @@ type Bus struct {
 	FirstTime  bool
 }
 
+var (
+	muut sync.Mutex
+)
+
 func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {
 	var target *BusStop
 	for _, v := range path {
@@ -19,9 +27,18 @@ func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {
 			target = v
 		}
 	}
-	for bus.AvailSeats != 0 {
+	for bus.AvailSeats > 0 {
 		// fmt.Println(target.Q.Size)
 		if target.Q.Size != 0 {
+			// target.Q.printD()
+			// fmt.Println("temp", target.Q.Size, *calculatedTime, target.Q.Head.WaitTime)
+			// if target.Q.Head == nil {
+			// 	bus.AvailSeats--
+			// 	continue
+			// }
+			// fmt.Println(target.Q.Head)
+			// fmt.Println(target.Q.Head.WaitTime)
+			// fmt.Println(*calculatedTime)
 			*calculatedTime += target.Q.Head.WaitTime
 			bus.M[target.Q.Pop().Destination]++
 			bus.PassOn++
