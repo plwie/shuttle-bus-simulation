@@ -16,16 +16,19 @@ var (
 
 func main() {
 
-	stopList = append(stopList, &rs.BusStop{Name: "aBuilding", TimeTaken: 5})
-	stopList = append(stopList, &rs.BusStop{Name: "bBuilding", TimeTaken: 6})
-	stopList = append(stopList, &rs.BusStop{Name: "cBuilding", TimeTaken: 3})
-	stopList = append(stopList, &rs.BusStop{Name: "dBuilding", TimeTaken: 4})
-	stopList = append(stopList, &rs.BusStop{Name: "eBuilding", TimeTaken: 6})
-	stopList = append(stopList, &rs.BusStop{Name: "fBuilding", TimeTaken: 3})
-	stopList = append(stopList, &rs.BusStop{Name: "gBuilding", TimeTaken: 1})
-	stopList = append(stopList, &rs.BusStop{Name: "hBuilding", TimeTaken: 5})
-	stopList = append(stopList, &rs.BusStop{Name: "iBuilding", TimeTaken: 7})
-	stopList = append(stopList, &rs.BusStop{Name: "jBuilding", TimeTaken: 4})
+	/*
+		stopList = append(stopList, &rs.BusStop{Name: "aBuilding", TimeTaken: 5})
+		stopList = append(stopList, &rs.BusStop{Name: "bBuilding", TimeTaken: 6})
+		stopList = append(stopList, &rs.BusStop{Name: "cBuilding", TimeTaken: 3})
+		stopList = append(stopList, &rs.BusStop{Name: "dBuilding", TimeTaken: 4})
+		stopList = append(stopList, &rs.BusStop{Name: "eBuilding", TimeTaken: 6})
+		stopList = append(stopList, &rs.BusStop{Name: "fBuilding", TimeTaken: 3})
+		stopList = append(stopList, &rs.BusStop{Name: "gBuilding", TimeTaken: 1})
+		stopList = append(stopList, &rs.BusStop{Name: "hBuilding", TimeTaken: 5})
+		stopList = append(stopList, &rs.BusStop{Name: "iBuilding", TimeTaken: 7})
+		stopList = append(stopList, &rs.BusStop{Name: "jBuilding", TimeTaken: 4})
+		CmdOut
+	*/
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
@@ -86,9 +89,9 @@ func main() {
 
 	fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for i := 0; i < inputNoBus; i++ {
-		go rs.Busc("bus"+fmt.Sprint((i+1)), stopList)
+		// go rs.Busc("bus"+fmt.Sprint((i+1)), stopList) CmtOut
 	}
-	rs.Busc("test", stopList)
+	// rs.Busc("test", stopList) CmtOut
 
 	fmt.Println("Ending main package...")
 }
