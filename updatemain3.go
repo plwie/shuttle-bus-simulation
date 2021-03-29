@@ -26,6 +26,7 @@ var (
 	worldTime int
 	mutx      sync.Mutex
 	BusArr    []*rs.Bus
+	doOnce    sync.Once
 )
 
 //busc threading function---------------------------------------------------------------
@@ -88,6 +89,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 		mutx.Lock()
 		rs.DropPass(BusArr)
 		rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
+		// calculatedT = rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
 		if passTotal != totalPassenger {
 			totalTime += (float64(calculatedT) * 60)
 		}
@@ -181,7 +183,7 @@ func main() {
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
 	var proceedDecision string
-	if inputNoBus > 10 {
+	if inputNoBus > len(stopList) {
 		fmt.Println("-------------------------------------------------------------------------------------------")
 		fmt.Println("Warning: The number of Bus exceeded the number of bus stop")
 		fmt.Println("the bus might overlapped with each other")
@@ -219,12 +221,10 @@ func main() {
 	totalPassenger = inputPsg
 	// Init -------------------------------------------------
 	if inputPsg != 0 {
-		// fmt.Println("Total initiate Passenger : %v/n", inputPsg)
 		rs.GnrPsg(stopList, inputPsg, psgr)
 		//rs.GnrTrf(CarGroup())
 		totalPsg += inputPsg
 	} else {
-		// fmt.Println("Total initiate Passenger : %v/n", random1)
 		rs.GnrPsg(stopList, random1, psgr)
 		//rs.GnrTrf(CarGroup())
 		totalPsg += random1
@@ -235,20 +235,18 @@ func main() {
 		BusArr = append(BusArr, &rs.Bus{})
 	}
 
-	// fmt.Println("#,BusName,CurrentStop,NextStop,AvailableSeats,TotalPassengerOnBus ")
 	for worldTime <= 600 {
-		worldTime++
 		var bwg sync.WaitGroup
-		// fmt.Println(BusArr[0])
-		// fmt.Println(BusArr[1])
-		// fmt.Println("WT:", worldTime)
+		bwg.Add(1)
+		go rs.Event(stopList, psgr, worldTime, &bwg)
+		bwg.Wait()
+		worldTime++
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
-			// go Busc(i, stopList, BusArr[i], &bwg)
 			go Busc(i, stopList, BusArr[i], &bwg)
 		}
-		rs.IncreasePassengerWaitingTime(stopList)
 		bwg.Wait()
+		rs.IncreasePassengerWaitingTime(stopList)
 	}
 
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
@@ -258,7 +256,6 @@ func main() {
 	fmt.Println("Total Passengers Delivered: ", passTotal)
 	duration := time.Since(start)
 	fmt.Println("Simulation run time: ", duration)
-	// fmt.Println(len(stopList))
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Simulation has ended...")
 }
