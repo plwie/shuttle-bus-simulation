@@ -1,6 +1,13 @@
 package rs
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
+
+var (
+	mutxx sync.Mutex
+)
 
 // Queue implementation using Passenger node
 type Queue struct {
@@ -14,6 +21,7 @@ type Adder interface{ Add(node Passenger) }
 
 // Add does not return anything
 func (q *Queue) Add(node Passenger) {
+	// fmt.Println(q.Size)
 	if q.Head == nil {
 		q.Head = &node
 		q.Tail = &node
@@ -74,10 +82,17 @@ func IncreasePassengerWaitingTime(stopList []*BusStop) {
 	for i := 0; i < len(stopList); i++ {
 		if stopList[i].Q.Size != 0 {
 			stopList[i].Q.Tail = stopList[i].Q.Head
+			// for stopList[i].Q.Tail.Next != nil {
+			// 	stopList[i].Q.Tail.WaitTime++
+			// 	stopList[i].Q.Tail = stopList[i].Q.Tail.Next
+			// }
 			for j := 0; j < stopList[i].Q.Size; j++ {
-				stopList[i].Q.Tail.WaitTime++
-				stopList[i].Q.Tail = stopList[i].Q.Tail.Next
+				if stopList[i].Q.Tail.Next != nil {
+					stopList[i].Q.Tail.WaitTime++
+					stopList[i].Q.Tail = stopList[i].Q.Tail.Next
+				}
 			}
 		}
 	}
+
 }
