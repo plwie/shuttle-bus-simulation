@@ -34,10 +34,6 @@ func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 				} else if psgr.Source != psgr.Destination {
 					stopList[j].Q.Add(*psgr)
 				}
-<<<<<<< Updated upstream
-				stopList[j].Q.Add(*psgr)
-=======
->>>>>>> Stashed changes
 			}
 		}
 	}
