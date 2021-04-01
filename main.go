@@ -147,7 +147,7 @@ func main() {
 	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
 
-	fmt.Printf("Initiated Bus Stop List: ")
+	fmt.Printf("Initiated Bus Stop List:\n")
 	for _, v := range stopList {
 		fmt.Printf("%v ", v.Name)
 	}
@@ -159,7 +159,7 @@ func main() {
 		fmt.Println("Warning: The number of Bus exceeded the number of bus stop")
 		fmt.Println("the bus might overlapped with each other")
 		fmt.Println("-------------------------------------------------------------------------------------------")
-		fmt.Println("Would you like to proceed? y/N")
+		fmt.Println("Would you like to proceed? Type N to cancel")
 		fmt.Scanln(&proceedDecision)
 		if proceedDecision == "N" {
 			fmt.Println("Exiting the simulation...")
@@ -183,10 +183,10 @@ func main() {
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Results: ")
 
+	// Generating Passenger
 	start := time.Now()
 	psgr := rs.NewPassenger()
 	rand.Seed(time.Now().UnixNano())
-	//Passenger Generated -------------------------
 	random1 := rs.Random(150, 200)
 
 	totalPassenger = inputPsg
