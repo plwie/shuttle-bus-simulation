@@ -111,73 +111,62 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 //End busc--------------------------------------------------------------------------------------------------------
 
 func main() {
-
-	aBuilding := rs.BusStop{Name: "aBuilding"}
-	bBuilding := rs.BusStop{Name: "bBuilding"}
-	cBuilding := rs.BusStop{Name: "cBuilding"}
-	dBuilding := rs.BusStop{Name: "dBuilding"}
-	eBuilding := rs.BusStop{Name: "eBuilding"}
-	fBuilding := rs.BusStop{Name: "fBuilding"}
-	gBuilding := rs.BusStop{Name: "gBuilding"}
-	hBuilding := rs.BusStop{Name: "hBuilding"}
-	iBuilding := rs.BusStop{Name: "iBuilding"}
-	jBuilding := rs.BusStop{Name: "jBuilding"}
-
-	stopList := graph.StopList
-
-	stopList = append(stopList, &aBuilding)
-	stopList = append(stopList, &bBuilding)
-	stopList = append(stopList, &cBuilding)
-	stopList = append(stopList, &dBuilding)
-	stopList = append(stopList, &eBuilding)
-	stopList = append(stopList, &fBuilding)
-	stopList = append(stopList, &gBuilding)
-	stopList = append(stopList, &hBuilding)
-	stopList = append(stopList, &iBuilding)
-	stopList = append(stopList, &jBuilding)
-
-	graph.AddEdge(&aBuilding, &bBuilding, 1)
-	graph.AddEdge(&bBuilding, &aBuilding, 1)
-	graph.AddEdge(&bBuilding, &cBuilding, 2)
-	graph.AddEdge(&cBuilding, &bBuilding, 2)
-	graph.AddEdge(&cBuilding, &dBuilding, 1)
-	graph.AddEdge(&dBuilding, &cBuilding, 1)
-	graph.AddEdge(&dBuilding, &eBuilding, 2)
-	graph.AddEdge(&eBuilding, &dBuilding, 2)
-	graph.AddEdge(&eBuilding, &fBuilding, 3)
-	graph.AddEdge(&fBuilding, &eBuilding, 3)
-	graph.AddEdge(&fBuilding, &gBuilding, 1)
-	graph.AddEdge(&gBuilding, &fBuilding, 1)
-	graph.AddEdge(&gBuilding, &hBuilding, 2)
-	graph.AddEdge(&hBuilding, &gBuilding, 2)
-	graph.AddEdge(&hBuilding, &iBuilding, 1)
-	graph.AddEdge(&iBuilding, &hBuilding, 1)
-	graph.AddEdge(&iBuilding, &jBuilding, 3)
-	graph.AddEdge(&jBuilding, &iBuilding, 3)
-	graph.AddEdge(&jBuilding, &aBuilding, 2)
-	graph.AddEdge(&aBuilding, &jBuilding, 2)
-
-	//GnrTrf Function---------------------------------------------------------------
-	graph.GenerateTraffic(rs.CarGroup(), &aBuilding, &bBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &aBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &bBuilding, &cBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &bBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &cBuilding, &dBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &cBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &dBuilding, &eBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &dBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &eBuilding, &fBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &eBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &fBuilding, &gBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &fBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &gBuilding, &hBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &gBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &hBuilding, &aBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &iBuilding, &hBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &iBuilding, &jBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &iBuilding)
-	graph.GenerateTraffic(rs.CarGroup(), &jBuilding, &aBuilding)
-	//-----------------------------------------------------------------
+	buildingInputJson := `{
+		"busStopList": [
+			{
+				"source": "aBuilding",
+				"destination": "bBuilding",
+				"distance": 1
+			},
+			{
+				"source": "bBuilding",
+				"destination": "cBuilding",
+				"distance": 2
+			},
+			{
+				"source": "cBuilding",
+				"destination": "dBuilding",
+				"distance": 1
+			},
+			{
+				"source": "dBuilding",
+				"destination": "eBuilding",
+				"distance": 2
+			},
+			{
+				"source": "eBuilding",
+				"destination": "fBuilding",
+				"distance": 3
+			},
+			{
+				"source": "fBuilding",
+				"destination": "gBuilding",
+				"distance": 1
+			},
+			{
+				"source": "gBuilding",
+				"destination": "hBuilding",
+				"distance": 2
+			},
+			{
+				"source": "hBuilding",
+				"destination": "iBuilding",
+				"distance": 1
+			},
+			{
+				"source": "iBuilding",
+				"destination": "jBuilding",
+				"distance": 3
+			},
+			{
+				"source": "jBuilding",
+				"destination": "aBuilding",
+				"distance": 2
+			}
+		]
+	}`
+	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
+	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
 
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
@@ -238,7 +227,7 @@ func main() {
 	for worldTime <= 600 {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
-		go rs.Event(stopList, psgr, worldTime, &bwg)
+		go rs.Event(&graph, stopList, psgr, worldTime, &bwg)
 		bwg.Wait()
 		worldTime++
 		for i := 0; i < inputNoBus; i++ {
