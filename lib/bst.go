@@ -82,10 +82,6 @@ func IncreasePassengerWaitingTime(stopList []*BusStop) {
 	for i := 0; i < len(stopList); i++ {
 		if stopList[i].Q.Size != 0 {
 			stopList[i].Q.Tail = stopList[i].Q.Head
-			// for stopList[i].Q.Tail.Next != nil {
-			// 	stopList[i].Q.Tail.WaitTime++
-			// 	stopList[i].Q.Tail = stopList[i].Q.Tail.Next
-			// }
 			for j := 0; j < stopList[i].Q.Size; j++ {
 				if stopList[i].Q.Tail.Next != nil {
 					stopList[i].Q.Tail.WaitTime++
