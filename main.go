@@ -146,18 +146,28 @@ func main() {
 	
 	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
-
 	fmt.Printf("Initiated Bus Stop List:\n")
 	for _, v := range stopList {
 		fmt.Printf("%v ", v.Name)
 	}
-	fmt.Println("\nHow many bus?")
+	fmt.Println()
+
+	// Get input and check for invalid bus number input
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Printf("Enter the number of bus: ")
 	fmt.Scanln(&inputNoBus)
-	var proceedDecision string
+	for inputNoBus <= 0 {
+		fmt.Printf("Error: invalid bus number input")
+		fmt.Printf("\nEnter the number of bus: ")
+		fmt.Scanln(&inputNoBus)
+	}
+
+	// Warning for bus number exceeding the bus stop number
 	if inputNoBus > len(stopList) {
+		var proceedDecision string
 		fmt.Println("-------------------------------------------------------------------------------------------")
-		fmt.Println("Warning: The number of Bus exceeded the number of bus stop")
-		fmt.Println("the bus might overlapped with each other")
+		fmt.Println("Warning: The number of Bus exceeded the number of bus stop.")
+		fmt.Println("A bus might overlap with other busses.")
 		fmt.Println("-------------------------------------------------------------------------------------------")
 		fmt.Println("Would you like to proceed? Type N to cancel")
 		fmt.Scanln(&proceedDecision)
@@ -167,6 +177,8 @@ func main() {
 			os.Exit(1)
 		}
 	}
+	fmt.Println("-------------------------------------------------------------------------------------------")
+
 	var inputPsg int
 	totalPsg := 0
 	fmt.Println("How many initial passenger?")
