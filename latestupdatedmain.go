@@ -167,7 +167,7 @@ func main() {
 	}`
 	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
-	
+
 	fmt.Printf("Initiated bus stop list: %v\n", stopList)
 	fmt.Println("How many bus?")
 	fmt.Scanln(&inputNoBus)
