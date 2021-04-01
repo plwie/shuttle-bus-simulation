@@ -4,6 +4,8 @@ import (
 	"math/rand"
 )
 
+var M = make(map[string]int)
+
 // Passenger create a passenger object
 type Passenger struct {
 	Source      string
@@ -26,37 +28,35 @@ func NewPassenger() *Passenger {
 func GnrPsg(stopList []*BusStop, random1 int, psgr *Passenger) {
 	for i := 0; i < random1; i++ {
 		psgr.WaitTime = 0
-		psgr.Source = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-		for j := 0; j < len(stopList); j++ {
-			if psgr.Source == stopList[j].Name {
-				psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-				if psgr.Source == psgr.Destination {
-					j--
-					continue
-				} else if psgr.Source != psgr.Destination {
-					stopList[j].Q.Add(*psgr)
-				}
-			}
+		src := Random(0, len(stopList))
+		psgr.Source = stopList[src].Name
+		psgr.Destination = stopList[Random(0, len(stopList))].Name
+		if psgr.Source == psgr.Destination {
+			i--
+			continue
+		} else {
+			stopList[src].Q.Add(*psgr)
 		}
 	}
 }
 
 //GnrPsgAt Generate psg and add to specific bus stop
 func GnrPsgAt(stopList []*BusStop, stop string, inputPsg int, psgr *Passenger) {
-	for i := 0; i < len(stopList); i++ {
-		if stop == stopList[i].Name {
-			psgr.Source = stop
-			psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-			psgr.WaitTime = 0
-			for j := 0; j < inputPsg; j++ {
-				psgr.Destination = stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-				if psgr.Source == psgr.Destination {
-					j--
-					continue
-				} else if psgr.Source != psgr.Destination {
-					stopList[i].Q.Add(*psgr)
-				}
-			}
+	var temp int
+	for j := 0; j < len(stopList); j++ {
+		if stop == stopList[j].Name {
+			temp = j
+		}
+	}
+	for i := 0; i < inputPsg; i++ {
+		psgr.WaitTime = 0
+		psgr.Source = stop
+		psgr.Destination = stopList[Random(0, len(stopList))].Name
+		if psgr.Source == psgr.Destination {
+			i--
+			continue
+		} else {
+			stopList[temp].Q.Add(*psgr)
 		}
 	}
 }
