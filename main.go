@@ -200,6 +200,16 @@ func main() {
 	fmt.Println("-The longer the queue, the longer the later person has to wait")
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	
+	// Get and check invalid simulation step
+	var inputStep int
+	fmt.Printf("ENTER THE NUMBER OF HOUR: ")
+	fmt.Scanln(&inputStep)
+	for inputStep <= 0 {
+		fmt.Printf("ERROR: invalid time input\n")
+		fmt.Printf("ENTER THE NUMBER OF HOUR: ")
+		fmt.Scanln(&inputStep)
+	}
+	inputStep *= 60
 
 	// Generating Passenger
 	start := time.Now()
@@ -218,17 +228,6 @@ func main() {
 	for i := 0; i <= inputNoBus; i++ {
 		BusArr = append(BusArr, &rs.Bus{})
 	}
-
-	// Get and check invalid simulation step
-	var inputStep int
-	fmt.Printf("ENTER THE NUMBER OF HOUR: ")
-	fmt.Scanln(&inputStep)
-	for inputStep <= 0 {
-		fmt.Printf("ERROR: invalid time input\n")
-		fmt.Printf("ENTER THE NUMBER OF HOUR: ")
-		fmt.Scanln(&inputStep)
-	}
-	inputStep *= 60
 
 	// Main simulation step
 	fmt.Println("-------------------------------------------------------------------------------------------")
