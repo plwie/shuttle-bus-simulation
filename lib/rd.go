@@ -6,9 +6,6 @@ import (
 	"math/rand"
 	"sort"
 	"strconv"
-	//  "fmt"
-	//  "time"
-	//  rs "rs/lib"
 )
 
 type Graph struct {
@@ -47,8 +44,6 @@ func (g *Graph) AddEdge(parent, child *BusStop, cost int) {
 	g.AddNode(child)
 }
 
-// AddNode adds a Node to the Graph list of Nodes, if the node is not already existed
-// g.Nodes is a map for better caching reasons
 func (g *Graph) AddNode(node *BusStop) {
 	for _, gNode := range g.StopList {
 		if node.Name == gNode.Name {
@@ -58,7 +53,6 @@ func (g *Graph) AddNode(node *BusStop) {
 	g.StopList = append(g.StopList, node)
 }
 
-// String returns a string representation of the Graph
 func (g *Graph) String() string {
 	var s string
 
@@ -84,18 +78,8 @@ func (g *Graph) String() string {
 	return s
 }
 
-// Dijkstra implements THE Dijkstra algorithm
-// Returns the shortest path from startNode to all the other Nodes
 func (g *Graph) Dijkstra(startNode *BusStop) (costTable map[*BusStop]int) {
 
-	// First, we instantiate a "Cost Table", it will hold the information:
-	// "From startNode, what's is the cost to all the other Nodes?"
-	// When initialized, It looks like this:
-	// NODE  COST
-	//  A     0    // The startNode has always the lowest cost to itself, in this case, 0
-	//  B    Inf   // the distance to all the other Nodes are unknown, so we mark as Infinity
-	//  C    Inf
-	// ...
 	costTable = g.NewCostTable(startNode)
 
 	// An empty list of "visited" Nodes. Everytime the algorithm runs on a Node, we add it here
@@ -115,16 +99,10 @@ func (g *Graph) Dijkstra(startNode *BusStop) (costTable map[*BusStop]int) {
 
 		for _, edge := range nodeEdges {
 
-			// The distance to that neighbor, let's say B is the cost from the costTable + the cost to get there (Edge cost)
-			// In the first run, the costTable says it's "0"
-			// Plus the actual cost, let's say "5"
-			// The distance becomes "5"
 			distanceToNeighbor := costTable[node] + edge.Cost
 
-			// If the distance above is lesser than the distance currently in the costTable for that neighbor
 			if distanceToNeighbor < costTable[edge.Child] {
 
-				// Update the costTable for that neighbor
 				costTable[edge.Child] = distanceToNeighbor
 			}
 		}
@@ -133,9 +111,6 @@ func (g *Graph) Dijkstra(startNode *BusStop) (costTable map[*BusStop]int) {
 	return costTable
 }
 
-// NewCostTable returns an initialized cost table for the Dijkstra algorithm work with
-// by default, the lowest cost is assigned to the startNode – so the algorithm starts from there
-// all the other Nodes in the Graph receives the Infinity value
 func (g *Graph) NewCostTable(startNode *BusStop) map[*BusStop]int {
 	costTable := make(map[*BusStop]int)
 	costTable[startNode] = 0
@@ -160,14 +135,6 @@ func (g *Graph) GetNodeEdges(node *BusStop) (edges []*Edge) {
 
 	return edges
 }
-
-// func NewCar(stopList []*BusStop) *Car {
-// 	var p *Car
-// 	p = new(Car)
-// 	p.Parent = "a"
-// 	p.Child = "b"
-// 	return p
-// }
 
 func (g *Graph) GetSpeed(parent *BusStop, child *BusStop) (speed int) {
 	for _, edge := range g.Edges {
