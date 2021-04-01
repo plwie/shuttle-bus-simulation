@@ -13,7 +13,6 @@ import (
 var (
 	stopList   []*rs.BusStop
 	inputNoBus int
-	//for putting busc in main
 	countPos       int
 	count          int
 	graph          = rs.Graph{}
@@ -21,7 +20,6 @@ var (
 	passTotal      int
 	waitingTime    float64
 	totalPassenger int
-	// bwg         sync.WaitGroup
 	countBWG  *int
 	worldTime int
 	mutx      sync.Mutex
@@ -29,33 +27,20 @@ var (
 	doOnce    sync.Once
 )
 
-//busc threading function---------------------------------------------------------------
+// Busc run a separate thread for each bus instance
 func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var pos int
-	// countPos++
 	var lenPath int = len(path)
 	var spd float64
 	var dist float64
 	var calcDist float64
-	// var calcTime float64
 	var distTrav float64
 	var countPass int = 0
 	var calculatedT int = 0
-	// var pWaitTime *float64 = &waitingTime
-	// var pPassTotal *int = &passTotal
 
-	// // Assign key value
-	// for i := 0; i < lenPath; i++ {
-	// 	busStruct.M[path[i].Name] = 0
-	// }
-
-	//pass struct values
-
-	//initial position
-	//only enter this condition when first run simulation
+	// First time initialize
 	if BusArr.FirstTime == false {
 		BusArr.Pos = name
-		// fmt.Println("FIRST POS:", BusArr.Pos)
 		BusArr.M = make(map[string]int)
 		for i := 0; i < lenPath; i++ {
 			BusArr.M[path[i].Name] = 0
@@ -80,16 +65,14 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	BusArr.NextStop = path[(pos+1)%lenPath].Name
 
 	if (calcDist - distTrav) > 1 {
-		//move 1 step
+		// Move 1 step
 		calcDist -= distTrav
 		BusArr.DistToNext = calcDist
-		// fmt.Println(calcDist)
 	} else {
 		BusArr.DistToNext = 0
 		mutx.Lock()
 		rs.DropPass(BusArr)
 		rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
-		// calculatedT = rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
 		if passTotal != totalPassenger {
 			totalTime += (float64(calculatedT) * 60)
 		}
@@ -99,16 +82,11 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 		BusArr.NextStop = path[(BusArr.Pos+1)%lenPath].Name
 	}
 	mutx.Lock()
-	// fmt.Println(countPass)
-	// fmt.Println(pPassTotal)
 	passTotal += countPass
-	// fmt.Println("PT:", passTotal)
 	mutx.Unlock()
 	bwg.Done()
 
 }
-
-//End busc--------------------------------------------------------------------------------------------------------
 
 func main() {
 	buildingInputJson := `{
@@ -165,11 +143,15 @@ func main() {
 			}
 		]
 	}`
+	
 	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
 
-	fmt.Printf("Initiated bus stop list: %v\n", stopList)
-	fmt.Println("How many bus?")
+	fmt.Printf("Initiated Bus Stop List: ")
+	for _, v := range stopList {
+		fmt.Printf("%v ", v.Name)
+	}
+	fmt.Println("\nHow many bus?")
 	fmt.Scanln(&inputNoBus)
 	var proceedDecision string
 	if inputNoBus > len(stopList) {
