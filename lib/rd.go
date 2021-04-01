@@ -1,10 +1,12 @@
 package rs
 
 import (
+	"encoding/json"
 	"math"
 	"math/rand"
 	"sort"
 	"strconv"
+	//  "fmt"
 	//  "time"
 	//  rs "rs/lib"
 )
@@ -22,6 +24,14 @@ type Edge struct {
 	Cost    int
 }
 
+type Building struct {
+	BusStopList []struct {
+		Source      string `json:"source"`
+		Destination string `json:"destination"`
+		Distance    int    `json:"distance"`
+	} `json:"busStopList"`
+}
+
 const Infinity = int(^uint(0) >> 1)
 
 // AddEdge adds an Edge to the Graph
@@ -37,8 +47,8 @@ func (g *Graph) AddEdge(parent, child *BusStop, cost int) {
 	g.AddNode(child)
 }
 
-// AddNode adds a Node to the Graph list of Nodes, if the the node wasn't already added
-// g.Nodes is a map for better caching reasons (https://www.reddit.com/r/golang/comments/diptj9/implementing_dijkstra_algorithm_in_go/f3xcffh?utm_source=share&utm_medium=web2x)
+// AddNode adds a Node to the Graph list of Nodes, if the node is not already existed
+// g.Nodes is a map for better caching reasons
 func (g *Graph) AddNode(node *BusStop) {
 	for _, gNode := range g.StopList {
 		if node.Name == gNode.Name {
@@ -106,7 +116,7 @@ func (g *Graph) Dijkstra(startNode *BusStop) (costTable map[*BusStop]int) {
 		for _, edge := range nodeEdges {
 
 			// The distance to that neighbor, let's say B is the cost from the costTable + the cost to get there (Edge cost)
-			// In the first run, the costTable says it's "Infinity"
+			// In the first run, the costTable says it's "0"
 			// Plus the actual cost, let's say "5"
 			// The distance becomes "5"
 			distanceToNeighbor := costTable[node] + edge.Cost
@@ -169,26 +179,34 @@ func (g *Graph) GetSpeed(parent *BusStop, child *BusStop) (speed int) {
 }
 
 func (g *Graph) GenerateTraffic(randomCar []*Car, parent *BusStop, child *BusStop) {
+	// fmt.Println("GenerateTraffic")
 	// random1 car capacity
-	for _, edge := range g.Edges {
-		if edge.Parent == parent && edge.Child == child {
-			temp := rand.Intn(65) + len(randomCar)
-			edge.Density = float64(temp / 2)
-			edge.Level = int(math.Floor(edge.Density / 10))
+	// child is nil, only one node as a parameter (Generate traffic near parent node)
+	if child == nil {
+		for _, edge := range g.Edges {
+			if edge.Child == parent {
+				temp := rand.Intn(65) + len(randomCar)
+				edge.Density = float64(temp / 2)
+				edge.Level = int(math.Floor(edge.Density / 10))
+			}
+		}
+		// parent and child are nil, there is no node as a parameter (Generate traffic the whole road)
+		if parent == nil {
+			for _, edge := range g.Edges {
+				temp := rand.Intn(65) + len(randomCar)
+				edge.Density = float64(temp / 2)
+				edge.Level = int(math.Floor(edge.Density / 10))
+			}
+		}
+	} else {
+		for _, edge := range g.Edges {
+			if edge.Parent == parent && edge.Child == child {
+				temp := rand.Intn(65) + len(randomCar)
+				edge.Density = float64(temp / 2)
+				edge.Level = int(math.Floor(edge.Density / 10))
+			}
 		}
 	}
-	// for i := 1; i < random1; i++ {
-
-	// car.Parent = *&stopList[rand.Intn(10)].Name
-	// car.Child = *&stopList[rand.Intn((len(stopList)-0-1)+1)].Name
-	// for i := 0; i < len(stopList)-1; i++ {
-	// 	if car.Child == *&stopList[i].Name {
-	// 		stopList[i].Q.Add(*car)
-	// 		// fmt.Println(stopList[i].Name)
-	// 		// fmt.Println(stopList[i].Q.Size)
-	// 	}
-	// }
-	// }
 }
 
 // getClosestNonVisitedNode returns the closest Node (with the lower cost) from the costTable
@@ -222,4 +240,46 @@ func getClosestNonVisitedNode(costTable map[*BusStop]int, visited []*BusStop) *B
 	})
 
 	return sorted[0].Node
+}
+
+func (g *Graph) GenerateBuildingBusStop(stopList *[]*BusStop, buildingInputJson string) {
+	var buildingInput Building
+	err := json.Unmarshal([]byte(buildingInputJson), &buildingInput)
+	if err != nil {
+		panic(err)
+	}
+	initBuildingList := make(map[string]*BusStop)
+	isSourceInit := false
+	isDestinationInit := false
+	for _, building := range buildingInput.BusStopList {
+		count := 0
+		for initBuilding := range initBuildingList {
+			if building.Source == initBuilding {
+				isSourceInit = true
+				count++
+			}
+			if building.Destination == initBuilding {
+				isDestinationInit = true
+				count++
+			}
+			if count == 2 {
+				break
+			}
+		}
+		if isSourceInit != true {
+			tempSourceBuilding := BusStop{Name: building.Source}
+			initBuildingList[building.Source] = &tempSourceBuilding
+			*stopList = append(*stopList, &tempSourceBuilding)
+		}
+		if isDestinationInit != true {
+			tempDestinationBuilding := BusStop{Name: building.Destination}
+			initBuildingList[building.Destination] = &tempDestinationBuilding
+			*stopList = append(*stopList, &tempDestinationBuilding)
+		}
+		// Add edge
+		g.AddEdge(initBuildingList[building.Source], initBuildingList[building.Destination], building.Distance)
+		g.AddEdge(initBuildingList[building.Destination], initBuildingList[building.Source], building.Distance)
+		g.GenerateTraffic(CarGroup(), initBuildingList[building.Source], initBuildingList[building.Destination])
+		g.GenerateTraffic(CarGroup(), initBuildingList[building.Destination], initBuildingList[building.Source])
+	}
 }
