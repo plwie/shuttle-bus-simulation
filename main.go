@@ -146,7 +146,8 @@ func main() {
 	
 	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
-	fmt.Printf("Initiated Bus Stop List:\n")
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Printf("INITIATED BUS STOP LIST:\n")
 	for _, v := range stopList {
 		fmt.Printf("%v ", v.Name)
 	}
@@ -154,11 +155,11 @@ func main() {
 
 	// Get input and check for invalid bus number input
 	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Printf("Enter the number of bus: ")
+	fmt.Printf("ENTER THE NUMBER OF BUS: ")
 	fmt.Scanln(&inputNoBus)
 	for inputNoBus <= 0 {
-		fmt.Printf("Error: invalid bus number input")
-		fmt.Printf("\nEnter the number of bus: ")
+		fmt.Printf("ERROR: invalid bus number input\n")
+		fmt.Printf("ENTER THE NUMBER OF BUS: ")
 		fmt.Scanln(&inputNoBus)
 	}
 
@@ -179,11 +180,16 @@ func main() {
 	}
 	fmt.Println("-------------------------------------------------------------------------------------------")
 
+	// Get input and check invalid passenger input
 	var inputPsg int
-	totalPsg := 0
-	fmt.Println("How many initial passenger?")
+	fmt.Printf("ENTER THE NUMBER OF PASSENGER: ")
 	fmt.Scanln(&inputPsg)
-	fmt.Println("Simulation in progress.....")
+	for inputPsg < 0 {
+		fmt.Printf("ERROR: invalid passenger number input\n")
+		fmt.Printf("ENTER THE NUMBER OF PASSENGER: ")
+		fmt.Scanln(&inputPsg)
+	}
+
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("REMINDER:")
 	fmt.Println("-Not all passengers will be delivered")
@@ -193,31 +199,27 @@ func main() {
 	fmt.Println("-More traffic means bus can travel slower")
 	fmt.Println("-The longer the queue, the longer the later person has to wait")
 	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("Results: ")
+	fmt.Println("Simulation in progress.....")
 
 	// Generating Passenger
 	start := time.Now()
 	psgr := rs.NewPassenger()
 	rand.Seed(time.Now().UnixNano())
 	random1 := rs.Random(150, 200)
-
 	totalPassenger = inputPsg
-	// Init -------------------------------------------------
+
 	if inputPsg != 0 {
 		rs.GnrPsg(stopList, inputPsg, psgr)
-		//rs.GnrTrf(CarGroup())
-		totalPsg += inputPsg
 	} else {
 		rs.GnrPsg(stopList, random1, psgr)
-		//rs.GnrTrf(CarGroup())
-		totalPsg += random1
 	}
-	//create bus struct array
 
+	// Create bus instance and put in array
 	for i := 0; i <= inputNoBus; i++ {
 		BusArr = append(BusArr, &rs.Bus{})
 	}
 
+	// Main simulation step
 	for worldTime <= 600 {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
@@ -232,12 +234,17 @@ func main() {
 		rs.IncreasePassengerWaitingTime(stopList)
 	}
 
+	// Calculating simulation results
+	duration := time.Since(start)
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
+	
+	// Print out result
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Println("RESULTS: ")
 	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
 	fmt.Println("Total Passengers Delivered: ", passTotal)
-	duration := time.Since(start)
 	fmt.Println("Simulation run time: ", duration)
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Simulation has ended...")
