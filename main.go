@@ -199,7 +199,7 @@ func main() {
 	fmt.Println("-More traffic means bus can travel slower")
 	fmt.Println("-The longer the queue, the longer the later person has to wait")
 	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("Simulation in progress.....")
+	
 
 	// Generating Passenger
 	start := time.Now()
@@ -219,8 +219,21 @@ func main() {
 		BusArr = append(BusArr, &rs.Bus{})
 	}
 
+	// Get and check invalid simulation step
+	var inputStep int
+	fmt.Printf("ENTER THE NUMBER OF HOUR: ")
+	fmt.Scanln(&inputStep)
+	for inputStep <= 0 {
+		fmt.Printf("ERROR: invalid time input\n")
+		fmt.Printf("ENTER THE NUMBER OF HOUR: ")
+		fmt.Scanln(&inputStep)
+	}
+	inputStep *= 60
+
 	// Main simulation step
-	for worldTime <= 600 {
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	fmt.Println("Simulation in progress.....")
+	for worldTime <= inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
 		go rs.Event(&graph, stopList, psgr, worldTime, &bwg)
