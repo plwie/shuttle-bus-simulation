@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	stopList   []*rs.BusStop
-	inputNoBus int
+	stopList       []*rs.BusStop
+	inputNoBus     int
 	countPos       int
 	count          int
 	graph          = rs.Graph{}
@@ -20,11 +20,11 @@ var (
 	passTotal      int
 	waitingTime    float64
 	totalPassenger int
-	countBWG  *int
-	worldTime int
-	mutx      sync.Mutex
-	BusArr    []*rs.Bus
-	doOnce    sync.Once
+	countBWG       *int
+	worldTime      int
+	mutx           sync.Mutex
+	BusArr         []*rs.Bus
+	doOnce         sync.Once
 )
 
 // Busc run a separate thread for each bus instance
@@ -143,7 +143,7 @@ func main() {
 			}
 		]
 	}`
-	
+
 	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
 	fmt.Println("-------------------------------------------------------------------------------------------")
@@ -199,7 +199,7 @@ func main() {
 	fmt.Println("-More traffic means bus can travel slower")
 	fmt.Println("-The longer the queue, the longer the later person has to wait")
 	fmt.Println("-------------------------------------------------------------------------------------------")
-	
+
 	// Get and check invalid simulation step
 	var inputStep int
 	fmt.Printf("ENTER THE NUMBER OF HOUR: ")
@@ -232,6 +232,11 @@ func main() {
 	// Main simulation step
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Simulation in progress.....")
+	if inputPsg != 0 {
+		fmt.Println("Initial passengers:", inputPsg, "Passengers")
+	} else {
+		fmt.Println("Initial passengers:", random1)
+	}
 	for worldTime <= inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
@@ -251,7 +256,7 @@ func main() {
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
-	
+
 	// Print out result
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("RESULTS: ")
