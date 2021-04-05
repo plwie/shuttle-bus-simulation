@@ -44,7 +44,7 @@ func Event(graph *Graph, lst []*BusStop, p *Passenger, time int, wg *sync.WaitGr
 		} else if time <= 480 && time%120 == 0 {
 			fmt.Println("At time:", time)
 			Train(graph, lst, p)
-		} else if time >= 480 && time%120 == 60 {
+		} else if time%60 == 0 && time >= 480 {
 			fmt.Println("At time:", time)
 			AfterWork(graph, lst, p)
 		}
