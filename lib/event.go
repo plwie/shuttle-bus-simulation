@@ -14,7 +14,7 @@ func ClassEnd(graph *Graph, lst []*BusStop, p *Passenger) {
 	n := Random(150, 200)
 	GnrPsg(lst, n, p)
 	graph.GenerateTraffic(CarGroup(), nil, nil)
-	fmt.Println("Event generate:", n, "Passengers")
+	// fmt.Println("Event generate:", n, "Passengers")
 
 }
 
@@ -25,7 +25,7 @@ func Train(graph *Graph, lst []*BusStop, p *Passenger) {
 	GnrPsgAt(lst, "hBuilding", n, p)
 	GnrPsg(lst, n1, p)
 	graph.GenerateTraffic(CarGroupTr(), lst[7], nil)
-	fmt.Println("Event generate:", n+n1, "Passengers")
+	// fmt.Println("Event generate:", n+n1, "Passengers")
 }
 
 // // AfterWork ---------------------------------------------
@@ -33,7 +33,7 @@ func AfterWork(graph *Graph, lst []*BusStop, p *Passenger) {
 	n := Random(350, 500)
 	GnrPsg(lst, n, p)
 	graph.GenerateTraffic(CarGroupBusy(), nil, nil)
-	fmt.Println("Event generate:", n, "Passengers")
+	// fmt.Println("Event generate:", n, "Passengers")
 }
 
 func Event(graph *Graph, lst []*BusStop, p *Passenger, time int, wg *sync.WaitGroup) {
