@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	rs "rs/lib"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -25,6 +26,7 @@ var (
 	mutx           sync.Mutex
 	BusArr         []*rs.Bus
 	doOnce         sync.Once
+	infoes         []string
 )
 
 // Busc run a separate thread for each bus instance
@@ -224,6 +226,8 @@ func main() {
 		rs.GnrPsg(stopList, random1, psgr)
 	}
 
+	g := rs.NewGlobDis()
+
 	// Create bus instance and put in array
 	for i := 0; i <= inputNoBus; i++ {
 		BusArr = append(BusArr, &rs.Bus{})
@@ -240,17 +244,22 @@ func main() {
 	for worldTime <= inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
-		go rs.Event(&graph, stopList, psgr, worldTime, &bwg)
+		go rs.Event(&graph, stopList, psgr, worldTime, &bwg, g)
 		bwg.Wait()
 		worldTime++
+		if worldTime == g.AtTime+1 {
+			info := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(g.PsgAdded) + "_" + "Passengers")
+			infoes = append(infoes, info)
+			fmt.Println(infoes)
+			// fmt.Println(info)
+		}
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
+			bwg.Wait()
+			rs.IncreasePassengerWaitingTime(stopList)
 		}
-		bwg.Wait()
-		rs.IncreasePassengerWaitingTime(stopList)
 	}
-
 	// Calculating simulation results
 	duration := time.Since(start)
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
