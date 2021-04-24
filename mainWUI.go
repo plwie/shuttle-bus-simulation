@@ -255,7 +255,7 @@ func main() {
 	// PSG queue chart
 	bstbc := widgets.NewBarChart()
 	bstbc.Title = "Passenger in Queue"
-	bstbc.SetRect(45, 0, 97, 10)
+	bstbc.SetRect(45, 0, 97, 20)
 	bstbc.BarGap = 2
 	var stopName []string
 	for _, v := range stopList {
@@ -270,10 +270,10 @@ func main() {
 
 	//Event Log
 	el := widgets.NewList()
-	el.Title = "List"
+	el.Title = "Event Log"
 	el.TextStyle = ui.NewStyle(ui.ColorYellow)
 	el.WrapText = false
-	el.SetRect(102, 70, 117, 20)
+	el.SetRect(45, 25, 97, 40)
 
 	ui.Render(el)
 
