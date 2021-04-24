@@ -31,6 +31,7 @@ var (
 	BusArr         []*rs.Bus
 	doOnce         sync.Once
 	renBus         []*widgets.Gauge
+	infoes         []string
 )
 
 // Busc run a separate thread for each bus instance
@@ -232,8 +233,6 @@ func main() {
 
 	g := rs.NewGlobDis()
 
-	var infoes []string
-
 	// Create bus instance and put in array
 	for i := 0; i < inputNoBus; i++ {
 		newBus := &rs.Bus{}
@@ -269,6 +268,20 @@ func main() {
 	tp.TextStyle.Fg = ui.ColorWhite
 	tp.BorderStyle.Fg = ui.ColorCyan
 
+	//Event Log
+	el := widgets.NewList()
+	el.Title = "List"
+	el.TextStyle = ui.NewStyle(ui.ColorYellow)
+	el.WrapText = false
+	el.SetRect(102, 70, 117, 20)
+
+	ui.Render(el)
+
+	drawEvent := func(lst []string) {
+		el.Rows = lst
+		ui.Render(el)
+	}
+
 	// Draw bus n at renBus n
 	drawBus := func(n int) {
 		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + BusArr[n].CurrStop + " to " + BusArr[n].NextStop
@@ -301,6 +314,7 @@ func main() {
 			infoes = append(infoes, info)
 			// fmt.Println(info)
 		}
+		drawEvent(infoes)
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
