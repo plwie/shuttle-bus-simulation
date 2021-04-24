@@ -274,12 +274,11 @@ func main() {
 				}
 			default:
 				drawBus(i)
-
 			}
 		}
 		bwg.Wait()
 		rs.IncreasePassengerWaitingTime(stopList)
-		time.Sleep(time.Second / 2)
+		// time.Sleep(time.Second / 2)
 	}
 
 	// Calculating simulation results
