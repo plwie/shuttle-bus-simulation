@@ -90,6 +90,18 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 
 }
 
+func calulateDistance(source string) float64 {
+	edgeLen := len(graph.Edges)
+	var dis float64
+	for i := 0; i < edgeLen; i++ {
+		if source != graph.Edges[i].Parent.Name {
+			continue
+		} else {
+			dis = float64(graph.Edges[i].Cost)
+		}
+	}
+	return dis
+}
 func main() {
 	buildingInputJson := `{
 		"busStopList": [
@@ -150,10 +162,25 @@ func main() {
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Printf("INITIATED BUS STOP LIST:\n")
+
 	for _, v := range stopList {
 		fmt.Printf("%v ", v.Name)
 	}
 	fmt.Println()
+
+	fmt.Println("-------------------------------------------------------------------------------------------")
+	// fmt.Printf("%s", graph.Edges[2].Parent.Name)
+	// fmt.Printf("%s", graph.Edges[2].Child.Name)
+	// fmt.Printf("%d", graph.Edges[2].Cost)
+
+	func getDist(src string dest) int {
+		for _, v := range graph.Edges {
+			if src == v.Parent.Name && dest == v.Child.Name{
+				return v.Cost
+			}
+		}
+		return 0
+	}
 
 	// Get input and check for invalid bus number input
 	fmt.Println("-------------------------------------------------------------------------------------------")
