@@ -236,7 +236,7 @@ func main() {
 		BusArr = append(BusArr, newBus)
 		g := widgets.NewGauge()
 		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling from " + newBus.CurrStop + " to " + newBus.NextStop
-		g.SetRect(0, i*3, 50, i*3+3)
+		g.SetRect(0, i*3, 40, i*3+3)
 		g.BarColor = ui.ColorRed
 		g.BorderStyle.Fg = ui.ColorWhite
 		g.TitleStyle.Fg = ui.ColorYellow
@@ -251,17 +251,12 @@ func main() {
 
 	// Draw bus n at renBus n
 	drawBus := func(n int) {
-		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": Traveling from " + BusArr[n].CurrStop + " to " + BusArr[n].NextStop
+		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + BusArr[n].CurrStop + " to " + BusArr[n].NextStop
 		ui.Render(renBus[n])
 	}
 
 	// Main simulation step
 	event := ui.PollEvents()
-	if inputPsg != 0 {
-		fmt.Println("Initial passengers:", inputPsg, "Passengers")
-	} else {
-		fmt.Println("Initial passengers:", random1)
-	}
 	for worldTime <= inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
