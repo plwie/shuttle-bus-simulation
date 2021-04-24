@@ -231,11 +231,11 @@ func main() {
 	}
 
 	// Create bus instance and put in array
-	for i := 1; i <= inputNoBus; i++ {
+	for i := 0; i < inputNoBus; i++ {
 		newBus := &rs.Bus{}
 		BusArr = append(BusArr, newBus)
 		g := widgets.NewGauge()
-		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling From " + newBus.CurrStop + " to " + newBus.NextStop
+		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling from " + newBus.CurrStop + " to " + newBus.NextStop
 		g.SetRect(0, i*3, 50, i*3+3)
 		g.BarColor = ui.ColorRed
 		g.BorderStyle.Fg = ui.ColorWhite
@@ -249,17 +249,14 @@ func main() {
 	}
 	defer ui.Close()
 
-	draw := func() {
-		for _, v := range renBus {
-			v.Percent++
-			ui.Render(v)
-		}
+	// Draw bus n at renBus n
+	drawBus := func(n int) {
+		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": Traveling from " + BusArr[n].CurrStop + " to " + BusArr[n].NextStop
+		ui.Render(renBus[n])
 	}
 
 	// Main simulation step
 	event := ui.PollEvents()
-	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("Simulation in progress.....")
 	if inputPsg != 0 {
 		fmt.Println("Initial passengers:", inputPsg, "Passengers")
 	} else {
@@ -274,19 +271,20 @@ func main() {
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
+			select {
+			case e := <-event:
+				switch e.ID {
+				case "q", "<C-c>":
+					return
+				}
+			default:
+				drawBus(i)
+
+			}
 		}
 		bwg.Wait()
 		rs.IncreasePassengerWaitingTime(stopList)
-		select {
-		case e := <-event:
-			switch e.ID {
-			case "q", "<C-c>":
-				return
-			}
-		default:
-			draw()
-			time.Sleep(time.Second / 2)
-		}
+		time.Sleep(time.Second / 2)
 	}
 
 	// Calculating simulation results
