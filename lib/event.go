@@ -1,7 +1,6 @@
 package rs
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -39,13 +38,13 @@ func AfterWork(graph *Graph, lst []*BusStop, p *Passenger) {
 func Event(graph *Graph, lst []*BusStop, p *Passenger, time int, wg *sync.WaitGroup) {
 	if time != 0 {
 		if time <= 480 && time%120 == 60 {
-			fmt.Println("At time:", time)
+			// fmt.Println("At time:", time)
 			ClassEnd(graph, lst, p)
 		} else if time <= 480 && time%120 == 0 {
-			fmt.Println("At time:", time)
+			// fmt.Println("At time:", time)
 			Train(graph, lst, p)
 		} else if time%120 == 60 && time >= 480 {
-			fmt.Println("At time:", time)
+			// fmt.Println("At time:", time)
 			AfterWork(graph, lst, p)
 		}
 	}
