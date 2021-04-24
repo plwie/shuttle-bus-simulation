@@ -32,6 +32,8 @@ var (
 	doOnce         sync.Once
 	renBus         []*widgets.Gauge
 	infoes         []string
+	baList         []string
+	renAt          []*widgets.List
 )
 
 // Busc run a separate thread for each bus instance
@@ -277,6 +279,37 @@ func main() {
 
 	ui.Render(el)
 
+	//BusAttributes
+
+	for i := 0; i < inputNoBus; i++ {
+		l := widgets.NewList()
+		l.Title = "Time Step:" + strconv.Itoa(i)
+		l.TextStyle = ui.NewStyle(ui.ColorYellow)
+		l.WrapText = false
+		l.SetRect(102, 25, 140, 33)
+		l.Rows = []string{
+			"Current Stop:" + BusArr[i].CurrStop,
+			"Next Stop: " + BusArr[i].NextStop,
+			"Psg on Bus:" + strconv.FormatInt(int64(BusArr[i].PassOn), 10),
+			"Available Seats:" + strconv.Itoa(BusArr[i].AvailSeats),
+			"Distance until next stop:" + strconv.FormatFloat(BusArr[i].DistToNext, 'f', -1, 64),
+			"Psg down on next stop:" + strconv.FormatInt(int64(BusArr[i].M[BusArr[i].CurrStop]), 10),
+		}
+		renAt = append(renAt, l)
+		// ui.Render(l)
+	}
+
+	drawBattributes := func(n int, step int) {
+		renAt[n].Title = "Time Step:" + strconv.Itoa(step)
+		renAt[n].Rows[0] = "Current Stop:" + BusArr[n].CurrStop
+		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
+		renAt[n].Rows[2] = "Psg on Bus:" + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
+		renAt[n].Rows[3] = "Available Seats:" + strconv.Itoa(BusArr[n].AvailSeats)
+		renAt[n].Rows[4] = "Distance until next stop (m):" + strconv.FormatFloat((BusArr[n].DistToNext*1000), 'f', -1, 64)
+		renAt[n].Rows[5] = "Psg down on next stop:" + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
+
+		ui.Render(renAt[n])
+	}
 	drawEvent := func(lst []string) {
 		el.Rows = lst
 		ui.Render(el)
@@ -315,6 +348,7 @@ func main() {
 			// fmt.Println(info)
 		}
 		drawEvent(infoes)
+
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
@@ -326,6 +360,7 @@ func main() {
 				}
 			default:
 				drawBus(i)
+				drawBattributes(i, worldTime)
 			}
 		}
 		bwg.Wait()
