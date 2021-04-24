@@ -248,22 +248,12 @@ func main() {
 		log.Fatalf("failed to initialize termui: %v", err)
 	}
 	defer ui.Close()
-
-	// PSG queue chart
 	bstbc := widgets.NewBarChart()
-	bstbc.Title = "Passenger in Queue"
-	bstbc.SetRect(45, 0, 97, 10)
-	bstbc.BarGap = 2
-	var stopName []string
-	for _, v := range stopList {
-		stopName = append(stopName, v.Name[0:1])
-	}
-	bstbc.Labels = stopName
-	// Global Timer
-	tp := widgets.NewParagraph()
-	tp.SetRect(102, 0, 117, 5)
-	tp.TextStyle.Fg = ui.ColorWhite
-	tp.BorderStyle.Fg = ui.ColorCyan
+	bstbc.Title = "Bar Chart"
+	bstbc.SetRect(50, 0, 90, 10)
+	bstbc.Labels = []string{"S0", "S1", "S2", "S3", "S4", "S5", "S6"}
+	bstbc.BarColors[0] = ui.ColorGreen
+	bstbc.NumStyles[0] = ui.NewStyle(ui.ColorBlack)
 
 	// Draw bus n at renBus n
 	drawBus := func(n int) {
@@ -275,18 +265,13 @@ func main() {
 		for _, v := range stopList {
 			psgNum = append(psgNum, float64(v.Q.Size))
 		}
-		psgNum = append(psgNum, float64(1))
 		bstbc.Data = psgNum
 		ui.Render(bstbc)
-	}
-	drawTimer := func(n int) {
-		tp.Text = "Current Time: " + strconv.Itoa(n/60) + " HR: " + strconv.Itoa(n%60) + " MIN"
-		ui.Render(tp)
 	}
 
 	// Main simulation step
 	event := ui.PollEvents()
-	for worldTime < inputStep {
+	for worldTime <= inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
 		go rs.Event(&graph, stopList, psgr, worldTime, &bwg)
@@ -307,15 +292,10 @@ func main() {
 		}
 		bwg.Wait()
 		rs.IncreasePassengerWaitingTime(stopList)
-		time.Sleep(time.Millisecond)
 		drawBST()
-		drawTimer(worldTime)
+		// time.Sleep(time.Second / 2)
 	}
-	for e := range ui.PollEvents() {
-		if e.Type == ui.KeyboardEvent {
-			break
-		}
-	}
+
 	// Calculating simulation results
 	duration := time.Since(start)
 	waitingTime = ((totalTime) / float64(passTotal)) / 60
