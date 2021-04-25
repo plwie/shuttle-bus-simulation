@@ -138,52 +138,52 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 1
+				"distance": 0.5
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 2
+				"distance": 1
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 1
+				"distance": 0.8
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 2
+				"distance": 0.9
 			},
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 3
+				"distance": 2
 			},
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 1
+				"distance": 0.6
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 2
+				"distance": 1.2
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 1
+				"distance": 1.6
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 3
+				"distance": 0.9
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 2
+				"distance": 1
 			}
 		]
 	}`
@@ -429,7 +429,7 @@ func main() {
 	}
 	// Calculating simulation results
 	duration := time.Since(start)
-	waitingTime = ((totalTime) / float64(passTotal)) / 60
+	waitingTime = (totalTime / float64(passTotal)) / 60
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
 
