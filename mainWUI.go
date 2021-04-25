@@ -34,6 +34,7 @@ var (
 	infoes         []string
 	baList         []string
 	renAt          []*widgets.List
+	// calcDist       float64
 )
 
 // Busc run a separate thread for each bus instance
@@ -41,8 +42,8 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var pos int
 	var lenPath int = len(path)
 	var spd float64
-	var dist float64
-	var calcDist float64
+	// var dist float64
+	// var calcDist float64
 	var distTrav float64
 	var countPass int = 0
 	var calculatedT int = 0
@@ -56,8 +57,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 		}
 		BusArr.AvailSeats = 30
 		BusArr.FirstTime = true
-		BusArr.CurrStop = path[(pos)%lenPath].Name
-		BusArr.NextStop = path[(pos+1)%lenPath].Name
+
 	}
 	if BusArr.Pos >= 10 {
 		BusArr.Pos = 0
@@ -66,16 +66,20 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	pos = BusArr.Pos
 	if BusArr.DistToNext == 0 {
 		BusArr.DistToNext = float64(graph.Edges[pos].Cost)
-		dist = float64(graph.Edges[pos].Cost)
-		spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
-		distTrav = (dist / 60) * spd
-		calcDist = BusArr.DistToNext
 	}
+	// dist = float64(graph.Edges[pos].Cost)
+	spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
+	distTrav = spd / 60
+	// calcDist = BusArr.DistToNext
 
-	if (calcDist - distTrav) > 0.001 {
+	BusArr.CurrStop = path[(pos)%lenPath].Name
+	BusArr.NextStop = path[(pos+1)%lenPath].Name
+
+	if (BusArr.DistToNext - distTrav) > 0.1 {
 		// Move 1 step
-		calcDist -= distTrav
-		BusArr.DistToNext = calcDist
+		// calcDist -= distTrav
+		BusArr.DistToNext -= distTrav
+
 	} else {
 		BusArr.DistToNext = 0
 		mutx.Lock()
@@ -112,52 +116,52 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 10
+				"distance": 1
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 20
+				"distance": 2
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 10
+				"distance": 1
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 20
+				"distance": 2
 			},
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 30
+				"distance": 3
 			},
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 10
+				"distance": 1
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 20
+				"distance": 2
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 10
+				"distance": 1
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 30
+				"distance": 3
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 20
+				"distance": 2
 			}
 		]
 	}`

@@ -29,13 +29,22 @@ var (
 	infoes         []string
 )
 
+// func getDist(src string, dst string) int {
+// 	for _, v := range graph.Edges {
+// 		if src == v.Parent.Name && dst == v.Child.Name {
+// 			return v.Cost
+// 		}
+// 	}
+// 	return 0
+// }
+
 // Busc run a separate thread for each bus instance
 func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var pos int
 	var lenPath int = len(path)
 	var spd float64
-	var dist float64
-	var calcDist float64
+	// var dist float64
+	// var calcDist float64
 	var distTrav float64
 	var countPass int = 0
 	var calculatedT int = 0
@@ -48,6 +57,8 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 			BusArr.M[path[i].Name] = 0
 		}
 		BusArr.AvailSeats = 30
+		BusArr.CurrStop = path[(pos)%lenPath].Name
+		BusArr.NextStop = path[(pos+1)%lenPath].Name
 		BusArr.FirstTime = true
 	}
 	if BusArr.Pos >= 10 {
@@ -60,16 +71,16 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	}
 	dist = float64(graph.Edges[pos].Cost)
 	spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
-	distTrav = (dist / 60) * spd
-	calcDist = BusArr.DistToNext
+	distTrav = spd / 60
+	// calcDist = BusArr.DistToNext
 
-	BusArr.CurrStop = path[(pos)%lenPath].Name
-	BusArr.NextStop = path[(pos+1)%lenPath].Name
+	// BusArr.CurrStop = path[(pos)%lenPath].Name
+	// BusArr.NextStop = path[(pos+1)%lenPath].Name
 
-	if (calcDist - distTrav) > 1 {
+	if (BusArr.DistToNext - distTrav) > 0.1 {
 		// Move 1 step
-		calcDist -= distTrav
-		BusArr.DistToNext = calcDist
+		// calcDist -= distTrav
+		BusArr.DistToNext -= distTrav
 	} else {
 		BusArr.DistToNext = 0
 		mutx.Lock()
@@ -86,22 +97,11 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	mutx.Lock()
 	passTotal += countPass
 	mutx.Unlock()
+	fmt.Printf("Bus: %d At: %s Speed: %.5f  Totaltime: %.5f PassTotal: %d\n", name, BusArr.CurrStop, spd, totalTime, passTotal)
 	bwg.Done()
 
 }
 
-func calulateDistance(source string) float64 {
-	edgeLen := len(graph.Edges)
-	var dis float64
-	for i := 0; i < edgeLen; i++ {
-		if source != graph.Edges[i].Parent.Name {
-			continue
-		} else {
-			dis = float64(graph.Edges[i].Cost)
-		}
-	}
-	return dis
-}
 func main() {
 	buildingInputJson := `{
 		"busStopList": [
@@ -172,15 +172,6 @@ func main() {
 	// fmt.Printf("%s", graph.Edges[2].Parent.Name)
 	// fmt.Printf("%s", graph.Edges[2].Child.Name)
 	// fmt.Printf("%d", graph.Edges[2].Cost)
-
-	func getDist(src string dest) int {
-		for _, v := range graph.Edges {
-			if src == v.Parent.Name && dest == v.Child.Name{
-				return v.Cost
-			}
-		}
-		return 0
-	}
 
 	// Get input and check for invalid bus number input
 	fmt.Println("-------------------------------------------------------------------------------------------")
@@ -268,7 +259,7 @@ func main() {
 	} else {
 		fmt.Println("Initial passengers:", random1)
 	}
-	for worldTime <= inputStep {
+	for worldTime < inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
 		go rs.Event(&graph, stopList, psgr, worldTime, &bwg, g)
