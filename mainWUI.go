@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image/png"
 	"log"
 	"math"
 	"math/rand"
@@ -10,6 +11,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/kbinani/screenshot"
 
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
@@ -108,6 +111,25 @@ func getDist(src string, dst string) int {
 		}
 	}
 	return 0
+}
+
+//function to get screenshot
+func getScreen(n int) {
+	// n := screenshot.NumActiveDisplays()
+
+	bounds := screenshot.GetDisplayBounds(0)
+
+	img, err := screenshot.CaptureRect(bounds)
+	if err != nil {
+		panic(err)
+	}
+	fileName := fmt.Sprintf("%d_%dx%d.png", n, bounds.Dx(), bounds.Dy())
+	file, _ := os.Create(fileName)
+	defer file.Close()
+	png.Encode(file, img)
+
+	fmt.Printf("#%d : %v \"%s\"\n", n, bounds, fileName)
+
 }
 
 func main() {
@@ -396,6 +418,8 @@ func main() {
 		time.Sleep(time.Millisecond)
 		drawBST()
 		drawTimer(worldTime)
+		//call screenshot function
+		// getScreen(worldTime)
 		time.Sleep(time.Second / 2)
 	}
 	for e := range ui.PollEvents() {
