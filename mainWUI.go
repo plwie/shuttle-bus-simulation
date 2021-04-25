@@ -323,6 +323,7 @@ func main() {
 	//passenger delivered
 	pd := widgets.NewParagraph()
 	pd.Title = "Passenger Delivered"
+	pd.TitleStyle.Fg = ui.ColorGreen
 	pd.SetRect(140, 10, 170, 5)
 	pd.TextStyle.Fg = ui.ColorWhite
 	pd.BorderStyle.Fg = ui.ColorWhite
