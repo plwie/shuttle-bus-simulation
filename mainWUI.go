@@ -309,17 +309,6 @@ func main() {
 
 	ui.Render(el)
 
-	// drawBattributes := func(n int, step int) {
-	// 	renAt[n].Title = "Bus" + strconv.Itoa(n) + "Step:" + strconv.Itoa(step)
-	// 	renAt[n].Rows[0] = "Current Stop:" + BusArr[n].CurrStop
-	// 	renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
-	// 	renAt[n].Rows[2] = "Psg on Bus:" + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
-	// 	renAt[n].Rows[3] = "Available Seats:" + strconv.Itoa(BusArr[n].AvailSeats)
-	// 	renAt[n].Rows[4] = "Distance until next stop (m):" + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 64)
-	// 	renAt[n].Rows[5] = "Psg down on next stop:" + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
-
-	// 	ui.Render(renAt[n])
-	// }
 	drawEvent := func(lst []string) {
 		el.Rows = lst
 		ui.Render(el)
