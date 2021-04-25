@@ -97,6 +97,16 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 
 }
 
+// Get distance from src and dst
+func getDist(src string, dst string) int {
+	for _, v := range graph.Edges {
+		if src == v.Parent.Name && dst == v.Child.Name {
+			return v.Cost
+		}
+	}
+	return 0
+}
+
 func main() {
 	buildingInputJson := `{
 		"busStopList": [
