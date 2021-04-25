@@ -371,7 +371,6 @@ func main() {
 
 	drawEvent := func(lst []string) {
 		el.Rows = lst
-		ui.Render(el)
 		el.ScrollDown()
 		ui.Render(el)
 	}
