@@ -2,13 +2,17 @@ package main
 
 import (
 	"fmt"
+	"image/png"
 	"math"
 	"math/rand"
 	"os"
 	rs "rs/lib"
-	"strconv"
 	"sync"
 	"time"
+
+	"github.com/kbinani/screenshot"
+
+	"github.com/gizak/termui/v3/widgets"
 )
 
 var (
@@ -26,17 +30,12 @@ var (
 	mutx           sync.Mutex
 	BusArr         []*rs.Bus
 	doOnce         sync.Once
+	renBus         []*widgets.Gauge
 	infoes         []string
+	baList         []string
+	renAt          []*widgets.List
+	// calcDist       float64
 )
-
-// func getDist(src string, dst string) int {
-// 	for _, v := range graph.Edges {
-// 		if src == v.Parent.Name && dst == v.Child.Name {
-// 			return v.Cost
-// 		}
-// 	}
-// 	return 0
-// }
 
 // Busc run a separate thread for each bus instance
 func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
@@ -57,9 +56,8 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 			BusArr.M[path[i].Name] = 0
 		}
 		BusArr.AvailSeats = 30
-		BusArr.CurrStop = path[(pos)%lenPath].Name
-		BusArr.NextStop = path[(pos+1)%lenPath].Name
 		BusArr.FirstTime = true
+
 	}
 	if BusArr.Pos >= 10 {
 		BusArr.Pos = 0
@@ -74,13 +72,14 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	distTrav = spd / 60
 	// calcDist = BusArr.DistToNext
 
-	// BusArr.CurrStop = path[(pos)%lenPath].Name
-	// BusArr.NextStop = path[(pos+1)%lenPath].Name
+	BusArr.CurrStop = path[(pos)%lenPath].Name
+	BusArr.NextStop = path[(pos+1)%lenPath].Name
 
 	if (BusArr.DistToNext - distTrav) > 0.1 {
 		// Move 1 step
 		// calcDist -= distTrav
 		BusArr.DistToNext -= distTrav
+
 	} else {
 		BusArr.DistToNext = 0
 		mutx.Lock()
@@ -97,8 +96,36 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	mutx.Lock()
 	passTotal += countPass
 	mutx.Unlock()
-	fmt.Printf("Bus: %d At: %s Speed: %.5f  Totaltime: %.5f PassTotal: %d\n", name, BusArr.CurrStop, spd, totalTime, passTotal)
 	bwg.Done()
+
+}
+
+// Get distance from src and dst
+func getDist(src string, dst string) int {
+	for _, v := range graph.Edges {
+		if src == v.Parent.Name && dst == v.Child.Name {
+			return v.Cost
+		}
+	}
+	return 0
+}
+
+//function to get screenshot
+func getScreen(n int) {
+	// n := screenshot.NumActiveDisplays()
+
+	bounds := screenshot.GetDisplayBounds(0)
+
+	img, err := screenshot.CaptureRect(bounds)
+	if err != nil {
+		panic(err)
+	}
+	fileName := fmt.Sprintf("%d_%dx%d.png", n, bounds.Dx(), bounds.Dy())
+	file, _ := os.Create(fileName)
+	defer file.Close()
+	png.Encode(file, img)
+
+	fmt.Printf("#%d : %v \"%s\"\n", n, bounds, fileName)
 
 }
 
@@ -108,17 +135,17 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 1
+				"distance": 2
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 2
+				"distance": 1
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 1
+				"distance": 3
 			},
 			{
 				"source": "dBuilding",
@@ -128,7 +155,7 @@ func main() {
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 3
+				"distance": 2
 			},
 			{
 				"source": "fBuilding",
@@ -143,17 +170,17 @@ func main() {
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 1
+				"distance": 3
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 3
+				"distance": 1
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 2
+				"distance": 1
 			}
 		]
 	}`
@@ -162,16 +189,10 @@ func main() {
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Printf("INITIATED BUS STOP LIST:\n")
-
 	for _, v := range stopList {
 		fmt.Printf("%v ", v.Name)
 	}
 	fmt.Println()
-
-	fmt.Println("-------------------------------------------------------------------------------------------")
-	// fmt.Printf("%s", graph.Edges[2].Parent.Name)
-	// fmt.Printf("%s", graph.Edges[2].Child.Name)
-	// fmt.Printf("%d", graph.Edges[2].Cost)
 
 	// Get input and check for invalid bus number input
 	fmt.Println("-------------------------------------------------------------------------------------------")
@@ -248,43 +269,29 @@ func main() {
 
 	// Create bus instance and put in array
 	for i := 0; i < inputNoBus; i++ {
-		BusArr = append(BusArr, &rs.Bus{})
+		newBus := &rs.Bus{}
+		BusArr = append(BusArr, newBus)
 	}
 
-	// Main simulation step
-	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("Simulation in progress.....")
-	if inputPsg != 0 {
-		fmt.Println("Initial passengers:", inputPsg, "Passengers")
-	} else {
-		fmt.Println("Initial passengers:", random1)
-	}
 	for worldTime < inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
 		go rs.Event(&graph, stopList, psgr, worldTime, &bwg, g)
 		bwg.Wait()
 		worldTime++
-		if worldTime == g.AtTime+1 {
-			info := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(g.PsgAdded) + "_" + "Passengers")
-			infoes = append(infoes, info)
-			fmt.Println(infoes)
-			// fmt.Println(info)
-		}
+
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
-			bwg.Wait()
-			rs.IncreasePassengerWaitingTime(stopList)
 		}
+		bwg.Wait()
+		rs.IncreasePassengerWaitingTime(stopList)
 	}
-	// Calculating simulation results
 	duration := time.Since(start)
-	waitingTime = ((totalTime) / float64(passTotal)) / 60
+	waitingTime = (totalTime / float64(passTotal)) / 60
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
 
-	// Print out result
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("RESULTS: ")
 	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
