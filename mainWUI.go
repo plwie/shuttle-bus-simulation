@@ -278,14 +278,13 @@ func main() {
 		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling from " + newBus.CurrStop + " to " + newBus.NextStop
 		g.SetRect(50, i*8, 85, i*8+3)
 		g.BarColor = ui.ColorRed
-		g.BorderStyle.Fg = ui.ColorWhite
 		g.TitleStyle.Fg = ui.ColorYellow
 
 		renBus = append(renBus, g)
 
 		l := widgets.NewList()
 		l.Title = "Bus" + strconv.Itoa(i+1) + "Step: 0"
-		l.TextStyle = ui.NewStyle(ui.ColorYellow)
+		l.TitleStyle.Fg = ui.ColorYellow
 		l.WrapText = false
 		l.SetRect(0, i*8, 48, i*8+8)
 		l.Rows = []string{
@@ -319,15 +318,21 @@ func main() {
 	tp := widgets.NewParagraph()
 	tp.Title = "Current Time"
 	tp.SetRect(140, 0, 170, 5)
-	tp.TextStyle.Fg = ui.ColorWhite
-	tp.BorderStyle.Fg = ui.ColorCyan
+	tp.TitleStyle.Fg = ui.ColorGreen
+
+	//passenger delivered
+	pd := widgets.NewParagraph()
+	pd.Title = "Passenger Delivered"
+	pd.SetRect(140, 10, 170, 5)
+	pd.TextStyle.Fg = ui.ColorWhite
+	pd.BorderStyle.Fg = ui.ColorWhite
 
 	//Event Log
 	el := widgets.NewList()
 	el.Title = "Event Log"
-	el.TextStyle = ui.NewStyle(ui.ColorYellow)
+	el.TitleStyle.Fg = ui.ColorCyan
 	el.WrapText = false
-	el.SetRect(87, 16, 138, 24)
+	el.SetRect(87, 16, 138, 35)
 
 	ui.Render(el)
 
@@ -354,14 +359,14 @@ func main() {
 		}
 		renBus[n].Percent = 100 - distFin
 
-		renAt[n].Title = "Bus" + strconv.Itoa(n+1) + "Step:" + strconv.Itoa(step)
-		renAt[n].Rows[0] = "Current Stop:" + BusArr[n].CurrStop
+		renAt[n].Title = "Bus" + strconv.Itoa(n+1) + " Step:" + strconv.Itoa(step)
+		renAt[n].Rows[0] = "Current Stop: " + BusArr[n].CurrStop
 		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
-		renAt[n].Rows[2] = "Psg on Bus:" + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
-		renAt[n].Rows[3] = "Available Seats:" + strconv.Itoa(BusArr[n].AvailSeats)
-		renAt[n].Rows[4] = "Distance until next stop (m):" + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 64)
+		renAt[n].Rows[2] = "Psg on Bus: " + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
+		renAt[n].Rows[3] = "Available Seats: " + strconv.Itoa(BusArr[n].AvailSeats)
+		renAt[n].Rows[4] = "Distance until next stop (KM): " + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 32)
 		mutx.Lock()
-		renAt[n].Rows[5] = "Psg down on next stop:" + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
+		renAt[n].Rows[5] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
 		mutx.Unlock()
 
 		ui.Render(renAt[n])
@@ -379,6 +384,10 @@ func main() {
 	drawTimer := func(n int) {
 		tp.Text = strconv.Itoa(n/60) + " HR: " + strconv.Itoa(n%60) + " MIN"
 		ui.Render(tp)
+	}
+	drawPassDev := func() {
+		pd.Text = strconv.Itoa(passTotal) + " people"
+		ui.Render(pd)
 	}
 
 	// Main simulation step
@@ -421,6 +430,7 @@ func main() {
 		time.Sleep(time.Millisecond)
 		drawBST()
 		drawTimer(worldTime)
+		drawPassDev()
 		//call screenshot function
 		// getScreen(worldTime)
 		// time.Sleep(time.Second / 2)
@@ -435,12 +445,13 @@ func main() {
 	// Print out result
 	rsp := widgets.NewParagraph()
 	rsp.Title = "RESULTS"
+	rsp.TitleStyle.Fg = ui.ColorRed
 	rl1 := "Average Passengers Waiting Time: " + strconv.FormatFloat(minn, 'f', -1, 32) + " minutes " + strconv.FormatFloat(secc, 'f', -1, 32) + " secs\n"
 	rl2 := "Total Passengers Delivered: " + strconv.Itoa(passTotal) + "\n"
 	rl3 := "Simulation run time: " + duration.String() + "\n"
 	rl4 := "Simulation has ended...\n"
 	rsp.Text = rl1 + rl2 + rl3 + rl4
-	rsp.SetRect(87, 25, 138, 35)
+	rsp.SetRect(87, 36, 170, 44)
 	ui.Render(rsp)
 	// fmt.Println("-------------------------------------------------------------------------------------------")
 	// fmt.Println("RESULTS: ")
