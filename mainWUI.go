@@ -333,6 +333,7 @@ func main() {
 
 	drawEvent := func(lst []string) {
 		el.Rows = lst
+		el.ScrollDown()
 		ui.Render(el)
 	}
 	drawBus := func(n int, step int) {
