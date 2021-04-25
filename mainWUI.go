@@ -320,6 +320,13 @@ func main() {
 	tp.SetRect(140, 0, 170, 5)
 	tp.TitleStyle.Fg = ui.ColorGreen
 
+	//passenger delivered
+	pd := widgets.NewParagraph()
+	pd.Title = "Passenger Delivered"
+	pd.SetRect(140, 10, 170, 5)
+	pd.TextStyle.Fg = ui.ColorWhite
+	pd.BorderStyle.Fg = ui.ColorWhite
+
 	//Event Log
 	el := widgets.NewList()
 	el.Title = "Event Log"
@@ -352,7 +359,7 @@ func main() {
 		}
 		renBus[n].Percent = 100 - distFin
 
-		renAt[n].Title = "Bus " + strconv.Itoa(n+1) + " Step: " + strconv.Itoa(step)
+		renAt[n].Title = "Bus" + strconv.Itoa(n+1) + " Step:" + strconv.Itoa(step)
 		renAt[n].Rows[0] = "Current Stop: " + BusArr[n].CurrStop
 		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
 		renAt[n].Rows[2] = "Psg on Bus: " + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
@@ -377,6 +384,10 @@ func main() {
 	drawTimer := func(n int) {
 		tp.Text = strconv.Itoa(n/60) + " HR: " + strconv.Itoa(n%60) + " MIN"
 		ui.Render(tp)
+	}
+	drawPassDev := func() {
+		pd.Text = strconv.Itoa(passTotal) + " people"
+		ui.Render(pd)
 	}
 
 	// Main simulation step
@@ -419,6 +430,7 @@ func main() {
 		time.Sleep(time.Millisecond)
 		drawBST()
 		drawTimer(worldTime)
+		drawPassDev()
 		//call screenshot function
 		// getScreen(worldTime)
 		// time.Sleep(time.Second / 2)
@@ -439,7 +451,7 @@ func main() {
 	rl3 := "Simulation run time: " + duration.String() + "\n"
 	rl4 := "Simulation has ended...\n"
 	rsp.Text = rl1 + rl2 + rl3 + rl4
-	rsp.SetRect(87, 36, 138, 44)
+	rsp.SetRect(87, 36, 170, 44)
 	ui.Render(rsp)
 	// fmt.Println("-------------------------------------------------------------------------------------------")
 	// fmt.Println("RESULTS: ")
