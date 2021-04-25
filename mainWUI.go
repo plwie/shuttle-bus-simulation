@@ -331,8 +331,47 @@ func main() {
 
 	ui.Render(el)
 
+	previousKey := ""
+	uiEvents := ui.PollEvents()
+	for {
+		e := <-uiEvents
+		switch e.ID {
+		case "q", "<C-c>":
+			return
+		case "j", "<Down>":
+			el.ScrollDown()
+		case "k", "<Up>":
+			el.ScrollUp()
+		case "<C-d>":
+			el.ScrollHalfPageDown()
+		case "<C-u>":
+			el.ScrollHalfPageUp()
+		case "<C-f>":
+			el.ScrollPageDown()
+		case "<C-b>":
+			el.ScrollPageUp()
+		case "g":
+			if previousKey == "g" {
+				el.ScrollTop()
+			}
+		case "<Home>":
+			el.ScrollTop()
+		case "G", "<End>":
+			el.ScrollBottom()
+		}
+
+		if previousKey == "g" {
+			previousKey = ""
+		} else {
+			previousKey = e.ID
+		}
+
+		ui.Render(el)
+	}
+
 	drawEvent := func(lst []string) {
 		el.Rows = lst
+		ui.Render(el)
 		el.ScrollDown()
 		ui.Render(el)
 	}
