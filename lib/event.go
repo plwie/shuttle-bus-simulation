@@ -37,7 +37,7 @@ func Train(graph *Graph, lst []*BusStop, p *Passenger, g *Globdis) {
 	GnrPsgAt(lst, "hBuilding", n, p)
 	GnrPsg(lst, n1, p)
 	graph.GenerateTraffic(CarGroupTr(), lst[7], nil)
-	g.PsgAdded = n
+	g.PsgAdded = n + n1
 	// fmt.Println("Event generate:", n+n1, "Passengers")
 }
 
