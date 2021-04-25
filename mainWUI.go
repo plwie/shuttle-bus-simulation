@@ -42,6 +42,8 @@ var (
 
 // Busc run a separate thread for each bus instance
 func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
+	//pos "does not refer to (x,y) coordinates of the bus"
+	//Since the route is in 1D this Pos variable is to keep the bus in its track
 	var pos int
 	var lenPath int = len(path)
 	var spd float64

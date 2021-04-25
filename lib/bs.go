@@ -12,8 +12,10 @@ type Bus struct {
 	NextStop   string
 	M          map[string]int
 	DistToNext float64
-	Pos        int
-	FirstTime  bool
+	//Pos "does not refer to (x,y) coordinates of the bus"
+	//Since the route is in 1D this Pos variable is to keep the bus in its track
+	Pos       int
+	FirstTime bool
 }
 
 var (
@@ -30,15 +32,6 @@ func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {
 	for bus.AvailSeats > 0 {
 		// fmt.Println(target.Q.Size)
 		if target.Q.Size != 0 {
-			// target.Q.printD()
-			// fmt.Println("temp", target.Q.Size, *calculatedTime, target.Q.Head.WaitTime)
-			// if target.Q.Head == nil {
-			// 	bus.AvailSeats--
-			// 	continue
-			// }
-			// fmt.Println(target.Q.Head)
-			// fmt.Println(target.Q.Head.WaitTime)
-			// fmt.Println(*calculatedTime)
 			*calculatedTime += target.Q.Head.WaitTime
 			bus.M[target.Q.Pop().Destination]++
 			bus.PassOn++
