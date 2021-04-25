@@ -138,7 +138,7 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 0.5
+				"distance": 2
 			},
 			{
 				"source": "bBuilding",
@@ -148,12 +148,12 @@ func main() {
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 0.8
+				"distance": 3
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 0.9
+				"distance": 2
 			},
 			{
 				"source": "eBuilding",
@@ -163,22 +163,22 @@ func main() {
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 0.6
+				"distance": 1
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 1.2
+				"distance": 2
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 1.6
+				"distance": 3
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 0.9
+				"distance": 1
 			},
 			{
 				"source": "jBuilding",
@@ -276,7 +276,7 @@ func main() {
 		BusArr = append(BusArr, newBus)
 		g := widgets.NewGauge()
 		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling from " + newBus.CurrStop + " to " + newBus.NextStop
-		g.SetRect(0, i*3, 40, i*3+3)
+		g.SetRect(50, i*8, 85, i*8+3)
 		g.BarColor = ui.ColorRed
 		g.BorderStyle.Fg = ui.ColorWhite
 		g.TitleStyle.Fg = ui.ColorYellow
@@ -284,10 +284,10 @@ func main() {
 		renBus = append(renBus, g)
 
 		l := widgets.NewList()
-		l.Title = "Time Step:" + strconv.Itoa(i)
+		l.Title = "Bus" + strconv.Itoa(i+1) + "Step: 0"
 		l.TextStyle = ui.NewStyle(ui.ColorYellow)
 		l.WrapText = false
-		l.SetRect(102, i*8, 150, i*8+8)
+		l.SetRect(0, i*8, 48, i*8+8)
 		l.Rows = []string{
 			"Current Stop:" + BusArr[i].CurrStop,
 			"Next Stop: " + BusArr[i].NextStop,
@@ -308,7 +308,7 @@ func main() {
 	// PSG queue chart
 	bstbc := widgets.NewBarChart()
 	bstbc.Title = "Passenger in Queue"
-	bstbc.SetRect(45, 0, 97, 20)
+	bstbc.SetRect(87, 0, 138, 15)
 	bstbc.BarGap = 2
 	var stopName []string
 	for _, v := range stopList {
@@ -318,7 +318,7 @@ func main() {
 	// Global Timer
 	tp := widgets.NewParagraph()
 	tp.Title = "Current Time"
-	tp.SetRect(150, 0, 175, 5)
+	tp.SetRect(140, 0, 170, 5)
 	tp.TextStyle.Fg = ui.ColorWhite
 	tp.BorderStyle.Fg = ui.ColorCyan
 
@@ -327,7 +327,7 @@ func main() {
 	el.Title = "Event Log"
 	el.TextStyle = ui.NewStyle(ui.ColorYellow)
 	el.WrapText = false
-	el.SetRect(45, 25, 97, 40)
+	el.SetRect(87, 16, 138, 24)
 
 	ui.Render(el)
 
@@ -351,15 +351,17 @@ func main() {
 		if distFin > 100 {
 			distFin = 100
 		}
-		renBus[n].Percent = distFin
+		renBus[n].Percent = 100 - distFin
 
-		renAt[n].Title = "Bus" + strconv.Itoa(n) + "Step:" + strconv.Itoa(step)
+		renAt[n].Title = "Bus" + strconv.Itoa(n+1) + "Step:" + strconv.Itoa(step)
 		renAt[n].Rows[0] = "Current Stop:" + BusArr[n].CurrStop
 		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
 		renAt[n].Rows[2] = "Psg on Bus:" + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
 		renAt[n].Rows[3] = "Available Seats:" + strconv.Itoa(BusArr[n].AvailSeats)
 		renAt[n].Rows[4] = "Distance until next stop (m):" + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 64)
+		mutx.Lock()
 		renAt[n].Rows[5] = "Psg down on next stop:" + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
+		mutx.Unlock()
 
 		ui.Render(renAt[n])
 		ui.Render(renBus[n])
@@ -420,13 +422,9 @@ func main() {
 		drawTimer(worldTime)
 		//call screenshot function
 		// getScreen(worldTime)
-		time.Sleep(time.Second / 2)
+		// time.Sleep(time.Second / 2)
 	}
-	for e := range ui.PollEvents() {
-		if e.Type == ui.KeyboardEvent {
-			break
-		}
-	}
+
 	// Calculating simulation results
 	duration := time.Since(start)
 	waitingTime = (totalTime / float64(passTotal)) / 60
@@ -434,11 +432,25 @@ func main() {
 	minn := (math.Floor(waitingTime / 1))
 
 	// Print out result
-	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("RESULTS: ")
-	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
-	fmt.Println("Total Passengers Delivered: ", passTotal)
-	fmt.Println("Simulation run time: ", duration)
-	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("Simulation has ended...")
+	rsp := widgets.NewParagraph()
+	rsp.Title = "RESULTS"
+	rl1 := "Average Passengers Waiting Time: " + strconv.FormatFloat(minn, 'f', -1, 32) + " minutes " + strconv.FormatFloat(secc, 'f', -1, 32) + " secs\n"
+	rl2 := "Total Passengers Delivered: " + strconv.Itoa(passTotal) + "\n"
+	rl3 := "Simulation run time: " + duration.String() + "\n"
+	rl4 := "Simulation has ended...\n"
+	rsp.Text = rl1 + rl2 + rl3 + rl4
+	rsp.SetRect(87, 25, 138, 35)
+	ui.Render(rsp)
+	// fmt.Println("-------------------------------------------------------------------------------------------")
+	// fmt.Println("RESULTS: ")
+	// fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
+	// fmt.Println("Total Passengers Delivered: ", passTotal)
+	// fmt.Println("Simulation run time: ", duration)
+	// fmt.Println("-------------------------------------------------------------------------------------------")
+	// fmt.Println("Simulation has ended...")
+	for e := range ui.PollEvents() {
+		if e.Type == ui.KeyboardEvent {
+			break
+		}
+	}
 }
