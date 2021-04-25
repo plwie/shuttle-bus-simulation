@@ -276,7 +276,8 @@ func main() {
 	bstbc.Labels = stopName
 	// Global Timer
 	tp := widgets.NewParagraph()
-	tp.SetRect(102, 0, 117, 5)
+	tp.Title = "Current Time"
+	tp.SetRect(102, 0, 125, 5)
 	tp.TextStyle.Fg = ui.ColorWhite
 	tp.BorderStyle.Fg = ui.ColorCyan
 
@@ -324,10 +325,23 @@ func main() {
 		el.Rows = lst
 		ui.Render(el)
 	}
-
-	// Draw bus n at renBus n
 	drawBus := func(n int) {
-		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + BusArr[n].CurrStop + " to " + BusArr[n].NextStop
+		now := BusArr[n].CurrStop
+		next := BusArr[n].NextStop
+		distTo := float64(getDist(now, next))
+		if distTo == 0 {
+			distTo = 1
+		}
+		distNow := float64(BusArr[n].DistToNext * 100)
+		if distNow == 0 {
+			distNow = 0
+		}
+		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + now + " to " + next
+		distFin := int(distNow / distTo)
+		if distFin > 100 {
+			distFin = 100
+		}
+		renBus[n].Percent = distFin
 		ui.Render(renBus[n])
 	}
 	drawBST := func() {
@@ -340,7 +354,7 @@ func main() {
 		ui.Render(bstbc)
 	}
 	drawTimer := func(n int) {
-		tp.Text = "Current Time: " + strconv.Itoa(n/60) + " HR: " + strconv.Itoa(n%60) + " MIN"
+		tp.Text = strconv.Itoa(n/60) + " HR: " + strconv.Itoa(n%60) + " MIN"
 		ui.Render(tp)
 	}
 
@@ -355,7 +369,6 @@ func main() {
 		if worldTime == g.AtTime+1 {
 			info := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(g.PsgAdded) + "_" + "Passengers")
 			infoes = append(infoes, info)
-			// fmt.Println(info)
 		}
 		drawEvent(infoes)
 
@@ -367,7 +380,14 @@ func main() {
 				switch e.ID {
 				case "q", "<C-c>":
 					return
+				case "p":
+					for f := range ui.PollEvents() {
+						if f.Type == ui.KeyboardEvent {
+							break
+						}
+					}
 				}
+
 			default:
 				drawBus(i)
 				drawBattributes(i, worldTime)
@@ -378,6 +398,7 @@ func main() {
 		time.Sleep(time.Millisecond)
 		drawBST()
 		drawTimer(worldTime)
+		time.Sleep(time.Second / 2)
 	}
 	for e := range ui.PollEvents() {
 		if e.Type == ui.KeyboardEvent {
