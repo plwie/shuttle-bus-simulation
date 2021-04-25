@@ -306,7 +306,7 @@ func main() {
 	ui.Render(el)
 
 	drawBattributes := func(n int, step int) {
-		renAt[n].Title = "Time Step:" + strconv.Itoa(step)
+		renAt[n].Title = "Bus" + strconv.Itoa(n) + "Step:" + strconv.Itoa(step)
 		renAt[n].Rows[0] = "Current Stop:" + BusArr[n].CurrStop
 		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
 		renAt[n].Rows[2] = "Psg on Bus:" + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
