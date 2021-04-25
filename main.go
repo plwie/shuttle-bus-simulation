@@ -69,7 +69,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	if BusArr.DistToNext == 0 {
 		BusArr.DistToNext = float64(graph.Edges[pos].Cost)
 	}
-	dist = float64(graph.Edges[pos].Cost)
+	// dist = float64(graph.Edges[pos].Cost)
 	spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
 	distTrav = spd / 60
 	// calcDist = BusArr.DistToNext
