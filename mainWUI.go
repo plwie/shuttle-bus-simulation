@@ -116,6 +116,7 @@ func getDist(src string, dst string) int {
 }
 
 //function to get screenshot
+//Gotten from: github.com/kbinani/screenshot
 func getScreen(n int) {
 	// n := screenshot.NumActiveDisplays()
 
@@ -130,7 +131,7 @@ func getScreen(n int) {
 	defer file.Close()
 	png.Encode(file, img)
 
-	fmt.Printf("#%d : %v \"%s\"\n", n, bounds, fileName)
+	// fmt.Printf("#%d : %v \"%s\"\n", n, bounds, fileName)
 
 }
 
