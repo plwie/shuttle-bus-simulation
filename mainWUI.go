@@ -56,6 +56,8 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 		}
 		BusArr.AvailSeats = 30
 		BusArr.FirstTime = true
+		BusArr.CurrStop = path[(pos)%lenPath].Name
+		BusArr.NextStop = path[(pos+1)%lenPath].Name
 	}
 	if BusArr.Pos >= 10 {
 		BusArr.Pos = 0
@@ -64,16 +66,13 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	pos = BusArr.Pos
 	if BusArr.DistToNext == 0 {
 		BusArr.DistToNext = float64(graph.Edges[pos].Cost)
+		dist = float64(graph.Edges[pos].Cost)
+		spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
+		distTrav = (dist / 60) * spd
+		calcDist = BusArr.DistToNext
 	}
-	dist = float64(graph.Edges[pos].Cost)
-	spd = float64(graph.GetSpeed(path[pos], path[(pos+1)%lenPath]))
-	distTrav = (dist / 60) * spd
-	calcDist = BusArr.DistToNext
 
-	BusArr.CurrStop = path[(pos)%lenPath].Name
-	BusArr.NextStop = path[(pos+1)%lenPath].Name
-
-	if (calcDist - distTrav) > 1 {
+	if (calcDist - distTrav) > 0.001 {
 		// Move 1 step
 		calcDist -= distTrav
 		BusArr.DistToNext = calcDist
@@ -113,52 +112,52 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 1
+				"distance": 10
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 2
+				"distance": 20
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 1
+				"distance": 10
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 2
+				"distance": 20
 			},
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 3
+				"distance": 30
 			},
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 1
+				"distance": 10
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 2
+				"distance": 20
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 1
+				"distance": 10
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 3
+				"distance": 30
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 2
+				"distance": 20
 			}
 		]
 	}`
@@ -255,7 +254,23 @@ func main() {
 		g.BarColor = ui.ColorRed
 		g.BorderStyle.Fg = ui.ColorWhite
 		g.TitleStyle.Fg = ui.ColorYellow
+
 		renBus = append(renBus, g)
+
+		l := widgets.NewList()
+		l.Title = "Time Step:" + strconv.Itoa(i)
+		l.TextStyle = ui.NewStyle(ui.ColorYellow)
+		l.WrapText = false
+		l.SetRect(102, i*8, 150, i*8+8)
+		l.Rows = []string{
+			"Current Stop:" + BusArr[i].CurrStop,
+			"Next Stop: " + BusArr[i].NextStop,
+			"Psg on Bus:" + strconv.FormatInt(int64(BusArr[i].PassOn), 10),
+			"Available Seats:" + strconv.Itoa(BusArr[i].AvailSeats),
+			"Distance until next stop:" + strconv.FormatFloat(BusArr[i].DistToNext, 'f', -1, 64),
+			"Psg down on next stop:" + strconv.FormatInt(int64(BusArr[i].M[BusArr[i].CurrStop]), 10),
+		}
+		renAt = append(renAt, l)
 	}
 
 	// Init termui
@@ -277,7 +292,7 @@ func main() {
 	// Global Timer
 	tp := widgets.NewParagraph()
 	tp.Title = "Current Time"
-	tp.SetRect(102, 0, 125, 5)
+	tp.SetRect(150, 0, 175, 5)
 	tp.TextStyle.Fg = ui.ColorWhite
 	tp.BorderStyle.Fg = ui.ColorCyan
 
@@ -290,33 +305,13 @@ func main() {
 
 	ui.Render(el)
 
-	//BusAttributes
-
-	for i := 0; i < inputNoBus; i++ {
-		l := widgets.NewList()
-		l.Title = "Time Step:" + strconv.Itoa(i)
-		l.TextStyle = ui.NewStyle(ui.ColorYellow)
-		l.WrapText = false
-		l.SetRect(102, 25, 140, 33)
-		l.Rows = []string{
-			"Current Stop:" + BusArr[i].CurrStop,
-			"Next Stop: " + BusArr[i].NextStop,
-			"Psg on Bus:" + strconv.FormatInt(int64(BusArr[i].PassOn), 10),
-			"Available Seats:" + strconv.Itoa(BusArr[i].AvailSeats),
-			"Distance until next stop:" + strconv.FormatFloat(BusArr[i].DistToNext, 'f', -1, 64),
-			"Psg down on next stop:" + strconv.FormatInt(int64(BusArr[i].M[BusArr[i].CurrStop]), 10),
-		}
-		renAt = append(renAt, l)
-		// ui.Render(l)
-	}
-
 	drawBattributes := func(n int, step int) {
 		renAt[n].Title = "Time Step:" + strconv.Itoa(step)
 		renAt[n].Rows[0] = "Current Stop:" + BusArr[n].CurrStop
 		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
 		renAt[n].Rows[2] = "Psg on Bus:" + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
 		renAt[n].Rows[3] = "Available Seats:" + strconv.Itoa(BusArr[n].AvailSeats)
-		renAt[n].Rows[4] = "Distance until next stop (m):" + strconv.FormatFloat((BusArr[n].DistToNext*1000), 'f', -1, 64)
+		renAt[n].Rows[4] = "Distance until next stop (m):" + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 64)
 		renAt[n].Rows[5] = "Psg down on next stop:" + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
 
 		ui.Render(renAt[n])
