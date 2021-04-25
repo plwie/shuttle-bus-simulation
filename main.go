@@ -247,7 +247,7 @@ func main() {
 	g := rs.NewGlobDis()
 
 	// Create bus instance and put in array
-	for i := 0; i <= inputNoBus; i++ {
+	for i := 0; i < inputNoBus; i++ {
 		BusArr = append(BusArr, &rs.Bus{})
 	}
 
