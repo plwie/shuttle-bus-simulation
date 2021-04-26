@@ -140,61 +140,61 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 10,
+				"distance": 2,
 				"speedlimit": 40
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 20,
+				"distance": 1,
 				"speedlimit": 50
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 10,
+				"distance": 3,
 				"speedlimit": 40
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 20,
+				"distance": 2,
 				"speedlimit": 50
 			},
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 30,
+				"distance": 2,
 				"speedlimit": 50
 			},
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 10,
+				"distance": 1,
 				"speedlimit": 30
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 20,
+				"distance": 2,
 				"speedlimit": 30
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 10,
+				"distance": 3,
 				"speedlimit": 50
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 30,
+				"distance": 1,
 				"speedlimit": 50
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 20,
+				"distance": 1,
 				"speedlimit": 50
 			}
 		]
