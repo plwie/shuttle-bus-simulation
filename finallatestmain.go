@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -135,56 +136,65 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 2
+				"distance": 10,
+				"speedlimit": 40
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 1
+				"distance": 20,
+				"speedlimit": 50
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 3
+				"distance": 10,
+				"speedlimit": 40
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 2
+				"distance": 20,
+				"speedlimit": 50
 			},
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 2
+				"distance": 30,
+				"speedlimit": 50
 			},
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 1
+				"distance": 10,
+				"speedlimit": 30
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 2
+				"distance": 20,
+				"speedlimit": 30
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 3
+				"distance": 10,
+				"speedlimit": 50
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 1
+				"distance": 30,
+				"speedlimit": 50
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 1
+				"distance": 20,
+				"speedlimit": 50
 			}
 		]
 	}`
-
 	// Initialize "building", "stopList", "add weight to edge" and "generate traffic"
 	graph.GenerateBuildingBusStop(&stopList, buildingInputJson)
 	fmt.Println("-------------------------------------------------------------------------------------------")

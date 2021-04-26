@@ -3,15 +3,18 @@ package main
 import (
 	"fmt"
 	"image/png"
+	"log"
 	"math"
 	"math/rand"
 	"os"
 	rs "rs/lib"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/kbinani/screenshot"
 
+	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 )
 
@@ -39,6 +42,8 @@ var (
 
 // Busc run a separate thread for each bus instance
 func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
+	//pos "does not refer to (x,y) coordinates of the bus"
+	//Since the route is in 1D this Pos variable is to keep the bus in its track
 	var pos int
 	var lenPath int = len(path)
 	var spd float64
@@ -135,52 +140,62 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 2
+				"distance": 10,
+				"speedlimit": 40
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 1
+				"distance": 20,
+				"speedlimit": 50
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 3
+				"distance": 10,
+				"speedlimit": 40
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 2
+				"distance": 20,
+				"speedlimit": 50
 			},
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 2
+				"distance": 30,
+				"speedlimit": 50
 			},
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 1
+				"distance": 10,
+				"speedlimit": 30
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 2
+				"distance": 20,
+				"speedlimit": 30
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 3
+				"distance": 10,
+				"speedlimit": 50
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 1
+				"distance": 30,
+				"speedlimit": 50
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 1
+				"distance": 20,
+				"speedlimit": 50
 			}
 		]
 	}`
@@ -271,32 +286,196 @@ func main() {
 	for i := 0; i < inputNoBus; i++ {
 		newBus := &rs.Bus{}
 		BusArr = append(BusArr, newBus)
+		g := widgets.NewGauge()
+		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling from " + newBus.CurrStop + " to " + newBus.NextStop
+		g.SetRect(50, i*8, 85, i*8+3)
+		g.BarColor = ui.ColorRed
+		g.TitleStyle.Fg = ui.ColorYellow
+
+		renBus = append(renBus, g)
+
+		l := widgets.NewList()
+		l.Title = "Bus" + strconv.Itoa(i+1) + "Step: 0"
+		l.TitleStyle.Fg = ui.ColorYellow
+		l.WrapText = false
+		l.SetRect(0, i*8, 48, i*8+8)
+		l.Rows = []string{
+			"Current Stop:" + BusArr[i].CurrStop,
+			"Next Stop: " + BusArr[i].NextStop,
+			"Psg on Bus:" + strconv.FormatInt(int64(BusArr[i].PassOn), 10),
+			"Available Seats:" + strconv.Itoa(BusArr[i].AvailSeats),
+			"Distance until next stop:" + strconv.FormatFloat(BusArr[i].DistToNext, 'f', -1, 64),
+			"Psg down on next stop:" + strconv.FormatInt(int64(BusArr[i].M[BusArr[i].CurrStop]), 10),
+		}
+		renAt = append(renAt, l)
 	}
 
+	// Init termui
+	if err := ui.Init(); err != nil {
+		log.Fatalf("failed to initialize termui: %v", err)
+	}
+	defer ui.Close()
+
+	// PSG queue chart
+	bstbc := widgets.NewBarChart()
+	bstbc.Title = "Passenger in Queue"
+	bstbc.SetRect(87, 0, 138, 15)
+	bstbc.BarGap = 2
+	var stopName []string
+	for _, v := range stopList {
+		stopName = append(stopName, v.Name[0:1])
+	}
+	bstbc.Labels = stopName
+	// Global Timer
+	tp := widgets.NewParagraph()
+	tp.Title = "Current Time"
+	tp.SetRect(140, 0, 170, 5)
+	tp.TitleStyle.Fg = ui.ColorGreen
+
+	//passenger delivered
+	pd := widgets.NewParagraph()
+	pd.Title = "Passenger Delivered"
+	pd.TitleStyle.Fg = ui.ColorGreen
+	pd.SetRect(140, 10, 170, 5)
+	pd.TextStyle.Fg = ui.ColorWhite
+	pd.BorderStyle.Fg = ui.ColorWhite
+
+	//Event Log
+	el := widgets.NewList()
+	el.Title = "Event Log"
+	el.TitleStyle.Fg = ui.ColorCyan
+	el.WrapText = false
+	el.SetRect(87, 16, 138, 35)
+
+	ui.Render(el)
+
+	drawEvent := func(lst []string) {
+		el.Rows = lst
+		el.ScrollDown()
+		ui.Render(el)
+	}
+	drawBus := func(n int, step int) {
+		now := BusArr[n].CurrStop
+		next := BusArr[n].NextStop
+		distTo := float64(getDist(now, next))
+		if distTo == 0 {
+			distTo = 1
+		}
+		distNow := float64(BusArr[n].DistToNext * 100)
+		if distNow == 0 {
+			distNow = 0
+		}
+		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + now + " to " + next
+		distFin := int(distNow / distTo)
+		if distFin > 100 {
+			distFin = 100
+		}
+		renBus[n].Percent = 100 - distFin
+
+		renAt[n].Title = "Bus" + strconv.Itoa(n+1) + " Step:" + strconv.Itoa(step)
+		renAt[n].Rows[0] = "Current Stop: " + BusArr[n].CurrStop
+		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
+		renAt[n].Rows[2] = "Psg on Bus: " + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
+		renAt[n].Rows[3] = "Available Seats: " + strconv.Itoa(BusArr[n].AvailSeats)
+		renAt[n].Rows[4] = "Distance until next stop (KM): " + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 32)
+		mutx.Lock()
+		renAt[n].Rows[5] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
+		mutx.Unlock()
+
+		ui.Render(renAt[n])
+		ui.Render(renBus[n])
+	}
+	drawBST := func() {
+		var psgNum []float64
+		for _, v := range stopList {
+			psgNum = append(psgNum, float64(v.Q.Size))
+		}
+		psgNum = append(psgNum, float64(1))
+		bstbc.Data = psgNum
+		ui.Render(bstbc)
+	}
+	drawTimer := func(n int) {
+		tp.Text = strconv.Itoa(n/60) + " HR: " + strconv.Itoa(n%60) + " MIN"
+		ui.Render(tp)
+	}
+	drawPassDev := func() {
+		pd.Text = strconv.Itoa(passTotal) + " people"
+		ui.Render(pd)
+	}
+
+	// Main simulation step
+	event := ui.PollEvents()
 	for worldTime < inputStep {
 		var bwg sync.WaitGroup
 		bwg.Add(1)
 		go rs.Event(&graph, stopList, psgr, worldTime, &bwg, g)
 		bwg.Wait()
 		worldTime++
+		if worldTime == g.AtTime+1 {
+			info := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(g.PsgAdded) + "_" + "Passengers")
+			infoes = append(infoes, info)
+		}
+		drawEvent(infoes)
 
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
+			select {
+			case e := <-event:
+				switch e.ID {
+				case "q", "<C-c>":
+					return
+				case "p":
+					for f := range ui.PollEvents() {
+						if f.Type == ui.KeyboardEvent {
+							break
+						}
+					}
+				}
+
+			default:
+				drawBus(i, worldTime)
+				// drawBattributes(i, worldTime)
+			}
 		}
 		bwg.Wait()
 		rs.IncreasePassengerWaitingTime(stopList)
+		time.Sleep(time.Millisecond)
+		drawBST()
+		drawTimer(worldTime)
+		drawPassDev()
+		//call screenshot function
+		// getScreen(worldTime)
+		// time.Sleep(time.Second / 2)
 	}
+
+	// Calculating simulation results
 	duration := time.Since(start)
 	waitingTime = (totalTime / float64(passTotal)) / 60
 	secc := math.Round((((math.Mod(waitingTime, 1)) * 60) * 1000) / 1000)
 	minn := (math.Floor(waitingTime / 1))
 
-	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("RESULTS: ")
-	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
-	fmt.Println("Total Passengers Delivered: ", passTotal)
-	fmt.Println("Simulation run time: ", duration)
-	fmt.Println("-------------------------------------------------------------------------------------------")
-	fmt.Println("Simulation has ended...")
+	// Print out result
+	rsp := widgets.NewParagraph()
+	rsp.Title = "RESULTS"
+	rsp.TitleStyle.Fg = ui.ColorRed
+	rl1 := "Average Passengers Waiting Time: " + strconv.FormatFloat(minn, 'f', -1, 32) + " minutes " + strconv.FormatFloat(secc, 'f', -1, 32) + " secs\n"
+	rl2 := "Total Passengers Delivered: " + strconv.Itoa(passTotal) + "\n"
+	rl3 := "Simulation run time: " + duration.String() + "\n"
+	rl4 := "Simulation has ended...\n"
+	rsp.Text = rl1 + rl2 + rl3 + rl4
+	rsp.SetRect(87, 36, 170, 44)
+	ui.Render(rsp)
+	// fmt.Println("-------------------------------------------------------------------------------------------")
+	// fmt.Println("RESULTS: ")
+	// fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
+	// fmt.Println("Total Passengers Delivered: ", passTotal)
+	// fmt.Println("Simulation run time: ", duration)
+	// fmt.Println("-------------------------------------------------------------------------------------------")
+	// fmt.Println("Simulation has ended...")
+	for e := range ui.PollEvents() {
+		if e.Type == ui.KeyboardEvent {
+			break
+		}
+	}
 }
