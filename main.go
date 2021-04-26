@@ -83,8 +83,8 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	} else {
 		BusArr.DistToNext = 0
 		mutx.Lock()
-		rs.DropPass(BusArr)
-		rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
+		rs.DropPass(BusArr, &countPass)
+		rs.GetPassngr(path, BusArr, &calculatedT)
 		if passTotal != totalPassenger {
 			totalTime += (float64(calculatedT) * 60)
 		}
