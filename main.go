@@ -34,6 +34,8 @@ var (
 	infoes         []string
 	baList         []string
 	renAt          []*widgets.List
+	correctness3   int
+	// stepCor        int
 	// calcDist       float64
 )
 
@@ -100,20 +102,16 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	mutx.Unlock()
 	bwg.Done()
 
-	if BusArr.DistToNext <= 0 {
-		if prevCount != BusArr.PassOn {
-			fmt.Println(" pickup or drop off on the road")
-		} else {
-			// fmt.Println("worked")
-			fmt.Println(prevCount)
-			fmt.Println(BusArr.PassOn)
-		}
+	if prevCount != BusArr.PassOn {
+		fmt.Println("Bus", name, " pickup or drop off on the road")
 	} else {
-		if prevCount != BusArr.PassOn {
-			fmt.Println(" pickup or drop off on the road")
+		if BusArr.DistToNext <= 0 {
+			correctness3++
+			fmt.Println("Bus", name, "status", "Dropping/Get Passenger")
 		} else {
-			// fmt.Println(prevCount)
-			// fmt.Println(BusArr.PassOn)
+			correctness3++
+			fmt.Println("Bus", name, "status", "Travelling")
+			// stepCor++
 		}
 	}
 }
@@ -312,6 +310,8 @@ func main() {
 			go Busc(i, stopList, BusArr[i], &bwg)
 		}
 		bwg.Wait()
+		// fmt.Println(stepCor)
+		// stepCor = 0
 		rs.IncreasePassengerWaitingTime(stopList)
 	}
 	duration := time.Since(start)
@@ -324,6 +324,7 @@ func main() {
 	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
 	fmt.Println("Total Passengers Delivered: ", passTotal)
 	fmt.Println("Simulation run time: ", duration)
+	fmt.Println("Correctness: ", correctness3)
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Simulation has ended...")
 }
