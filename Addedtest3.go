@@ -1,5 +1,6 @@
 correctness3 int
 
+// 105
 if prevCount != BusArr.PassOn {
 	fmt.Println("Bus", name, " pickup or drop off on the road")
 } else {
@@ -11,3 +12,4 @@ if prevCount != BusArr.PassOn {
 		fmt.Println("Bus", name, "status", "Travelling")
 	}
 }
+// 116
