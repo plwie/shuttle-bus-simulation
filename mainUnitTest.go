@@ -264,7 +264,7 @@ func main() {
 
 	// Create bus instance and put in array
 	for i := 0; i < inputNoBus; i++ {
-		newBus := &rs.Bus{}
+		newBus := &rs.Bus{AvailSeats: 30, PassOn: 0}
 		BusArr = append(BusArr, newBus)
 		g := widgets.NewGauge()
 		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling from " + newBus.CurrStop + " to " + newBus.NextStop
@@ -398,7 +398,7 @@ func main() {
 	// }
 
 	drawBusCheck := func(n int, step int, check *int, totalCheck *int) {
-		renBusCheck[n].Title = "Bus" + strconv.Itoa(n+1) + "Step: " + strconv.Itoa(step)
+		renBusCheck[n].Title = "Bus" + strconv.Itoa(n) + "Step: " + strconv.Itoa(step)
 		renBusCheck[n].Rows[0] = "PassengerOn: " + strconv.Itoa(BusArr[n].PassOn)
 		renBusCheck[n].Rows[1] = "AvailableSeats: " + strconv.Itoa(BusArr[n].AvailSeats)
 		if BusArr[n].PassOn+BusArr[n].AvailSeats == 30 {
@@ -414,7 +414,7 @@ func main() {
 	}
 	drawStepCheck := func(step int) {
 		cs.Rows = append(cs.Rows, "Step: "+strconv.Itoa(step)+" Passed: "+strconv.Itoa(passCheck)+"/"+strconv.Itoa(inputNoBus))
-		cs.ScrollDown()
+		// cs.ScrollDown()
 		ui.Render(cs)
 	}
 	drawTimer := func(n int) {
@@ -466,19 +466,20 @@ func main() {
 			}
 
 		}
-
 		bwg.Wait()
 		rs.IncreasePassengerWaitingTime(stopList)
 		time.Sleep(time.Millisecond)
 		// drawBST()
 		drawTimer(worldTime)
 		drawPassDev()
-		drawStepCheck(worldTime)
 		drawBusResult()
+
+		// time.Sleep(time.Second * 5)
+		drawStepCheck(worldTime)
 		passCheck = 0
 		//call screenshot function
 		// getScreen(worldTime)
-		// time.Sleep(time.Second / 2)
+
 	}
 
 	// Calculating simulation results
