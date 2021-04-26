@@ -37,6 +37,7 @@ var (
 	infoes         []string
 	baList         []string
 	renAt          []*widgets.List
+	gnrPsg         int
 	// calcDist       float64
 )
 
@@ -276,8 +277,10 @@ func main() {
 
 	if inputPsg != 0 {
 		rs.GnrPsg(stopList, inputPsg, psgr)
+		gnrPsg = inputPsg
 	} else {
 		rs.GnrPsg(stopList, random1, psgr)
+		gnrPsg = random1
 	}
 
 	g := rs.NewGlobDis()
@@ -341,12 +344,13 @@ func main() {
 	pd.BorderStyle.Fg = ui.ColorWhite
 
 	//Event Log
-	gnrPsg := inputPsg
 	el := widgets.NewList()
 	el.Title = "Event Log (Total Passenger Generated: " + strconv.Itoa(gnrPsg) + ")"
 	el.TitleStyle.Fg = ui.ColorCyan
 	el.WrapText = false
 	el.SetRect(87, 16, 138, 35)
+	initInfo := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(gnrPsg) + "_" + "Passengers")
+	infoes = append(infoes, initInfo)
 
 	ui.Render(el)
 
@@ -413,7 +417,7 @@ func main() {
 		go rs.Event(&graph, stopList, psgr, worldTime, &bwg, g)
 		bwg.Wait()
 		worldTime++
-		if worldTime == g.AtTime+1 {
+		if worldTime == g.AtTime+1 && worldTime > 59 {
 			gnrPsg += g.PsgAdded
 			info := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(g.PsgAdded) + "_" + "Passengers")
 			infoes = append(infoes, info)
