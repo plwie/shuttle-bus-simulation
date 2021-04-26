@@ -1,3 +1,5 @@
+correctness3 int
+
 if prevCount != BusArr.PassOn {
 	fmt.Println("Bus", name, " pickup or drop off on the road")
 } else {
@@ -7,6 +9,5 @@ if prevCount != BusArr.PassOn {
 	} else {
 		correctness3++
 		fmt.Println("Bus", name, "status", "Travelling")
-		// stepCor++
 	}
 }
