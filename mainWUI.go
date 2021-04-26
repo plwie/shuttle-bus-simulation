@@ -116,6 +116,7 @@ func getDist(src string, dst string) int {
 }
 
 //function to get screenshot
+//Gotten from: github.com/kbinani/screenshot
 func getScreen(n int) {
 	// n := screenshot.NumActiveDisplays()
 
@@ -130,7 +131,7 @@ func getScreen(n int) {
 	defer file.Close()
 	png.Encode(file, img)
 
-	fmt.Printf("#%d : %v \"%s\"\n", n, bounds, fileName)
+	// fmt.Printf("#%d : %v \"%s\"\n", n, bounds, fileName)
 
 }
 
@@ -140,62 +141,52 @@ func main() {
 			{
 				"source": "aBuilding",
 				"destination": "bBuilding",
-				"distance": 2,
-				"speedlimit": 40
+				"distance": 2
 			},
 			{
 				"source": "bBuilding",
 				"destination": "cBuilding",
-				"distance": 1,
-				"speedlimit": 50
+				"distance": 1
 			},
 			{
 				"source": "cBuilding",
 				"destination": "dBuilding",
-				"distance": 3,
-				"speedlimit": 40
+				"distance": 3
 			},
 			{
 				"source": "dBuilding",
 				"destination": "eBuilding",
-				"distance": 2,
-				"speedlimit": 50
+				"distance": 2
 			},
 			{
 				"source": "eBuilding",
 				"destination": "fBuilding",
-				"distance": 2,
-				"speedlimit": 50
+				"distance": 2
 			},
 			{
 				"source": "fBuilding",
 				"destination": "gBuilding",
-				"distance": 1,
-				"speedlimit": 30
+				"distance": 1
 			},
 			{
 				"source": "gBuilding",
 				"destination": "hBuilding",
-				"distance": 2,
-				"speedlimit": 30
+				"distance": 2
 			},
 			{
 				"source": "hBuilding",
 				"destination": "iBuilding",
-				"distance": 3,
-				"speedlimit": 50
+				"distance": 3
 			},
 			{
 				"source": "iBuilding",
 				"destination": "jBuilding",
-				"distance": 1,
-				"speedlimit": 50
+				"distance": 1
 			},
 			{
 				"source": "jBuilding",
 				"destination": "aBuilding",
-				"distance": 1,
-				"speedlimit": 50
+				"distance": 1
 			}
 		]
 	}`
