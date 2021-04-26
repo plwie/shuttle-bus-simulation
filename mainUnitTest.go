@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image/png"
 	"log"
 	"math"
 	"math/rand"
@@ -11,8 +10,6 @@ import (
 	"strconv"
 	"sync"
 	"time"
-
-	"github.com/kbinani/screenshot"
 
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
@@ -37,6 +34,7 @@ var (
 	infoes         []string
 	baList         []string
 	renAt          []*widgets.List
+	renBusCheck    []*widgets.List
 	// calcDist       float64
 )
 
@@ -113,25 +111,6 @@ func getDist(src string, dst string) int {
 		}
 	}
 	return 0
-}
-
-//function to get screenshot
-func getScreen(n int) {
-	// n := screenshot.NumActiveDisplays()
-
-	bounds := screenshot.GetDisplayBounds(0)
-
-	img, err := screenshot.CaptureRect(bounds)
-	if err != nil {
-		panic(err)
-	}
-	fileName := fmt.Sprintf("%d_%dx%d.png", n, bounds.Dx(), bounds.Dy())
-	file, _ := os.Create(fileName)
-	defer file.Close()
-	png.Encode(file, img)
-
-	fmt.Printf("#%d : %v \"%s\"\n", n, bounds, fileName)
-
 }
 
 func main() {
@@ -354,46 +333,46 @@ func main() {
 		el.ScrollDown()
 		ui.Render(el)
 	}
-	drawBus := func(n int, step int) {
-		now := BusArr[n].CurrStop
-		next := BusArr[n].NextStop
-		distTo := float64(getDist(now, next))
-		if distTo == 0 {
-			distTo = 1
-		}
-		distNow := float64(BusArr[n].DistToNext * 100)
-		if distNow == 0 {
-			distNow = 0
-		}
-		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + now + " to " + next
-		distFin := int(distNow / distTo)
-		if distFin > 100 {
-			distFin = 100
-		}
-		renBus[n].Percent = 100 - distFin
+	// drawBus := func(n int, step int) {
+	// 	now := BusArr[n].CurrStop
+	// 	next := BusArr[n].NextStop
+	// 	distTo := float64(getDist(now, next))
+	// 	if distTo == 0 {
+	// 		distTo = 1
+	// 	}
+	// 	distNow := float64(BusArr[n].DistToNext * 100)
+	// 	if distNow == 0 {
+	// 		distNow = 0
+	// 	}
+	// 	renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + now + " to " + next
+	// 	distFin := int(distNow / distTo)
+	// 	if distFin > 100 {
+	// 		distFin = 100
+	// 	}
+	// 	renBus[n].Percent = 100 - distFin
 
-		renAt[n].Title = "Bus" + strconv.Itoa(n+1) + " Step:" + strconv.Itoa(step)
-		renAt[n].Rows[0] = "Current Stop: " + BusArr[n].CurrStop
-		renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
-		renAt[n].Rows[2] = "Psg on Bus: " + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
-		renAt[n].Rows[3] = "Available Seats: " + strconv.Itoa(BusArr[n].AvailSeats)
-		renAt[n].Rows[4] = "Distance until next stop (KM): " + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 32)
-		mutx.Lock()
-		renAt[n].Rows[5] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
-		mutx.Unlock()
+	// 	renAt[n].Title = "Bus" + strconv.Itoa(n+1) + " Step:" + strconv.Itoa(step)
+	// 	renAt[n].Rows[0] = "Current Stop: " + BusArr[n].CurrStop
+	// 	renAt[n].Rows[1] = "Next Stop: " + BusArr[n].NextStop
+	// 	renAt[n].Rows[2] = "Psg on Bus: " + strconv.FormatInt(int64(BusArr[n].PassOn), 10)
+	// 	renAt[n].Rows[3] = "Available Seats: " + strconv.Itoa(BusArr[n].AvailSeats)
+	// 	renAt[n].Rows[4] = "Distance until next stop (KM): " + strconv.FormatFloat(BusArr[n].DistToNext, 'f', -1, 32)
+	// 	mutx.Lock()
+	// 	renAt[n].Rows[5] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
+	// 	mutx.Unlock()
 
-		ui.Render(renAt[n])
-		ui.Render(renBus[n])
-	}
-	drawBST := func() {
-		var psgNum []float64
-		for _, v := range stopList {
-			psgNum = append(psgNum, float64(v.Q.Size))
-		}
-		psgNum = append(psgNum, float64(1))
-		bstbc.Data = psgNum
-		ui.Render(bstbc)
-	}
+	// 	ui.Render(renAt[n])
+	// 	ui.Render(renBus[n])
+	// }
+	// drawBST := func() {
+	// 	var psgNum []float64
+	// 	for _, v := range stopList {
+	// 		psgNum = append(psgNum, float64(v.Q.Size))
+	// 	}
+	// 	psgNum = append(psgNum, float64(1))
+	// 	bstbc.Data = psgNum
+	// 	ui.Render(bstbc)
+	// }
 	drawTimer := func(n int) {
 		tp.Text = strconv.Itoa(n/60) + " HR: " + strconv.Itoa(n%60) + " MIN"
 		ui.Render(tp)
@@ -434,14 +413,14 @@ func main() {
 				}
 
 			default:
-				drawBus(i, worldTime)
+				// drawBus(i, worldTime)
 				// drawBattributes(i, worldTime)
 			}
 		}
 		bwg.Wait()
 		rs.IncreasePassengerWaitingTime(stopList)
 		time.Sleep(time.Millisecond)
-		drawBST()
+		// drawBST()
 		drawTimer(worldTime)
 		drawPassDev()
 		//call screenshot function
