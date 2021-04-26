@@ -341,8 +341,9 @@ func main() {
 	pd.BorderStyle.Fg = ui.ColorWhite
 
 	//Event Log
+	gnrPsg := inputPsg
 	el := widgets.NewList()
-	el.Title = "Event Log"
+	el.Title = "Event Log (Total Passenger Generated: " + strconv.Itoa(gnrPsg) + ")"
 	el.TitleStyle.Fg = ui.ColorCyan
 	el.WrapText = false
 	el.SetRect(87, 16, 138, 35)
@@ -351,6 +352,7 @@ func main() {
 
 	drawEvent := func(lst []string) {
 		el.Rows = lst
+		el.Title = "Event Log (Total Passenger Generated: " + strconv.Itoa(gnrPsg) + ")"
 		el.ScrollDown()
 		ui.Render(el)
 	}
@@ -412,6 +414,7 @@ func main() {
 		bwg.Wait()
 		worldTime++
 		if worldTime == g.AtTime+1 {
+			gnrPsg += g.PsgAdded
 			info := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(g.PsgAdded) + "_" + "Passengers")
 			infoes = append(infoes, info)
 		}
@@ -463,7 +466,15 @@ func main() {
 	rl2 := "Total Passengers Delivered: " + strconv.Itoa(passTotal) + "\n"
 	rl3 := "Simulation run time: " + duration.String() + "\n"
 	rl4 := "Simulation has ended...\n"
-	rsp.Text = rl1 + rl2 + rl3 + rl4
+	psgTrack := passTotal
+	for _, v := range stopList {
+		psgTrack += v.Q.Size
+	}
+	for _, v := range BusArr {
+		psgTrack += v.PassOn
+	}
+	rl5 := "PSG_Tracked/PSG_Generated: " + strconv.Itoa(psgTrack) + "/" + strconv.Itoa(gnrPsg)
+	rsp.Text = rl1 + rl2 + rl3 + rl4 + rl5
 	rsp.SetRect(87, 36, 170, 44)
 	ui.Render(rsp)
 	// fmt.Println("-------------------------------------------------------------------------------------------")
