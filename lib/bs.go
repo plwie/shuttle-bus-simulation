@@ -22,7 +22,7 @@ var (
 	muut sync.Mutex
 )
 
-func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {
+func GetPassngr(path []*BusStop, bus *Bus, calculatedTime *int) {
 	var target *BusStop
 	for _, v := range path {
 		if bus.CurrStop == v.Name {
@@ -35,7 +35,6 @@ func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {
 			*calculatedTime += target.Q.Head.WaitTime
 			bus.M[target.Q.Pop().Destination]++
 			bus.PassOn++
-			*count++
 			bus.AvailSeats--
 		} else {
 			break
@@ -43,7 +42,8 @@ func GetPassngr(path []*BusStop, bus *Bus, count *int, calculatedTime *int) {
 	}
 }
 
-func DropPass(bus *Bus) {
+func DropPass(bus *Bus, count *int) {
+	*count += bus.M[bus.CurrStop]
 	bus.PassOn -= bus.M[bus.CurrStop]
 	bus.AvailSeats += bus.M[bus.CurrStop]
 	bus.M[bus.CurrStop] = 0
