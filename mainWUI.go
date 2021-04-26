@@ -437,7 +437,7 @@ func main() {
 		drawPassDev()
 		//call screenshot function
 		// getScreen(worldTime)
-		// time.Sleep(time.Second / 2)
+		time.Sleep(time.Millisecond * 50)
 	}
 
 	// Calculating simulation results
