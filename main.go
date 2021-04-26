@@ -47,6 +47,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var distTrav float64
 	var countPass int = 0
 	var calculatedT int = 0
+	var prevCount int
 
 	// First time initialize
 	if BusArr.FirstTime == false {
@@ -83,8 +84,8 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	} else {
 		BusArr.DistToNext = 0
 		mutx.Lock()
-		rs.DropPass(BusArr)
-		rs.GetPassngr(path, BusArr, &countPass, &calculatedT)
+		rs.DropPass(BusArr, &countPass)
+		rs.GetPassngr(path, BusArr, &calculatedT)
 		if passTotal != totalPassenger {
 			totalTime += (float64(calculatedT) * 60)
 		}
@@ -95,9 +96,26 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	}
 	mutx.Lock()
 	passTotal += countPass
+	prevCount = BusArr.PassOn
 	mutx.Unlock()
 	bwg.Done()
 
+	if BusArr.DistToNext <= 0 {
+		if prevCount != BusArr.PassOn {
+			fmt.Println(" pickup or drop off on the road")
+		} else {
+			// fmt.Println("worked")
+			fmt.Println(prevCount)
+			fmt.Println(BusArr.PassOn)
+		}
+	} else {
+		if prevCount != BusArr.PassOn {
+			fmt.Println(" pickup or drop off on the road")
+		} else {
+			// fmt.Println(prevCount)
+			// fmt.Println(BusArr.PassOn)
+		}
+	}
 }
 
 // Get distance from src and dst

@@ -100,7 +100,6 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	passTotal += countPass
 	mutx.Unlock()
 	bwg.Done()
-
 }
 
 // Get distance from src and dst
