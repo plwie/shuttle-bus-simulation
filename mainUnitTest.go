@@ -302,7 +302,7 @@ func main() {
 	cs.Title = "Check Per Step"
 	cs.TitleStyle.Fg = ui.ColorMagenta
 	cs.Rows = []string{}
-	cs.SetRect(61, 0, 92, 20)
+	cs.SetRect(61, 0, 92, 17)
 
 	// Create Global Timer
 	tp := widgets.NewParagraph()
@@ -314,7 +314,7 @@ func main() {
 	pd := widgets.NewParagraph()
 	pd.Title = "Passenger Delivered"
 	pd.TitleStyle.Fg = ui.ColorGreen
-	pd.SetRect(93, 5, 118, 10)
+	pd.SetRect(93, 6, 118, 11)
 	pd.TextStyle.Fg = ui.ColorWhite
 	pd.BorderStyle.Fg = ui.ColorWhite
 
@@ -322,7 +322,7 @@ func main() {
 	c := widgets.NewParagraph()
 	c.Title = "Bus Check Results"
 	c.TitleStyle.Fg = ui.ColorGreen
-	c.SetRect(93, 10, 118, 15)
+	c.SetRect(93, 12, 118, 17)
 
 	// Create PSG queue chart
 	bstbc := widgets.NewBarChart()
