@@ -31,6 +31,7 @@ var (
 	BusArr         []*rs.Bus
 	doOnce         sync.Once
 	renBus         []*widgets.Gauge
+	renBusT        []*widgets.List
 	infoes         []string
 	baList         []string
 	renBusCheck    []*widgets.List
@@ -246,6 +247,12 @@ func main() {
 	}
 	inputStep *= 60
 
+	// Init termui
+	if err := ui.Init(); err != nil {
+		log.Fatalf("Failed to initialize termui: %v", err)
+	}
+	defer ui.Close()
+
 	// Generating Passenger
 	start := time.Now()
 	psgr := rs.NewPassenger()
@@ -269,9 +276,12 @@ func main() {
 		newBus := &rs.Bus{AvailSeats: 30, PassOn: 0}
 		BusArr = append(BusArr, newBus)
 
+		if i >= 7 {
+			continue
+		}
 		// Create Bus Info Box
 		bc := widgets.NewList()
-		bc.Title = "Bus" + strconv.Itoa(i+1) + "Step: 0"
+		bc.Title = "Bus" + strconv.Itoa(i+1) + " Step: 0"
 		bc.TitleStyle.Fg = ui.ColorBlue
 		bc.SetRect(0, i*8, 29, i*8+8)
 		bc.Rows = []string{
@@ -284,18 +294,17 @@ func main() {
 
 		//  Create Travel Gauge
 		g := widgets.NewGauge()
-		g.Title = "Bus " + strconv.Itoa(i) + ": Traveling from " + newBus.CurrStop + " to " + newBus.NextStop
+		g.Title = newBus.CurrStop + " to " + newBus.NextStop
 		g.SetRect(30, i*8, 60, i*8+3)
 		g.BarColor = ui.ColorRed
 		g.TitleStyle.Fg = ui.ColorYellow
 		renBus = append(renBus, g)
-	}
 
-	// Init termui
-	if err := ui.Init(); err != nil {
-		log.Fatalf("Failed to initialize termui: %v", err)
+		// Create Travel Info
+		bti := widgets.NewList()
+		bti.SetRect(30, i*8+3, 60, i*8+8)
+		renBusT = append(renBusT, bti)
 	}
-	defer ui.Close()
 
 	// Create Check Per Step Log
 	cs := widgets.NewList()
@@ -366,44 +375,59 @@ func main() {
 		ui.Render(el)
 	}
 	drawBus := func(n int) {
+		if n >= 7 {
+			return
+		}
+		// Gauge
 		now := BusArr[n].CurrStop
 		next := BusArr[n].NextStop
 		distTo := float64(getDist(now, next))
-		if distTo == 0 {
-			distTo = 1
-		}
 		distNow := float64(BusArr[n].DistToNext * 100)
-		if distNow == 0 {
-			distNow = 0
-		}
-		renBus[n].Title = "Bus " + strconv.Itoa(n+1) + ": " + now[0:1] + " to " + next[0:1]
+		dt := float64(getDist(now, next)) - BusArr[n].DistToNext
 		distFin := int(distNow / distTo)
 		if distFin > 100 {
 			distFin = 100
 		}
+		renBus[n].Title = now + " to " + next
 		renBus[n].Percent = 100 - distFin
 		ui.Render(renBus[n])
+		// Box
+		var tl []string
+		tl = append(tl, "Current: "+now)
+		tl = append(tl, "Next: "+next)
+		if dt < 0 {
+			dt = 0
+		}
+		tl = append(tl, "Dist: "+strconv.FormatFloat(dt, 'f', -1, 32)+"/"+strconv.Itoa(int(distTo))+" KM")
+		renBusT[n].Rows = tl
+		ui.Render(renBusT[n])
 	}
 	drawBusCheck := func(n int, step int, check *int, totalCheck *int) {
-		renBusCheck[n].Title = "Bus" + strconv.Itoa(n) + "Step: " + strconv.Itoa(step)
-		renBusCheck[n].Rows[0] = "PassengerOn: " + strconv.Itoa(BusArr[n].PassOn)
-		renBusCheck[n].Rows[1] = "AvailableSeats: " + strconv.Itoa(BusArr[n].AvailSeats)
-		renBusCheck[n].Rows[2] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
+		var checkResult string
 		if BusArr[n].PassOn+BusArr[n].AvailSeats == 30 {
-			renBusCheck[n].Rows[3] = "Status: Passed"
+			checkResult = "Status: Passed"
 			mutx.Lock()
 			*check++
 			*totalCheck++
 			mutx.Unlock()
 		} else {
+			checkResult = "Status: Failed"
 			erlst = append(erlst, "ERROR: Invalid Bus Seat at Step "+strconv.Itoa(step))
+			erlst = append(erlst, "(On: "+strconv.Itoa(BusArr[n].PassOn)+", Empty: "+strconv.Itoa(BusArr[n].AvailSeats)+")")
 			erl.Rows = erlst
 			ui.Render(erl)
-			renBusCheck[n].Rows[3] = "Status: Failed"
+
 		}
+		if n >= 7 {
+			return
+		}
+		renBusCheck[n].Title = "Bus" + strconv.Itoa(n) + "Step: " + strconv.Itoa(step)
+		renBusCheck[n].Rows[0] = "PassengerOn: " + strconv.Itoa(BusArr[n].PassOn)
+		renBusCheck[n].Rows[1] = "AvailableSeats: " + strconv.Itoa(BusArr[n].AvailSeats)
+		renBusCheck[n].Rows[2] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
+		renBusCheck[n].Rows[3] = checkResult
 		ui.Render(renBusCheck[n])
 	}
-
 	drawStepCheck := func(step int) {
 		cs.Rows = append(cs.Rows, "Step: "+strconv.Itoa(step)+" Passed: "+strconv.Itoa(passCheck)+"/"+strconv.Itoa(inputNoBus))
 		cs.ScrollDown()
@@ -440,10 +464,11 @@ func main() {
 		go rs.Event(&graph, stopList, psgr, worldTime, &bwg, g)
 		bwg.Wait()
 		worldTime++
-
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
+			drawBusCheck(i, worldTime, &passCheck, &totalCheck)
+			drawBus(i)
 			select {
 			case e := <-event:
 				switch e.ID {
@@ -456,16 +481,13 @@ func main() {
 						}
 					}
 				}
-
 			default:
-				drawBusCheck(i, worldTime, &passCheck, &totalCheck)
-				drawBus(i)
+				break
 			}
 
 		}
 		bwg.Wait()
 		rs.IncreasePassengerWaitingTime(stopList)
-		time.Sleep(time.Millisecond)
 
 		// Render and Update
 		if worldTime == g.AtTime+1 && worldTime > 59 {
@@ -513,8 +535,8 @@ func main() {
 	}
 
 	// Wait for keyboard exit
-	for e := range ui.PollEvents() {
-		if e.Type == ui.KeyboardEvent {
+	for exitEvent := range event {
+		if exitEvent.Type == ui.KeyboardEvent {
 			break
 		}
 	}
