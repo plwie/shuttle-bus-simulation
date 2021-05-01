@@ -16,6 +16,7 @@ type Bus struct {
 	//Since the route is in 1D this Pos variable is to keep the bus in its track
 	Pos       int
 	FirstTime bool
+	State     string
 }
 
 var (

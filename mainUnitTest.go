@@ -52,6 +52,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	var distTrav float64
 	var countPass int = 0
 	var calculatedT int = 0
+	var prevCount int
 
 	// First time initialize
 	if BusArr.FirstTime == false {
@@ -100,8 +101,20 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	}
 	mutx.Lock()
 	passTotal += countPass
+	prevCount = BusArr.PassOn
 	mutx.Unlock()
 	bwg.Done()
+
+	if prevCount != BusArr.PassOn {
+		BusArr.State = "Passenger has been dropped off/pick up on the road"
+	} else {
+		if BusArr.DistToNext <= 0 {
+			BusArr.State = "Dropping/Get passengers"
+		} else {
+			BusArr.State = "Travelling"
+		}
+	}
+
 }
 
 // Get distance from src and dst
@@ -288,7 +301,8 @@ func main() {
 			"PassengerOn: ",
 			"AvailableSeats: ",
 			"Psg down on next stop: ",
-			"Status: ",
+			"SeatsStatus: ",
+			"BusStatus",
 		}
 		renBusCheck = append(renBusCheck, bc)
 
@@ -405,13 +419,13 @@ func main() {
 	drawBusCheck := func(n int, step int, check *int, totalCheck *int) {
 		var checkResult string
 		if BusArr[n].PassOn+BusArr[n].AvailSeats == 30 {
-			checkResult = "Status: Passed"
+			checkResult = "SeatsStatus: Passed"
 			mutx.Lock()
 			*check++
 			*totalCheck++
 			mutx.Unlock()
 		} else {
-			checkResult = "Status: Failed"
+			checkResult = "SeatsStatus: Failed"
 			erlst = append(erlst, "ERROR: Invalid Bus Seat at Step "+strconv.Itoa(step))
 			erlst = append(erlst, "(On: "+strconv.Itoa(BusArr[n].PassOn)+", Empty: "+strconv.Itoa(BusArr[n].AvailSeats)+")")
 			erl.Rows = erlst
@@ -426,6 +440,7 @@ func main() {
 		renBusCheck[n].Rows[1] = "AvailableSeats: " + strconv.Itoa(BusArr[n].AvailSeats)
 		renBusCheck[n].Rows[2] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
 		renBusCheck[n].Rows[3] = checkResult
+		renBusCheck[n].Rows[4] = "Bus Status: " + BusArr[n].State
 		ui.Render(renBusCheck[n])
 	}
 	drawStepCheck := func(step int) {
