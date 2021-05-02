@@ -457,13 +457,7 @@ func main() {
 	rsp.Text = rl1 + rl2 + rl3 + rl4
 	rsp.SetRect(87, 36, 170, 44)
 	ui.Render(rsp)
-	// fmt.Println("-------------------------------------------------------------------------------------------")
-	// fmt.Println("RESULTS: ")
-	// fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
-	// fmt.Println("Total Passengers Delivered: ", passTotal)
-	// fmt.Println("Simulation run time: ", duration)
-	// fmt.Println("-------------------------------------------------------------------------------------------")
-	// fmt.Println("Simulation has ended...")
+
 	for e := range ui.PollEvents() {
 		if e.Type == ui.KeyboardEvent {
 			break
