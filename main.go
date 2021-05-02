@@ -34,7 +34,6 @@ var (
 	infoes         []string
 	baList         []string
 	renAt          []*widgets.List
-	correctness3   int
 	// stepCor        int
 	// calcDist       float64
 )
@@ -104,15 +103,6 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 
 	if prevCount != BusArr.PassOn {
 		fmt.Println("Bus", name, " pickup or drop off on the road")
-	} else {
-		if BusArr.DistToNext <= 0 {
-			correctness3++
-			fmt.Println("Bus", name, "status", "Dropping/Get Passenger")
-		} else {
-			correctness3++
-			fmt.Println("Bus", name, "status", "Travelling")
-			// stepCor++
-		}
 	}
 }
 
@@ -324,7 +314,6 @@ func main() {
 	fmt.Println("Average Passengers Waiting Time:", minn, "minutes", secc, "secs")
 	fmt.Println("Total Passengers Delivered: ", passTotal)
 	fmt.Println("Simulation run time: ", duration)
-	fmt.Println("Correctness: ", correctness3)
 	fmt.Println("-------------------------------------------------------------------------------------------")
 	fmt.Println("Simulation has ended...")
 }
