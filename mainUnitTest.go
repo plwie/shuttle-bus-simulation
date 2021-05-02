@@ -318,7 +318,7 @@ func main() {
 		renBusT = append(renBusT, bti)
 	}
 
-	// Create Check Per Step Log
+	// Create Seat Check Per Step Log
 	cs := widgets.NewList()
 	cs.Title = "Seat Check Per Step"
 	cs.TitleStyle.Fg = ui.ColorMagenta
@@ -595,7 +595,12 @@ func main() {
 	trlst = append(trlst, tr4)
 	tl.Rows = trlst
 	if totalPsgTrack != gnrPsg {
-		erlst = append(erlst, "ERROR: Passenger Incorrect")
+		erlst = append(erlst, "ERROR: Final Passenger Incorrect")
+		erl.Rows = erlst
+		ui.Render(erl)
+	}
+	if totalCheck != (inputNoBus * inputStep) {
+		erlst = append(erlst, "ERROR: Final Seat Incorrect")
 		erl.Rows = erlst
 		ui.Render(erl)
 	}
