@@ -300,7 +300,6 @@ func main() {
 			"AvailableSeats: ",
 			"Psg down on next stop: ",
 			"SeatsStatus: ",
-			"BusStatus",
 		}
 		renBusCheck = append(renBusCheck, bc)
 
@@ -464,7 +463,6 @@ func main() {
 		renBusCheck[n].Rows[1] = "AvailableSeats: " + strconv.Itoa(BusArr[n].AvailSeats)
 		renBusCheck[n].Rows[2] = "Psg down on next stop: " + strconv.FormatInt(int64(BusArr[n].M[BusArr[n].CurrStop]), 10)
 		renBusCheck[n].Rows[3] = checkResult
-		renBusCheck[n].Rows[4] = "Bus Status: " + BusArr[n].State
 		ui.Render(renBusCheck[n])
 	}
 	drawStepCheck := func(step int) {
