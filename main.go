@@ -105,11 +105,10 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	if prevCount != BusArr.PassOn {
 		fmt.Println("Bus", name, " pickup or drop off on the road")
 	} else {
+		correctness3++
 		if BusArr.DistToNext <= 0 {
-			correctness3++
 			fmt.Println("Bus", name, "status", "Dropping/Get Passenger")
 		} else {
-			correctness3++
 			fmt.Println("Bus", name, "status", "Travelling")
 			// stepCor++
 		}
