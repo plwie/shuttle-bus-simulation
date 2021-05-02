@@ -566,7 +566,12 @@ func main() {
 	trlst = append(trlst, tr3)
 	tl.Rows = trlst
 	if totalPsgTrack != gnrPsg {
-		erlst = append(erlst, "ERROR: Passenger Incorrect")
+		erlst = append(erlst, "ERROR: Final Passenger Incorrect")
+		erl.Rows = erlst
+		ui.Render(erl)
+	}
+	if totalCheck != (inputNoBus * inputStep) {
+		erlst = append(erlst, "ERROR: Final Seat Incorrect")
 		erl.Rows = erlst
 		ui.Render(erl)
 	}
