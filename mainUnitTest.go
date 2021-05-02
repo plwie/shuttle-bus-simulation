@@ -320,7 +320,7 @@ func main() {
 		renBusT = append(renBusT, bti)
 	}
 
-	// Create Check Per Step Log
+	// Create Seat Check Per Step Log
 	cs := widgets.NewList()
 	cs.Title = "Seat Check Per Step"
 	cs.TitleStyle.Fg = ui.ColorMagenta
