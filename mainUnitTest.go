@@ -322,30 +322,16 @@ func main() {
 
 	// Create Check Per Step Log
 	cs := widgets.NewList()
-	cs.Title = "Check Per Step"
+	cs.Title = "Seat Check Per Step"
 	cs.TitleStyle.Fg = ui.ColorMagenta
 	cs.Rows = []string{}
-	cs.SetRect(61, 0, 92, 17)
+	cs.SetRect(61, 0, 89, 18)
 
-	// Create Global Timer
-	tp := widgets.NewParagraph()
-	tp.Title = "Current Time"
-	tp.SetRect(93, 0, 118, 5)
-	tp.TitleStyle.Fg = ui.ColorGreen
-
-	// Create Psg Delivered Log
-	pd := widgets.NewParagraph()
-	pd.Title = "Passenger Delivered"
-	pd.TitleStyle.Fg = ui.ColorGreen
-	pd.SetRect(93, 6, 118, 11)
-	pd.TextStyle.Fg = ui.ColorWhite
-	pd.BorderStyle.Fg = ui.ColorWhite
-
-	// Create Conclusion Log
+	// Create Seat Check Conclusion Log
 	c := widgets.NewParagraph()
-	c.Title = "Bus Check Results"
+	c.Title = "Seat Check Results"
 	c.TitleStyle.Fg = ui.ColorGreen
-	c.SetRect(93, 12, 118, 17)
+	c.SetRect(61, 18, 89, 22)
 
 	// Create PSG queue chart
 	bstbc := widgets.NewBarChart()
@@ -366,6 +352,27 @@ func main() {
 	initInfo := ("At Time" + "_" + strconv.Itoa(g.AtTime) + "_" + "Event generate:" + "_" + strconv.Itoa(gnrPsg) + "_" + "Passengers")
 	infoes = append(infoes, initInfo)
 	el.SetRect(119, 16, 170, 35)
+
+	// Create Psg Delivered Log
+	pd := widgets.NewParagraph()
+	pd.Title = "Passenger Delivered"
+	pd.TitleStyle.Fg = ui.ColorGreen
+	pd.SetRect(61, 22, 89, 26)
+	pd.TextStyle.Fg = ui.ColorWhite
+	pd.BorderStyle.Fg = ui.ColorWhite
+
+	// Create Global Timer
+	tp := widgets.NewParagraph()
+	tp.Title = "Current Time"
+	tp.SetRect(90, 22, 118, 26)
+	tp.TitleStyle.Fg = ui.ColorGreen
+
+	// Create Test Log
+	tl := widgets.NewList()
+	tl.Title = "TEST RESULTS"
+	tl.TitleStyle.Fg = ui.ColorRed
+	tl.SetRect(61, 26, 118, 35)
+	ui.Render(tl)
 
 	// Create Result Log
 	rsp := widgets.NewParagraph()
@@ -536,21 +543,34 @@ func main() {
 	rl1 := "Average Passengers Waiting Time: " + strconv.FormatFloat(minn, 'f', -1, 32) + " minutes " + strconv.FormatFloat(secc, 'f', -1, 32) + " secs\n"
 	rl2 := "Total Passengers Delivered: " + strconv.Itoa(passTotal) + "\n"
 	rl3 := "Simulation run time: " + duration.String() + "\n"
-	psgTrack := passTotal
+	rsp.Text = rl1 + rl2 + rl3
+	ui.Render(rsp)
+
+	// Print out testing result
+	var trlst []string
+	var inBus int
+	var inQ int
+	initPsg := passTotal
 	for _, v := range stopList {
-		psgTrack += v.Q.Size
+		inQ += v.Q.Size
 	}
 	for _, v := range BusArr {
-		psgTrack += v.PassOn
+		inBus += v.PassOn
 	}
-	rl5 := "PSG_Tracked/PSG_Generated: " + strconv.Itoa(psgTrack) + "/" + strconv.Itoa(gnrPsg)
-	rsp.Text = rl1 + rl2 + rl3 + rl5
-	ui.Render(rsp)
-	if psgTrack != gnrPsg {
+	totalPsgTrack := initPsg + inBus + inQ
+	tr1 := "PSG_Tracked/PSG_Generated: " + strconv.Itoa(totalPsgTrack) + " / " + strconv.Itoa(gnrPsg)
+	tr2 := "(Init / In_Bus / In_Stop: " + strconv.Itoa(initPsg) + " / " + strconv.Itoa(inBus) + " / " + strconv.Itoa(inQ) + ")\n"
+	tr3 := "Seat Check Status: " + strconv.Itoa(totalCheck) + " / " + strconv.Itoa(inputNoBus*inputStep)
+	trlst = append(trlst, tr1)
+	trlst = append(trlst, tr2)
+	trlst = append(trlst, tr3)
+	tl.Rows = trlst
+	if totalPsgTrack != gnrPsg {
 		erlst = append(erlst, "ERROR: Passenger Incorrect")
 		erl.Rows = erlst
 		ui.Render(erl)
 	}
+	ui.Render(tl)
 
 	// Wait for keyboard exit
 	for exitEvent := range event {
