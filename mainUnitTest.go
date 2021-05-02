@@ -38,6 +38,8 @@ var (
 	passCheck      int
 	totalCheck     int
 	gnrPsg         int
+	busState       int
+	busStateTot    int
 )
 
 // Busc run a separate thread for each bus instance
@@ -108,11 +110,7 @@ func Busc(name int, path []*rs.BusStop, BusArr *rs.Bus, bwg *sync.WaitGroup) {
 	if prevCount != BusArr.PassOn {
 		BusArr.State = "Passenger has been dropped off/pick up on the road"
 	} else {
-		if BusArr.DistToNext <= 0 {
-			BusArr.State = "Dropping/Get passengers"
-		} else {
-			BusArr.State = "Travelling"
-		}
+		BusArr.State = "Passed"
 	}
 
 }
@@ -327,6 +325,19 @@ func main() {
 	cs.Rows = []string{}
 	cs.SetRect(61, 0, 89, 18)
 
+	// Create Passenger drop Check Per Step Log
+	cpd := widgets.NewList()
+	cpd.Title = "Psg Drop Check Per Step"
+	cpd.TitleStyle.Fg = ui.ColorMagenta
+	cpd.Rows = []string{}
+	cpd.SetRect(90, 0, 118, 18)
+
+	// Create Passenger drop Check Conclusion Log
+	cp := widgets.NewParagraph()
+	cp.Title = "Psg Drop Check Results"
+	cp.TitleStyle.Fg = ui.ColorGreen
+	cp.SetRect(90, 18, 118, 22)
+
 	// Create Seat Check Conclusion Log
 	c := widgets.NewParagraph()
 	c.Title = "Seat Check Results"
@@ -423,7 +434,7 @@ func main() {
 		renBusT[n].Rows = tl
 		ui.Render(renBusT[n])
 	}
-	drawBusCheck := func(n int, step int, check *int, totalCheck *int) {
+	drawBusCheck := func(n int, step int, check *int, totalCheck *int, stateCheck *int, totalState *int) {
 		var checkResult string
 		if BusArr[n].PassOn+BusArr[n].AvailSeats == 30 {
 			checkResult = "SeatsStatus: Passed"
@@ -441,6 +452,9 @@ func main() {
 		}
 		if BusArr[n].State == "Passenger has been dropped off/pick up on the road" {
 			erlst = append(erlst, BusArr[n].State)
+		} else {
+			*stateCheck++
+			*totalState++
 		}
 		if n >= 7 {
 			return
@@ -457,6 +471,11 @@ func main() {
 		cs.Rows = append(cs.Rows, "Step: "+strconv.Itoa(step)+" Passed: "+strconv.Itoa(passCheck)+"/"+strconv.Itoa(inputNoBus))
 		cs.ScrollDown()
 		ui.Render(cs)
+	}
+	drawPassenCheck := func(step int) {
+		cpd.Rows = append(cpd.Rows, "Step: "+strconv.Itoa(step)+" Status: "+strconv.Itoa(busState)+"/"+strconv.Itoa(inputNoBus))
+		cpd.ScrollDown()
+		ui.Render(cpd)
 	}
 	drawBST := func() {
 		var psgNum []float64
@@ -479,6 +498,10 @@ func main() {
 		c.Text = "Results: " + strconv.Itoa(totalCheck) + "/" + strconv.Itoa(inputNoBus*inputStep)
 		ui.Render(c)
 	}
+	drawPsgResult := func() {
+		cp.Text = "Results: " + strconv.Itoa(busStateTot) + "/" + strconv.Itoa(inputNoBus*inputStep)
+		ui.Render(cp)
+	}
 
 	// Main simulation step
 	event := ui.PollEvents()
@@ -492,7 +515,7 @@ func main() {
 		for i := 0; i < inputNoBus; i++ {
 			bwg.Add(1)
 			go Busc(i, stopList, BusArr[i], &bwg)
-			drawBusCheck(i, worldTime, &passCheck, &totalCheck)
+			drawBusCheck(i, worldTime, &passCheck, &totalCheck, &busState, &busStateTot)
 			drawBus(i)
 			select {
 			case e := <-event:
@@ -524,9 +547,13 @@ func main() {
 		drawTimer(worldTime)
 		drawPassDev()
 		drawBusResult()
+		drawPsgResult()
 		drawBST()
 		drawStepCheck(worldTime)
+		drawPassenCheck(worldTime)
 		passCheck = 0
+		busState = 0
+
 		//call screenshot function
 		// getScreen(worldTime)
 
@@ -561,9 +588,11 @@ func main() {
 	tr1 := "PSG_Tracked/PSG_Generated: " + strconv.Itoa(totalPsgTrack) + " / " + strconv.Itoa(gnrPsg)
 	tr2 := "(Init / In_Bus / In_Stop: " + strconv.Itoa(initPsg) + " / " + strconv.Itoa(inBus) + " / " + strconv.Itoa(inQ) + ")\n"
 	tr3 := "Seat Check Status: " + strconv.Itoa(totalCheck) + " / " + strconv.Itoa(inputNoBus*inputStep)
+	tr4 := "Bus Check Status: " + strconv.Itoa(busStateTot) + " / " + strconv.Itoa(inputNoBus*inputStep)
 	trlst = append(trlst, tr1)
 	trlst = append(trlst, tr2)
 	trlst = append(trlst, tr3)
+	trlst = append(trlst, tr4)
 	tl.Rows = trlst
 	if totalPsgTrack != gnrPsg {
 		erlst = append(erlst, "ERROR: Passenger Incorrect")
