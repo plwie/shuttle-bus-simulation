@@ -432,6 +432,9 @@ func main() {
 			ui.Render(erl)
 
 		}
+		if BusArr[n].State == "Passenger has been dropped off/pick up on the road" {
+			erlst = append(erlst, BusArr[n].State)
+		}
 		if n >= 7 {
 			return
 		}
