@@ -451,7 +451,7 @@ func main() {
 
 		}
 		if BusArr[n].State == "Passenger has been dropped off/pick up on the road" {
-			erlst = append(erlst, BusArr[n].State)
+			erlst = append(erlst, "At time "+strconv.Itoa(step), BusArr[n].State)
 		} else {
 			*stateCheck++
 			*totalState++
